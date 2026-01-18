@@ -1,0 +1,26 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.themeBtn {
+  margin-left: 12px;
+  background: #fff;
+  border: 1px solid #000;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.moon {
+  width: 20px;
+  height: 20px;
+  fill: #000;
+}

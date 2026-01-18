@@ -1,0 +1,28 @@
+.root {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.pill {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  outline: none;
+  border: 1px solid #000;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  fill: #000; /* default for light/orange; outline for dark will be handled inline */
+}
+
+.pill:focus-visible {
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.2);
+}
