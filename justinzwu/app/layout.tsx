@@ -46,7 +46,7 @@ export default function RootLayout({
               </aside>
               
               <main className={styles.mainContent}>
-                {children}
+        {children}
               </main>
             </div>
             

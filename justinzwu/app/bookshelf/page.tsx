@@ -12,7 +12,9 @@ interface Book {
   id: number
   title: string
   author: string
-  cover: string
+  cover: string | null
+  isbn?: string | null
+  isbn13?: string | null
   rating?: number
 }
 
@@ -23,7 +25,7 @@ const shelfColors: Record<ShelfType, string> = {
 }
 
 export default function BookshelfPage() {
-  const [activeShelf, setActiveShelf] = useState<ShelfType | null>(null)
+  const [activeShelf, setActiveShelf] = useState<ShelfType>('read')
   const [books, setBooks] = useState<Record<ShelfType, Book[]>>({
     'to read': [],
     'reading': [],
@@ -39,13 +41,8 @@ export default function BookshelfPage() {
   const shelves: ShelfType[] = ['to read', 'reading', 'read']
 
   const handleShelfClick = (shelf: ShelfType) => {
-    if (activeShelf === shelf) {
-      // Clicking the same tab again resets to no selection
-      setActiveShelf(null)
-    } else {
-      // Clicking a different tab shows that section
-      setActiveShelf(shelf)
-    }
+    // Clicking a tab shows that section (no reset on same tab click)
+    setActiveShelf(shelf)
   }
 
   useEffect(() => {
@@ -55,20 +52,35 @@ export default function BookshelfPage() {
 
       try {
         const response = await fetch(`/api/books?shelf=${encodeURIComponent(shelf)}`)
+        
         if (!response.ok) {
-          throw new Error('Failed to fetch books')
+          // Try to get error details from response
+          let errorMessage = 'Failed to fetch books'
+          try {
+            const errorData = await response.json()
+            errorMessage = errorData.details || errorData.error || errorMessage
+            console.error('API Error:', errorData)
+          } catch (e) {
+            console.error('Failed to parse error response:', e)
+          }
+          throw new Error(errorMessage)
         }
+        
         const data: Book[] = await response.json()
+        console.log(`✅ Loaded ${data.length} books for shelf: ${shelf}`)
         setBooks(prev => ({ ...prev, [shelf]: data }))
-      } catch (err) {
+        setError(null) // Clear any previous errors
+      } catch (err: any) {
         console.error('Error fetching books:', err)
-        setError('Failed to load books. Please try again later.')
+        const errorMessage = err.message || 'Failed to load books. Please try again later.'
+        setError(errorMessage)
       } finally {
         setLoading(prev => ({ ...prev, [shelf]: false }))
       }
     }
 
-    if (activeShelf && books[activeShelf].length === 0) {
+    // Fetch books if not already loaded
+    if (books[activeShelf].length === 0 && !loading[activeShelf]) {
       fetchBooks(activeShelf)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -101,31 +113,29 @@ export default function BookshelfPage() {
         ))}
       </div>
 
-      {/* Show books for active shelf only */}
+      {/* Show books for active shelf */}
       <AnimatePresence mode="wait">
-        {activeShelf && (
-          <div key={activeShelf}>
-            {loading[activeShelf] ? (
-              <div className={styles.loading}>Loading books...</div>
-            ) : error ? (
-              <div className={styles.error}>{error}</div>
-            ) : books[activeShelf].length === 0 ? (
-              <div className={styles.empty}>No books found in this shelf.</div>
-            ) : (
-              <AnimatedBookGrid
-                books={books[activeShelf]}
-                isExpanded={true}
-              />
-            )}
-          </div>
-        )}
+        <div key={activeShelf}>
+          {loading[activeShelf] ? (
+            <div className={styles.loading}>Loading books...</div>
+          ) : error ? (
+            <div className={styles.error}>{error}</div>
+          ) : books[activeShelf].length === 0 ? (
+            <div className={styles.empty}>No books found in this shelf.</div>
+          ) : (
+            <AnimatedBookGrid
+              books={books[activeShelf]}
+              isExpanded={true}
+            />
+          )}
+        </div>
       </AnimatePresence>
     </div>
   )
 }
 
 interface AnimatedBookGridProps {
-  books: Array<{ id: number; title: string; author: string; cover: string; rating?: number }>
+  books: Array<{ id: number; title: string; author: string; cover: string | null; isbn?: string | null; isbn13?: string | null; rating?: number }>
   isExpanded: boolean
 }
 
@@ -152,7 +162,7 @@ function AnimatedBookGrid({ books, isExpanded }: AnimatedBookGridProps) {
       rotate: index * 2,
       zIndex: books.length - index,
       transition: {
-        type: 'spring',
+        type: 'spring' as const,
         stiffness: 300,
         damping: 25,
       },
@@ -164,7 +174,7 @@ function AnimatedBookGrid({ books, isExpanded }: AnimatedBookGridProps) {
       rotate: 0,
       zIndex: 1,
       transition: {
-        type: 'spring',
+        type: 'spring' as const,
         stiffness: 300,
         damping: 25,
       },

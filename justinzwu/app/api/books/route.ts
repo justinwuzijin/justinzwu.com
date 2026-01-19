@@ -1,64 +1,60 @@
-import { NextRequest, NextResponse } from 'next/server'
-import pool from '@/lib/db'
+import { NextResponse } from "next/server";
+import pool from "@/lib/db";
 
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   try {
-    const searchParams = request.nextUrl.searchParams
+    const { searchParams } = new URL(request.url)
     const shelf = searchParams.get('shelf')
-    
-    // Map shelf names from frontend to database format
+
+    // Map frontend shelf names to database values
     const shelfMap: Record<string, string> = {
       'to read': 'to-read',
       'reading': 'currently-reading',
       'read': 'read',
     }
-    
-    const dbShelf = shelf ? shelfMap[shelf] : null
-    
-    let query = 'SELECT * FROM books'
+    const dbShelf = shelf ? shelfMap[shelf] || shelf : null
+
+    let query = `
+      select
+        id,
+        title,
+        author,
+        isbn,
+        isbn13,
+        my_rating,
+        exclusive_shelf,
+        cover_url,
+        date_added
+      from books
+    `
+
     const params: any[] = []
-    
     if (dbShelf) {
-      query += ' WHERE exclusive_shelf = $1'
+      query += ` where exclusive_shelf = $1`
       params.push(dbShelf)
     }
-    
-    query += ' ORDER BY date_read DESC NULLS LAST, date_added DESC'
-    
-    const result = await pool.query(query, params)
-    
-    // Transform database format to frontend format
-    const books = result.rows.map((book) => ({
-      id: book.id,
-      goodreadsId: book.goodreads_id,
-      title: book.title,
-      author: book.author,
-      cover: book.local_cover_path 
-        ? `/assets/${book.local_cover_path}` 
-        : book.cover_url || `/assets/svg/placeholder-book.jpg`,
-      shelf: mapShelfToFrontend(book.exclusive_shelf),
-      rating: book.my_rating || undefined,
-      dateRead: book.date_read,
-      dateAdded: book.date_added,
-      isbn: book.isbn13 || book.isbn,
-      review: book.my_review,
-    }))
-    
-    return NextResponse.json(books)
-  } catch (error) {
-    console.error('Error fetching books:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch books' },
-      { status: 500 }
-    )
-  }
-}
 
-function mapShelfToFrontend(dbShelf: string): 'to read' | 'reading' | 'read' {
-  const map: Record<string, 'to read' | 'reading' | 'read'> = {
-    'to-read': 'to read',
-    'currently-reading': 'reading',
-    'read': 'read',
+    query += ` order by date_added desc nulls last, id desc`
+
+    const { rows } = await pool.query(query, params)
+
+    // Transform to match frontend expectations
+    const transformedRows = rows.map((row: any) => ({
+      id: row.id,
+      title: row.title,
+      author: row.author,
+      cover: row.cover_url || null, // Map cover_url to cover
+      isbn: row.isbn || null,
+      isbn13: row.isbn13 || null,
+      rating: row.my_rating || undefined,
+    }))
+
+    return NextResponse.json(transformedRows)
+  } catch (err: any) {
+    console.error('Error fetching books:', err);
+    return NextResponse.json(
+      { error: "Failed to fetch books" },
+      { status: 500 }
+    );
   }
-  return map[dbShelf] || 'to read'
 }

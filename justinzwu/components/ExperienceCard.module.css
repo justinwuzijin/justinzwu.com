@@ -4,6 +4,11 @@
   gap: var(--spacing-md);
 }
 
+.card a {
+  display: block;
+  text-decoration: none;
+}
+
 .logoArea {
   aspect-ratio: 16 / 10;
   border-radius: var(--radius-lg);
