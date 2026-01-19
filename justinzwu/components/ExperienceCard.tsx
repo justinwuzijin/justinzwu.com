@@ -14,15 +14,15 @@ export function ExperienceCard({ company, logo, role, type, description, seconda
   const getLogoPath = () => {
     switch (logo) {
       case 'ontario':
-        return '/assets/svg/OPS.png'
+        return '/assets/svg/OPS.svg'
       case 'clipabit':
-        return '/assets/svg/ClipABit.png'
+        return '/assets/svg/CLIPABIT.svg'
       case 'cursor':
-        return '/assets/svg/Cursor.png'
+        return '/assets/svg/cursor.svg'
       case 'socratica':
-        return '/assets/svg/socratica.png'
+        return '/assets/svg/socratica.svg'
       case 'bridging':
-        return '/assets/svg/BG.png'
+        return '/assets/svg/BG.svg'
       default:
         return null
     }
@@ -33,18 +33,15 @@ export function ExperienceCard({ company, logo, role, type, description, seconda
   return (
     <article className={styles.card}>
       <div className={styles.logoArea}>
-        <div className={styles.logo}>
-          {logoPath && (
-            <Image
-              src={logoPath}
-              alt={`${company} logo`}
-              width={200}
-              height={60}
-              className={styles.logoImage}
-              style={{ objectFit: 'contain', height: 'auto', width: 'auto' }}
-            />
-          )}
-        </div>
+        {logoPath && (
+          <Image
+            src={logoPath}
+            alt={`${company} logo`}
+            fill
+            className={styles.logoImage}
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
+        )}
       </div>
       <div className={styles.content}>
         <div className={styles.header}>

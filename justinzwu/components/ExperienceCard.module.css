@@ -6,29 +6,24 @@
 
 .logoArea {
   aspect-ratio: 16 / 10;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
   border-radius: var(--radius-lg);
   overflow: hidden;
   background-color: #f0f0f0;
+  position: relative;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  cursor: pointer;
 }
 
-.logo {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: var(--spacing-md);
+.logoArea:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
 }
 
 .logoImage {
-  width: auto;
-  height: auto;
-  max-height: 100%;
-  max-width: 100%;
-  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .content {
