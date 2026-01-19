@@ -76,22 +76,10 @@
 .booksGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-lg);
+  gap: var(--spacing-2xl);
+  row-gap: var(--spacing-3xl);
   position: relative;
   min-height: 400px;
-}
-
-.stackedGrid {
-  display: block;
-  position: relative;
-  min-height: 300px;
-}
-
-.stackedBook {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: calc((100% - (2 * var(--spacing-lg))) / 3);
 }
 
 @media (max-width: 768px) {

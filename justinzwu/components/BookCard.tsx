@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import styles from './BookCard.module.css'
 
@@ -11,22 +12,29 @@ interface BookCardProps {
   showRating?: boolean
 }
 
-export function BookCard({ title, author, rating, showRating = false }: BookCardProps) {
+export function BookCard({ title, author, cover, rating, showRating = false }: BookCardProps) {
   return (
     <article className={styles.card}>
       <div className={styles.coverWrapper}>
-        {/* TODO: Replace with actual book cover images */}
-        <div className={styles.coverPlaceholder}>
-          <span className={styles.bookTitle}>{title}</span>
-          <span className={styles.bookAuthor}>{author}</span>
-        </div>
+        <Image
+          src={cover}
+          alt={`${title} by ${author}`}
+          fill
+          className={styles.bookCover}
+          sizes="(max-width: 768px) 50vw, 33vw"
+        />
       </div>
       {rating !== undefined && (
         <motion.div
           className={styles.rating}
-          initial={{ opacity: 0, y: 10 }}
-          animate={showRating ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-          transition={{ delay: 0.5, duration: 0.4 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: showRating ? 1 : 0 }}
+          transition={{ 
+            delay: showRating ? 0.6 : 0, 
+            duration: 0.5, 
+            ease: 'easeOut'
+          }}
+          style={{ visibility: showRating ? 'visible' : 'hidden' }}
         >
           {Array.from({ length: 5 }).map((_, i) => (
             <span 

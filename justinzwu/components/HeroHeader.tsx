@@ -7,7 +7,11 @@ import styles from './HeroHeader.module.css'
 
 export function HeroHeader() {
   const { theme } = useTheme()
-  const logoSrc = theme === 'dark' ? '/assets/svg/zijin(dm).svg' : '/assets/svg/zijin.svg'
+  const logoSrc = theme === 'orange' 
+    ? '/assets/svg/zijin(orange).svg' 
+    : theme === 'dark' 
+    ? '/assets/svg/zijin(dm).svg' 
+    : '/assets/svg/zijin.svg'
 
   return (
     <div className={styles.heroHeader}>

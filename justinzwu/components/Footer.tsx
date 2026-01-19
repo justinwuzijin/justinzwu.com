@@ -6,8 +6,16 @@ import styles from './Footer.module.css'
 
 export function Footer() {
   const { theme } = useTheme()
-  const logoSrc = theme === 'dark' ? '/assets/svg/zijin(dm).svg' : '/assets/svg/zijin.svg'
-  const preFooterSrc = theme === 'dark' ? '/assets/svg/Pre-Footer(dm).svg' : '/assets/svg/Pre-Footer.svg'
+  const logoSrc = theme === 'orange' 
+    ? '/assets/svg/zijin(orange).svg' 
+    : theme === 'dark' 
+    ? '/assets/svg/zijin(dm).svg' 
+    : '/assets/svg/zijin.svg'
+  const preFooterSrc = theme === 'orange' 
+    ? '/assets/svg/Pre-Footer(orange).svg' 
+    : theme === 'dark' 
+    ? '/assets/svg/Pre-Footer(dm).svg' 
+    : '/assets/svg/Pre-Footer.svg'
 
   return (
     <footer className={styles.footer}>
