@@ -36,18 +36,17 @@ const shelfColors: Record<ShelfType, string> = {
 }
 
 export default function BookshelfPage() {
-  const [activeShelf, setActiveShelf] = useState<ShelfType | 'all'>('all')
-  const [expandedShelves, setExpandedShelves] = useState<Set<ShelfType>>(new Set())
+  const [activeShelf, setActiveShelf] = useState<ShelfType | null>(null)
 
   const shelves: ShelfType[] = ['to read', 'reading', 'read']
 
   const handleShelfClick = (shelf: ShelfType) => {
     if (activeShelf === shelf) {
-      setActiveShelf('all')
-      setExpandedShelves(new Set())
+      // Clicking the same tab again resets to no selection
+      setActiveShelf(null)
     } else {
+      // Clicking a different tab shows that section
       setActiveShelf(shelf)
-      setExpandedShelves(new Set([shelf]))
     }
   }
 
@@ -78,26 +77,13 @@ export default function BookshelfPage() {
         ))}
       </div>
 
-      {/* Book grids */}
-      {shelves.map((shelf) => (
-        (activeShelf === 'all' || activeShelf === shelf) && (
-          <section key={shelf} className={styles.shelfSection}>
-            {activeShelf === 'all' && (
-              <h2 className={styles.shelfTitle}>
-                <span 
-                  className={styles.shelfDot} 
-                  style={{ backgroundColor: shelfColors[shelf] }}
-                />
-                {shelf}
-              </h2>
-            )}
-            <AnimatedBookGrid
-              books={books[shelf]}
-              isExpanded={expandedShelves.has(shelf)}
-            />
-          </section>
-        )
-      ))}
+      {/* Show books for active shelf only */}
+      {activeShelf && (
+        <AnimatedBookGrid
+          books={books[activeShelf]}
+          isExpanded={true}
+        />
+      )}
     </div>
   )
 }
@@ -147,17 +133,16 @@ function AnimatedBookGrid({ books, isExpanded }: AnimatedBookGridProps) {
 
   return (
     <motion.div
-      className={`${styles.booksGrid} ${!isExpanded ? styles.stackedGrid : ''}`}
+      className={styles.booksGrid}
       variants={containerVariants}
       initial="stacked"
-      animate={isExpanded ? 'expanded' : 'stacked'}
+      animate="expanded"
     >
       {books.map((book, index) => (
         <motion.div
           key={book.id}
           custom={index}
           variants={bookVariants}
-          className={!isExpanded ? styles.stackedBook : ''}
         >
           <BookCard {...book} showRating={isExpanded} />
         </motion.div>
