@@ -7,8 +7,8 @@
 
 .fluidContainer {
   position: relative;
-  width: 50px;
-  height: 50px;
+  width: 42px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -27,6 +27,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  outline: none;
+  box-shadow: none;
 }
 
 .triggerButton:hover {
@@ -35,13 +37,11 @@
 }
 
 .triggerButton:focus {
-  outline: 2px solid currentColor;
-  outline-offset: 2px;
-  border-radius: 4px;
+  outline: none;
 }
 
 .hamburgerImage {
-  height: 50px;
+  height: 42px;
   width: auto;
   pointer-events: none;
   display: block;
@@ -51,8 +51,8 @@
   position: absolute;
   right: 0;
   top: 0;
-  width: 50px;
-  height: 50px;
+  width: 42px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -65,6 +65,9 @@
   backface-visibility: hidden;
   -webkit-font-smoothing: antialiased;
   pointer-events: auto;
+  outline: none;
+  border: none;
+  box-shadow: none;
 }
 
 .menuItemBg {
@@ -89,8 +92,7 @@
 }
 
 .socialIcon:focus {
-  outline: 2px solid currentColor;
-  outline-offset: 2px;
+  outline: none;
 }
 
 .themeToggle {
@@ -126,18 +128,18 @@
 
 @media (max-width: 768px) {
   .fluidContainer {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
   }
   
   .hamburgerImage {
-    height: 40px;
+    height: 36px;
   }
   
   .triggerButton,
   .socialIcon {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
   }
   
   .controls {
