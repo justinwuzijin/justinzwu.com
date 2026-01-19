@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import styles from './ExperienceCard.module.css'
 
 interface ExperienceCardProps {
@@ -10,31 +11,38 @@ interface ExperienceCardProps {
 }
 
 export function ExperienceCard({ company, logo, role, type, description, secondaryLogo }: ExperienceCardProps) {
+  const getLogoPath = () => {
+    switch (logo) {
+      case 'ontario':
+        return '/assets/svg/OPS.png'
+      case 'clipabit':
+        return '/assets/svg/ClipABit.png'
+      case 'cursor':
+        return '/assets/svg/Cursor.png'
+      case 'socratica':
+        return '/assets/svg/socratica.png'
+      case 'bridging':
+        return '/assets/svg/BG.png'
+      default:
+        return null
+    }
+  }
+
+  const logoPath = getLogoPath()
+
   return (
     <article className={styles.card}>
       <div className={styles.logoArea}>
         <div className={styles.logo}>
-          {logo === 'ontario' && (
-            <span className={styles.ontarioLogo}>
-              Ontario <span className={styles.trillium}>🔱</span>
-            </span>
-          )}
-          {logo === 'clipabit' && (
-            <div className={styles.clipabitWrapper}>
-              <span className={styles.clipabitLogo}>✖lipabit</span>
-              {secondaryLogo === 'watai' && (
-                <span className={styles.wataiLogo}>🦋</span>
-              )}
-            </div>
-          )}
-          {logo === 'cursor' && (
-            <span className={styles.cursorLogo}>⬛ CURSOR</span>
-          )}
-          {logo === 'socratica' && (
-            <span className={styles.socraticaLogo}>CREATE ALL NIGHT</span>
-          )}
-          {logo === 'bridging' && (
-            <span className={styles.bridgingLogo}>BRIDGING ⬌ GENERATIONS</span>
+          {logoPath && (
+            <Image
+              src={logoPath}
+              alt={`${company} logo`}
+              width={200}
+              height={60}
+              className={styles.logoImage}
+              style={{ objectFit: 'contain', height: 'auto', width: 'auto' }}
+            />
           )}
         </div>
       </div>

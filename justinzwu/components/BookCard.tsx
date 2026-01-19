@@ -1,3 +1,6 @@
+'use client'
+
+import { motion } from 'framer-motion'
 import styles from './BookCard.module.css'
 
 interface BookCardProps {
@@ -5,9 +8,10 @@ interface BookCardProps {
   author: string
   cover: string
   rating?: number
+  showRating?: boolean
 }
 
-export function BookCard({ title, author, rating }: BookCardProps) {
+export function BookCard({ title, author, rating, showRating = false }: BookCardProps) {
   return (
     <article className={styles.card}>
       <div className={styles.coverWrapper}>
@@ -18,7 +22,12 @@ export function BookCard({ title, author, rating }: BookCardProps) {
         </div>
       </div>
       {rating !== undefined && (
-        <div className={styles.rating}>
+        <motion.div
+          className={styles.rating}
+          initial={{ opacity: 0, y: 10 }}
+          animate={showRating ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+          transition={{ delay: 0.5, duration: 0.4 }}
+        >
           {Array.from({ length: 5 }).map((_, i) => (
             <span 
               key={i} 
@@ -27,7 +36,7 @@ export function BookCard({ title, author, rating }: BookCardProps) {
               ★
             </span>
           ))}
-        </div>
+        </motion.div>
       )}
     </article>
   )

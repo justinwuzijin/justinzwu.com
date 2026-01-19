@@ -2,7 +2,7 @@ import styles from './page.module.css'
 import { ProjectCard } from '@/components/ProjectCard'
 import { TitleHover } from '@/components/TitleHover'
 import { HeroHeader } from '@/components/HeroHeader'
-import { LinkPreview } from '@/components/LinkPreview'
+import { LinkPreview } from '@/components/ui/link-preview'
 
 const projects = [
   {

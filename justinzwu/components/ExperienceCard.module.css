@@ -11,60 +11,14 @@
 }
 
 .logo {
-  font-size: 1.25rem;
-  font-weight: 700;
+  width: 100%;
 }
 
-.ontarioLogo {
-  font-size: 1.5rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-}
-
-.trillium {
-  color: #c45a1c;
-}
-
-.clipabitWrapper {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-}
-
-.clipabitLogo {
-  font-size: 1.25rem;
-  font-weight: 700;
-}
-
-.wataiLogo {
-  font-size: 1.5rem;
-  color: #e6b800;
-}
-
-.cursorLogo {
-  font-size: 1rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-}
-
-.socraticaLogo {
-  font-size: 0.9rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  background: linear-gradient(90deg, #ff6b6b, #feca57);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.bridgingLogo {
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+.logoImage {
+  max-width: 100%;
+  height: auto;
+  max-height: 60px;
+  width: auto;
 }
 
 .content {
@@ -86,7 +40,8 @@
 }
 
 .type {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
+  font-weight: 600;
   color: var(--color-muted);
 }
 

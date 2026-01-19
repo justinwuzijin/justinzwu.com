@@ -1,8 +1,8 @@
 'use client'
 
 import React from "react"
-
 import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import styles from './page.module.css'
 import { BookCard } from '@/components/BookCard'
 
@@ -37,8 +37,19 @@ const shelfColors: Record<ShelfType, string> = {
 
 export default function BookshelfPage() {
   const [activeShelf, setActiveShelf] = useState<ShelfType | 'all'>('all')
+  const [expandedShelves, setExpandedShelves] = useState<Set<ShelfType>>(new Set())
 
   const shelves: ShelfType[] = ['to read', 'reading', 'read']
+
+  const handleShelfClick = (shelf: ShelfType) => {
+    if (activeShelf === shelf) {
+      setActiveShelf('all')
+      setExpandedShelves(new Set())
+    } else {
+      setActiveShelf(shelf)
+      setExpandedShelves(new Set([shelf]))
+    }
+  }
 
   return (
     <div className={styles.container}>
@@ -52,7 +63,7 @@ export default function BookshelfPage() {
         {shelves.map((shelf) => (
           <button
             key={shelf}
-            onClick={() => setActiveShelf(activeShelf === shelf ? 'all' : shelf)}
+            onClick={() => handleShelfClick(shelf)}
             className={`${styles.tab} ${activeShelf === shelf ? styles.activeTab : ''}`}
             style={{ 
               '--tab-color': shelfColors[shelf] 
@@ -80,14 +91,77 @@ export default function BookshelfPage() {
                 {shelf}
               </h2>
             )}
-            <div className={styles.booksGrid}>
-              {books[shelf].map((book) => (
-                <BookCard key={book.id} {...book} />
-              ))}
-            </div>
+            <AnimatedBookGrid
+              books={books[shelf]}
+              isExpanded={expandedShelves.has(shelf)}
+            />
           </section>
         )
       ))}
     </div>
+  )
+}
+
+interface AnimatedBookGridProps {
+  books: Array<{ id: number; title: string; author: string; cover: string; rating?: number }>
+  isExpanded: boolean
+}
+
+function AnimatedBookGrid({ books, isExpanded }: AnimatedBookGridProps) {
+  const containerVariants = {
+    stacked: {},
+    expanded: {
+      transition: {
+        staggerChildren: 0.08,
+        delayChildren: 0.1,
+      },
+    },
+  }
+
+  const bookVariants = {
+    stacked: (index: number) => ({
+      x: index * 20,
+      y: index * 15,
+      scale: 1 - index * 0.05,
+      rotate: index * 2,
+      zIndex: books.length - index,
+      transition: {
+        type: 'spring',
+        stiffness: 300,
+        damping: 25,
+      },
+    }),
+    expanded: {
+      x: 0,
+      y: 0,
+      scale: 1,
+      rotate: 0,
+      zIndex: 1,
+      transition: {
+        type: 'spring',
+        stiffness: 300,
+        damping: 25,
+      },
+    },
+  }
+
+  return (
+    <motion.div
+      className={`${styles.booksGrid} ${!isExpanded ? styles.stackedGrid : ''}`}
+      variants={containerVariants}
+      initial="stacked"
+      animate={isExpanded ? 'expanded' : 'stacked'}
+    >
+      {books.map((book, index) => (
+        <motion.div
+          key={book.id}
+          custom={index}
+          variants={bookVariants}
+          className={!isExpanded ? styles.stackedBook : ''}
+        >
+          <BookCard {...book} showRating={isExpanded} />
+        </motion.div>
+      ))}
+    </motion.div>
   )
 }
