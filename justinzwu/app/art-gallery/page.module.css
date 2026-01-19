@@ -15,7 +15,7 @@
 .orangeDot {
   width: 16px;
   height: 16px;
-  background-color: #c45a1c;
+  background-color: white;
   border-radius: var(--radius-full);
 }
 
@@ -76,7 +76,17 @@
 
 .galleryItem {
   border-radius: var(--radius-md);
-  overflow: hidden;
+  overflow: visible;
+}
+
+.galleryItem.artItem {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.artItem {
+  border: none;
+  background: transparent;
 }
 
 .letterItem {
@@ -204,12 +214,44 @@
 
 .artItem {
   grid-column: span 1;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 .artPlaceholder {
   width: 100%;
   aspect-ratio: 3 / 4;
   background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+}
+
+.svgContainer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent !important;
+  background: transparent !important;
+  padding: var(--spacing-sm);
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.artImage {
+  width: 60%;
+  height: 60%;
+  max-width: 200px;
+  max-height: 200px;
+  object-fit: contain;
+  display: block;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 @media (max-width: 768px) {

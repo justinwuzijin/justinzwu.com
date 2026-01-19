@@ -108,9 +108,7 @@ export default function MePage() {
             </LinkPreview>{' '}
             community in Waterloo and running campus events
           </li>
-          <li>
-            {'>'} working on TakeOne; a centralized LinkedIn for indie filmmakers in the gta
-          </li>
+      
           <li>
             {'>'} produced videos for{' '}
             <LinkPreview 
@@ -161,6 +159,9 @@ export default function MePage() {
               five24
             </LinkPreview>{' '}
             and personal youtube videos in hs
+          </li>
+          <li>
+            {'>'} seeking fall 2026 internship opportunities!
           </li>
         </ul>
       </section>

@@ -62,14 +62,22 @@ export function BookCard({ title, author, cover, isbn, isbn13, rating, showRatin
     return urls.length > 0 ? urls : [getPlaceholderCover(title, author)]
   }, [cover, isbn13, isbn, title, author])
   
-  // Set initial cover
+  // Set initial cover and auto-search if missing
   React.useEffect(() => {
     if (fallbacks.length > 0) {
       setCurrentCover(fallbacks[0])
       setFallbackIndex(0)
-      setHasSearched(false)
     }
-  }, [fallbacks])
+    
+    // If no cover URL exists in database, immediately search for one
+    if (!cover && !isSearching && !hasSearched && title && author) {
+      // Delay search slightly to avoid blocking initial render
+      const timer = setTimeout(() => {
+        searchForCover()
+      }, 500)
+      return () => clearTimeout(timer)
+    }
+  }, [cover, title, author]) // eslint-disable-line react-hooks/exhaustive-deps
   
   // Search for cover on the web
   const searchForCover = React.useCallback(async () => {

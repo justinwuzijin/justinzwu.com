@@ -117,11 +117,55 @@
   white-space: pre-wrap;
 }
 
+.review p {
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+.review p:last-child {
+  margin-bottom: 0;
+}
+
 .noReview {
   font-size: 0.9rem;
   color: var(--color-muted);
   font-style: italic;
   margin: 0;
+}
+
+.loading {
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  margin: 0;
+  font-style: italic;
+}
+
+.goodreadsSection {
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-xl);
+  border-top: 1px solid var(--color-border);
+}
+
+.goodreadsButton {
+  display: inline-block;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--color-accent);
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.goodreadsButton:hover {
+  background-color: var(--color-accent-light);
+  transform: translateY(-1px);
+}
+
+.goodreadsButton:active {
+  transform: translateY(0);
 }
 
 @media (max-width: 768px) {

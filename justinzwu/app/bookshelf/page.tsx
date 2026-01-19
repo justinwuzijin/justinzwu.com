@@ -17,6 +17,8 @@ interface Book {
   isbn?: string | null
   isbn13?: string | null
   rating?: number
+  goodreadsId?: string | null
+  review?: string | null
 }
 
 const shelfColors: Record<ShelfType, string> = {
@@ -143,6 +145,7 @@ export default function BookshelfPage() {
       {selectedBook && (
         <BookSidePanel
           book={selectedBook}
+          shelf={activeShelf}
           isOpen={true}
           onClose={() => {
             setSelectedBook(null)
