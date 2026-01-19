@@ -1,6 +1,7 @@
 .footer {
   margin-top: auto;
   width: 100%;
+  padding-top: var(--spacing-3xl);
 }
 
 .preFooter {
@@ -37,10 +38,17 @@
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.logoSection:hover {
+  opacity: 0.8;
 }
 
 .logoImage {
-  height: 60px;
+  height: 45px;
   width: auto;
   display: block;
 }
@@ -50,6 +58,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.copyrightSection:hover {
+  opacity: 0.8;
 }
 
 .copyright {
@@ -64,15 +79,15 @@
   align-items: center;
   justify-content: flex-end;
   flex-shrink: 0;
-  height: 40px;
-  max-height: 40px;
+  height: 30px;
+  max-height: 30px;
 }
 
 .logoPlaceholder > *,
 .logoPlaceholder a,
 .logoPlaceholder img,
 .logoPlaceholder svg {
-  max-height: 40px;
+  max-height: 30px;
   height: auto;
   width: auto;
   display: block;
@@ -115,7 +130,7 @@
   }
   
   .logoImage {
-    height: 40px;
+    height: 35px;
   }
   
   .copyrightSection {
@@ -124,15 +139,15 @@
   
   .logoPlaceholder {
     order: 3;
-    height: 30px;
-    max-height: 30px;
+    height: 25px;
+    max-height: 25px;
   }
   
   .logoPlaceholder > *,
   .logoPlaceholder a,
   .logoPlaceholder img,
   .logoPlaceholder svg {
-    max-height: 30px;
+    max-height: 25px;
   }
   
   .placeholderBox {

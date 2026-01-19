@@ -10,7 +10,7 @@ const projects = [
     title: 'Cision',
     date: "Jan '26",
     description: 'Cursor for city planners. We built an interactive 3D map that redesigns dangerous Toronto intersections. User can find high-risk locations on our heatmap view, generated improvements in real-time, and chat with voice agent stakeholders.',
-    image: '/assets/svg/cision.png',
+    image: '/assets/svg/cision.svg',
     url: 'https://github.com/Lemirq/cision',
     dark: true,
   },
@@ -19,7 +19,7 @@ const projects = [
     title: 'Recollect',
     date: "Nov '25",
     description: 'An app that allows you to scan your receipts and turns your everyday, mundane purchases into a meaningful digital scrapbook of memories you can collect, decorate, and share.',
-    image: '/assets/svg/recollect.png',
+    image: '/assets/svg/recollect.svg',
     url: 'https://devpost.com/software/recollect-t5okgv?ref_content=user-portfolio&ref_feature=in_progress',
     dark: false,
   },
@@ -28,7 +28,7 @@ const projects = [
     title: 'Performeter',
     date: "Oct '25",
     description: 'A Chrome extension for Tinder.com. It scrapes bio text and calls an LLM with a structured prompt to output a score of how "performative" someones profile is. (Toronto Stupid Hackathon project)',
-    image: '/assets/svg/performeter.png',
+    image: '/assets/svg/performeter.svg',
     url: 'https://github.com/justinwuzijin/performeter67',
     dark: false,
   },
@@ -37,7 +37,7 @@ const projects = [
     title: '4Sight',
     date: "May '25",
     description: 'An at-home vision screening app. Simulates gaze-tracking, peripheral, and Snellen tests to provide an estimated prescription and recommended treatment options.',
-    image: '/assets/svg/4sight.png',
+    image: '/assets/svg/4sight.svg',
     url: 'https://github.com/justinwuzijin/eye-tester-app',
     dark: false,
   },
@@ -46,7 +46,7 @@ const projects = [
     title: '3D Interactive Stills Gallery',
     date: "Aug '25",
     description: 'An interactive sphere-based gallery that showcases stills from my youtube videos in a dynamic 3D environment.',
-    image: '/assets/svg/3dgal.png',
+    image: '/assets/svg/3d.svg',
     url: 'https://github.com/justinwuzijin/spinning-3d-gallery',
     dark: false,
   },
@@ -55,7 +55,7 @@ const projects = [
     title: 'TakeOne',
     date: 'Ongoing',
     description: 'A creative network platform that matches indie filmmakers in Toronto with industry professionals.',
-    image: '/assets/svg/takeone.png',
+    image: '/assets/svg/takeone.svg',
     url: 'https://github.com/justinwuzijin/takeone',
     dark: false,
   },
@@ -128,7 +128,7 @@ export default function MePage() {
             </LinkPreview>
             ,{' '}
             <LinkPreview 
-              url="https://www.instagram.com/figmaatwaterloo/" 
+              url="https://www.figma.com/" 
               className={styles.highlightBlue}
             >
               Figma Waterloo
@@ -155,7 +155,7 @@ export default function MePage() {
           <li>
             {'>'} made films with{' '}
             <LinkPreview 
-              url="https://www.instagram.com/five24.film/" 
+              url="https://www.yorkregion.com/news/markham-teens-heartwarming-piece-wins-people-s-choice-award-for-24-hour-film-challenge/article_adc3510e-8599-556e-9867-71ba2ba3234b.html" 
               className={styles.highlightPurple}
             >
               five24

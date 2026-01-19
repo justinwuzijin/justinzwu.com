@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useTheme } from './ThemeProvider'
 import styles from './Footer.module.css'
 
@@ -23,18 +24,18 @@ export function Footer() {
       <div className={styles.footerBar}>
         <div className={styles.footerContent}>
           {/* Left: Zijin logo */}
-          <div className={styles.logoSection}>
+          <Link href="/" className={styles.logoSection}>
             <img 
               src={logoSrc} 
               alt="Zijin" 
               className={styles.logoImage}
             />
-          </div>
+          </Link>
           
           {/* Center: Copyright text */}
-          <div className={styles.copyrightSection}>
+          <Link href="/" className={styles.copyrightSection}>
             <p className={styles.copyright}>@2026 justinzwu.com</p>
-          </div>
+          </Link>
           
           {/* Right: Waterloo Network logo placeholder */}
           <div className={styles.logoPlaceholder}>
