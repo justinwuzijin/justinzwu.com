@@ -70,7 +70,7 @@ export default function MePage() {
         <TitleHover />
         <p className={styles.subtitle}>
           Systems Design Engineering{' '}
-          <LinkPreview url="https://uwaterloo.ca/" className={styles.highlightOrange}>
+          <LinkPreview url="https://uwaterloo.ca/" className={styles.highlightYellow}>
             @UWaterloo
           </LinkPreview>
         </p>
@@ -93,7 +93,7 @@ export default function MePage() {
             {'>'} building ClipABit, a DaVinci Resolve semantic search plug-in{' '}
             <LinkPreview 
               url="https://clipabit.web.app/" 
-              className={styles.highlightOrange}
+              className={styles.highlightYellow}
             >
               @WAT.ai
             </LinkPreview>

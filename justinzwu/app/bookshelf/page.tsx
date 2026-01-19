@@ -1,32 +1,19 @@
 'use client'
 
 import React from "react"
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import styles from './page.module.css'
 import { BookCard } from '@/components/BookCard'
 
 type ShelfType = 'to read' | 'reading' | 'read'
 
-const books = {
-  'to read': [
-    { id: 1, title: 'Sapiens', author: 'Yuval Noah Harari', cover: '/assets/svg/81YfoqcSp6L._UF1000,1000_QL80_.jpg' },
-    { id: 2, title: 'Kokoro', author: 'Natsume Sōseki', cover: '/assets/svg/71liK4Q6NeL._UF1000,1000_QL80_.jpg' },
-  ],
-  'reading': [
-    { id: 3, title: 'Flow', author: 'Mihaly Csikszentmihalyi', cover: '/assets/svg/610GM3WYL7L.jpg' },
-    { id: 4, title: 'Sapiens', author: 'Yuval Noah Harari', cover: '/assets/svg/81YfoqcSp6L._UF1000,1000_QL80_.jpg' },
-    { id: 5, title: 'The Remains of the Day', author: 'Kazuo Ishiguro', cover: '/assets/svg/4929 copy.jpg' },
-    { id: 6, title: 'Kokoro', author: 'Natsume Sōseki', cover: '/assets/svg/71liK4Q6NeL._UF1000,1000_QL80_.jpg' },
-  ],
-  'read': [
-    { id: 7, title: 'Meditations', author: 'Marcus Aurelius', cover: '/assets/svg/41alKvN9GwL.jpg', rating: 5 },
-    { id: 8, title: 'Flow', author: 'Mihaly Csikszentmihalyi', cover: '/assets/svg/610GM3WYL7L.jpg', rating: 5 },
-    { id: 9, title: 'Sapiens', author: 'Yuval Noah Harari', cover: '/assets/svg/81YfoqcSp6L._UF1000,1000_QL80_.jpg', rating: 3 },
-    { id: 10, title: 'The Remains of the Day', author: 'Kazuo Ishiguro', cover: '/assets/svg/4929 copy.jpg', rating: 4 },
-    { id: 11, title: 'Kafka on the Shore', author: 'Haruki Murakami', cover: '/assets/svg/28921.jpg', rating: 5 },
-    { id: 12, title: 'Kokoro', author: 'Natsume Sōseki', cover: '/assets/svg/71liK4Q6NeL._UF1000,1000_QL80_.jpg', rating: 4 },
-  ],
+interface Book {
+  id: number
+  title: string
+  author: string
+  cover: string
+  rating?: number
 }
 
 const shelfColors: Record<ShelfType, string> = {
@@ -37,6 +24,17 @@ const shelfColors: Record<ShelfType, string> = {
 
 export default function BookshelfPage() {
   const [activeShelf, setActiveShelf] = useState<ShelfType | null>(null)
+  const [books, setBooks] = useState<Record<ShelfType, Book[]>>({
+    'to read': [],
+    'reading': [],
+    'read': [],
+  })
+  const [loading, setLoading] = useState<Record<ShelfType, boolean>>({
+    'to read': false,
+    'reading': false,
+    'read': false,
+  })
+  const [error, setError] = useState<string | null>(null)
 
   const shelves: ShelfType[] = ['to read', 'reading', 'read']
 
@@ -49,6 +47,32 @@ export default function BookshelfPage() {
       setActiveShelf(shelf)
     }
   }
+
+  useEffect(() => {
+    const fetchBooks = async (shelf: ShelfType) => {
+      setLoading(prev => ({ ...prev, [shelf]: true }))
+      setError(null)
+
+      try {
+        const response = await fetch(`/api/books?shelf=${encodeURIComponent(shelf)}`)
+        if (!response.ok) {
+          throw new Error('Failed to fetch books')
+        }
+        const data: Book[] = await response.json()
+        setBooks(prev => ({ ...prev, [shelf]: data }))
+      } catch (err) {
+        console.error('Error fetching books:', err)
+        setError('Failed to load books. Please try again later.')
+      } finally {
+        setLoading(prev => ({ ...prev, [shelf]: false }))
+      }
+    }
+
+    if (activeShelf && books[activeShelf].length === 0) {
+      fetchBooks(activeShelf)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeShelf])
 
   return (
     <div className={styles.container}>
@@ -80,11 +104,20 @@ export default function BookshelfPage() {
       {/* Show books for active shelf only */}
       <AnimatePresence mode="wait">
         {activeShelf && (
-          <AnimatedBookGrid
-            key={activeShelf}
-            books={books[activeShelf]}
-            isExpanded={true}
-          />
+          <div key={activeShelf}>
+            {loading[activeShelf] ? (
+              <div className={styles.loading}>Loading books...</div>
+            ) : error ? (
+              <div className={styles.error}>{error}</div>
+            ) : books[activeShelf].length === 0 ? (
+              <div className={styles.empty}>No books found in this shelf.</div>
+            ) : (
+              <AnimatedBookGrid
+                books={books[activeShelf]}
+                isExpanded={true}
+              />
+            )}
+          </div>
         )}
       </AnimatePresence>
     </div>

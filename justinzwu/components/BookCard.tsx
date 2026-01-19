@@ -24,22 +24,21 @@ export function BookCard({ title, author, cover, rating, showRating = false }: B
           sizes="(max-width: 768px) 50vw, 33vw"
         />
       </div>
-      {rating !== undefined && (
+      {rating !== undefined && showRating && (
         <motion.div
           className={styles.rating}
           initial={{ opacity: 0 }}
-          animate={{ opacity: showRating ? 1 : 0 }}
+          animate={{ opacity: 1 }}
           transition={{ 
-            delay: showRating ? 0.6 : 0, 
-            duration: 0.5, 
+            delay: 0.8, 
+            duration: 0.4, 
             ease: 'easeOut'
           }}
-          style={{ visibility: showRating ? 'visible' : 'hidden' }}
         >
           {Array.from({ length: 5 }).map((_, i) => (
             <span 
               key={i} 
-              className={`${styles.star} ${i < Math.floor(rating) ? styles.filled : ''} ${i === Math.floor(rating) && rating % 1 !== 0 ? styles.half : ''}`}
+              className={`${styles.star} ${i < rating ? styles.filled : ''}`}
             >
               ★
             </span>

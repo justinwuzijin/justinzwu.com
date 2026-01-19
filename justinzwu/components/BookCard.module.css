@@ -9,6 +9,8 @@
   border-radius: var(--radius-sm);
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  width: 100%;
 }
 
 .bookCover {
@@ -21,9 +23,13 @@
 .rating {
   display: flex;
   gap: 3px;
-  margin-top: var(--spacing-xs);
+  margin-top: var(--spacing-sm);
   min-height: 20px;
   align-items: center;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+  z-index: 1;
 }
 
 .star {
