@@ -10,17 +10,19 @@ interface LinkPreviewProps {
   width?: number
   height?: number
   quality?: number
+  layout?: string
   isStatic?: boolean
   imageSrc?: string
 }
 
 export function LinkPreview({
-  url,
   children,
+  url,
   className = '',
-  width = 400,
-  height = 250,
-  quality = 80,
+  width = 200,
+  height = 125,
+  quality = 50,
+  layout = 'fixed',
   isStatic = false,
   imageSrc = '',
 }: LinkPreviewProps) {
@@ -43,7 +45,6 @@ export function LinkPreview({
         }
       }
       updateCoords()
-      // Update on scroll/resize
       window.addEventListener('scroll', updateCoords, { passive: true })
       window.addEventListener('resize', updateCoords)
       return () => {
@@ -60,7 +61,7 @@ export function LinkPreview({
     }
     timeoutRef.current = setTimeout(() => {
       setIsOpen(true)
-    }, 300) // Delay before showing preview
+    }, 300) // Delay to prevent accidental triggers
   }
 
   const handleMouseLeave = () => {
@@ -71,22 +72,19 @@ export function LinkPreview({
     }
   }
 
-  // Generate preview image URL using Microlink API
-  // Alternative: https://image.thum.io/get/width/${width}/height/${height}/${url}
   const imageUrl = isStatic 
     ? imageSrc 
-    : `https://api.microlink.io/api/screenshot?url=${encodeURIComponent(url)}&width=${width}&height=${height}`
+    : `https://api.microlink.io/api/screenshot?url=${encodeURIComponent(url)}&width=${width}&height=${height}&quality=${quality}&screenshot=true&embed=screenshot.url`
 
   return (
     <a
       ref={ref}
-      className={className}
+      className={`relative inline-block ${className}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      style={{ position: 'relative', display: 'inline-block', textDecoration: 'none', color: 'inherit' }}
     >
       {children}
       <AnimatePresence>
@@ -104,50 +102,16 @@ export function LinkPreview({
               zIndex: 9999,
               pointerEvents: 'none',
             }}
+            className="flex flex-col items-center justify-center rounded-lg shadow-xl"
           >
-            <div
-              style={{
-                width: `${width}px`,
-                height: `${height}px`,
-                borderRadius: '12px',
-                overflow: 'hidden',
-                boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
-                backgroundColor: '#fff',
-                border: '1px solid rgba(0, 0, 0, 0.1)',
-              }}
-            >
-              {imageUrl && (
-                <img
-                  src={imageUrl}
-                  alt="Link preview"
-                  width={width}
-                  height={height}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    display: 'block',
-                  }}
-                  onError={(e) => {
-                    // Hide preview if image fails to load
-                    console.error('Failed to load link preview:', url)
-                    setIsOpen(false)
-                  }}
-                />
-              )}
-            </div>
-            {/* Arrow pointing down */}
-            <div
-              style={{
-                position: 'absolute',
-                bottom: '-8px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                width: 0,
-                height: 0,
-                borderLeft: '8px solid transparent',
-                borderRight: '8px solid transparent',
-                borderTop: '8px solid #fff',
+            <img
+              src={imageUrl}
+              alt="Link preview"
+              width={width}
+              height={height}
+              className="rounded-lg object-cover"
+              onError={() => {
+                setIsOpen(false)
               }}
             />
           </motion.div>
