@@ -3,6 +3,7 @@
 import React from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
+import { useTheme } from './ThemeProvider'
 import styles from './BookCard.module.css'
 
 interface BookCardProps {
@@ -49,6 +50,7 @@ function getCoverFallbacks(cover: string | null, isbn13: string | null, isbn: st
 }
 
 export function BookCard({ title, author, cover, isbn, isbn13, rating, showRating = false, onClick, isExpanded = false }: BookCardProps) {
+  const { theme } = useTheme()
   const [currentCover, setCurrentCover] = React.useState<string>(cover || getPlaceholderCover(title, author))
   const [fallbackIndex, setFallbackIndex] = React.useState(0)
   const [isSearching, setIsSearching] = React.useState(false)
@@ -151,14 +153,19 @@ export function BookCard({ title, author, cover, isbn, isbn13, rating, showRatin
             ease: 'easeOut'
           }}
         >
-          {Array.from({ length: 5 }).map((_, i) => (
-            <span 
-              key={i} 
-              className={`${styles.star} ${i < rating ? styles.filled : ''}`}
-            >
-              ★
-            </span>
-          ))}
+          {Array.from({ length: rating }).map((_, i) => {
+            const isOrangeMode = theme === 'orange'
+            const starClass = isOrangeMode ? styles.starWhite : styles.filled
+            
+            return (
+              <span 
+                key={i} 
+                className={`${styles.star} ${starClass}`}
+              >
+                ★
+              </span>
+            )
+          })}
         </motion.div>
       )}
     </motion.article>

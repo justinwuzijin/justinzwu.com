@@ -75,7 +75,7 @@
 
 .star {
   font-size: 1.25rem;
-  color: #ddd;
+  color: #d5d5d5; /* Light gray for unfilled stars on white background */
   display: inline-block;
   line-height: 1;
   font-family: Arial, sans-serif;
@@ -83,6 +83,14 @@
 
 .star.filled {
   color: #c45a1c;
+}
+
+.star.starWhite {
+  color: #ffffff;
+}
+
+.star.starOrange {
+  color: #E67A33; /* Lighter shade of orange (#CB5500) for visibility on orange background */
 }
 
 .reviewSection {

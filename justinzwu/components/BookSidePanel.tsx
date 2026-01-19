@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTheme } from './ThemeProvider'
 import styles from './BookSidePanel.module.css'
 
 interface BookSidePanelProps {
@@ -16,6 +17,9 @@ interface BookSidePanelProps {
 }
 
 export function BookSidePanel({ book, isOpen, onClose }: BookSidePanelProps) {
+  const { theme } = useTheme()
+  const isOrangeMode = theme === 'orange'
+  
   return (
     <AnimatePresence>
       {isOpen && (
@@ -57,14 +61,18 @@ export function BookSidePanel({ book, isOpen, onClose }: BookSidePanelProps) {
               {/* Rating */}
               {book.rating !== undefined && (
                 <div className={styles.rating}>
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <span
-                      key={i}
-                      className={`${styles.star} ${i < book.rating! ? styles.filled : ''}`}
-                    >
-                      ★
-                    </span>
-                  ))}
+                  {Array.from({ length: book.rating }).map((_, i) => {
+                    const starClass = isOrangeMode ? styles.starWhite : styles.filled
+                    
+                    return (
+                      <span
+                        key={i}
+                        className={`${styles.star} ${starClass}`}
+                      >
+                        ★
+                      </span>
+                    )
+                  })}
                 </div>
               )}
               
