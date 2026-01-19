@@ -26,8 +26,8 @@ export function Footer() {
           alt="Pre-footer collage" 
           className={styles.preFooterImage}
         />
-      </div>
-      
+          </div>
+          
       {/* Footer bar */}
       <div className={styles.footerBar}>
         <div className={styles.footerContent}>

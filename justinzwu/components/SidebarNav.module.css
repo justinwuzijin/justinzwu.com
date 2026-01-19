@@ -17,16 +17,28 @@
   transition: color 0.2s ease;
   padding: var(--spacing-xs) 0;
   text-align: right;
+  outline: none;
+  border: none;
 }
 
 .navLink:hover {
   color: var(--color-foreground);
   text-decoration: none;
+  outline: none;
+  border: none;
+}
+
+.navLink:focus,
+.navLink:focus-visible {
+  outline: none;
+  border: none;
 }
 
 .navLink.active {
   color: var(--color-foreground);
   font-weight: 500;
+  outline: none;
+  border: none;
 }
 
 .themeToggleContainer {
@@ -79,6 +91,8 @@
   
   .navLink {
     font-size: 0.85rem;
+    outline: none;
+    border: none;
   }
   
   .themeToggleContainer {

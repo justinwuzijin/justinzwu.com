@@ -1,6 +1,7 @@
 import pool from '../lib/db'
 import { parse } from 'csv-parse/sync'
 import { readFileSync } from 'fs'
+import { getBookCoverUrl, cleanISBN } from '../lib/bookCovers'
 
 interface GoodReadsBook {
   'Book Id': string
@@ -49,11 +50,7 @@ function parseDecimal(value: string): number | null {
   return isNaN(parsed) ? null : parsed
 }
 
-function cleanISBN(isbn: string): string | null {
-  if (!isbn || isbn.trim() === '') return null
-  // Remove quotes and equals signs that GoodReads adds
-  return isbn.replace(/^="?/, '').replace(/"?$/, '').trim() || null
-}
+// cleanISBN is now imported from lib/bookCovers
 
 async function importBooks(csvPath: string) {
   try {
@@ -91,8 +88,16 @@ async function importBooks(csvPath: string) {
         // Parse rating (0-5, or null if empty)
         const myRating = record['My Rating'] ? parseInteger(record['My Rating']) : null
         
-        // Build cover URL from GoodReads ID (you can customize this)
-        const coverUrl = `https://covers.openlibrary.org/b/isbn/${cleanISBN(record['ISBN13']) || cleanISBN(record['ISBN']) || ''}-M.jpg`
+        // Generate cover URL with fallbacks
+        const isbn = cleanISBN(record['ISBN'])
+        const isbn13 = cleanISBN(record['ISBN13'])
+        const coverUrl = getBookCoverUrl({
+          isbn,
+          isbn13,
+          goodreadsId: goodreadsId,
+          title: record['Title'].trim(),
+          author: record['Author'].trim(),
+        })
         
         const insertQuery = `
           INSERT INTO books (
