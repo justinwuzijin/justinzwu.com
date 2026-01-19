@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import styles from './page.module.css'
 import { BookCard } from '@/components/BookCard'
+import { BookSidePanel } from '@/components/BookSidePanel'
 
 type ShelfType = 'to read' | 'reading' | 'read'
 
@@ -37,6 +38,8 @@ export default function BookshelfPage() {
     'read': false,
   })
   const [error, setError] = useState<string | null>(null)
+  const [selectedBook, setSelectedBook] = useState<Book | null>(null)
+  const [expandedBookId, setExpandedBookId] = useState<number | null>(null)
 
   const shelves: ShelfType[] = ['to read', 'reading', 'read']
 
@@ -126,10 +129,27 @@ export default function BookshelfPage() {
             <AnimatedBookGrid
               books={books[activeShelf]}
               isExpanded={true}
+              expandedBookId={expandedBookId}
+              onBookClick={(book) => {
+                setExpandedBookId(book.id)
+                setSelectedBook(book)
+              }}
             />
           )}
         </div>
       </AnimatePresence>
+
+      {/* Side Panel */}
+      {selectedBook && (
+        <BookSidePanel
+          book={selectedBook}
+          isOpen={true}
+          onClose={() => {
+            setSelectedBook(null)
+            setExpandedBookId(null)
+          }}
+        />
+      )}
     </div>
   )
 }
@@ -137,9 +157,11 @@ export default function BookshelfPage() {
 interface AnimatedBookGridProps {
   books: Array<{ id: number; title: string; author: string; cover: string | null; isbn?: string | null; isbn13?: string | null; rating?: number }>
   isExpanded: boolean
+  expandedBookId: number | null
+  onBookClick: (book: Book) => void
 }
 
-function AnimatedBookGrid({ books, isExpanded }: AnimatedBookGridProps) {
+function AnimatedBookGrid({ books, isExpanded, expandedBookId, onBookClick }: AnimatedBookGridProps) {
   const containerVariants = {
     stacked: {
       transition: {
@@ -201,7 +223,12 @@ function AnimatedBookGrid({ books, isExpanded }: AnimatedBookGridProps) {
             }
           }
         >
-          <BookCard {...book} showRating={isExpanded} />
+          <BookCard 
+            {...book} 
+            showRating={isExpanded}
+            onClick={() => onBookClick(book)}
+            isExpanded={expandedBookId === book.id}
+          />
         </motion.div>
       ))}
     </motion.div>
