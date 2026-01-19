@@ -13,6 +13,8 @@ interface BookCardProps {
   isbn13?: string | null
   rating?: number
   showRating?: boolean
+  onClick?: () => void
+  isExpanded?: boolean
 }
 
 // Generate a placeholder cover using data URI (no external service needed)
@@ -46,7 +48,7 @@ function getCoverFallbacks(cover: string | null, isbn13: string | null, isbn: st
   return fallbacks
 }
 
-export function BookCard({ title, author, cover, isbn, isbn13, rating, showRating = false }: BookCardProps) {
+export function BookCard({ title, author, cover, isbn, isbn13, rating, showRating = false, onClick, isExpanded = false }: BookCardProps) {
   const [currentCover, setCurrentCover] = React.useState<string>(cover || getPlaceholderCover(title, author))
   const [fallbackIndex, setFallbackIndex] = React.useState(0)
   const [isSearching, setIsSearching] = React.useState(false)
@@ -115,7 +117,19 @@ export function BookCard({ title, author, cover, isbn, isbn13, rating, showRatin
   }
   
   return (
-    <article className={styles.card}>
+    <motion.article 
+      className={styles.card}
+      onClick={onClick}
+      whileHover={{ 
+        scale: 1.05,
+        y: -5,
+        transition: { type: 'spring', stiffness: 400, damping: 17 }
+      }}
+      whileTap={{ scale: 0.98 }}
+      style={{ cursor: onClick ? 'pointer' : 'default' }}
+      animate={isExpanded ? { scale: 1.1, zIndex: 10 } : { scale: 1, zIndex: 1 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+    >
       <div className={styles.coverWrapper}>
         <Image
           src={currentCover}
@@ -147,6 +161,6 @@ export function BookCard({ title, author, cover, isbn, isbn13, rating, showRatin
           ))}
         </motion.div>
       )}
-    </article>
+    </motion.article>
   )
 }
