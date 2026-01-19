@@ -10,22 +10,22 @@ type ShelfType = 'to read' | 'reading' | 'read'
 
 const books = {
   'to read': [
-    { id: 1, title: 'Sapiens', author: 'Yuval Noah Harari', cover: '/images/sapiens.jpg' },
-    { id: 2, title: 'Kokoro', author: 'Natsume Sōseki', cover: '/images/kokoro.jpg' },
+    { id: 1, title: 'Sapiens', author: 'Yuval Noah Harari', cover: '/assets/svg/81YfoqcSp6L._UF1000,1000_QL80_.jpg' },
+    { id: 2, title: 'Kokoro', author: 'Natsume Sōseki', cover: '/assets/svg/71liK4Q6NeL._UF1000,1000_QL80_.jpg' },
   ],
   'reading': [
-    { id: 3, title: 'Flow', author: 'Mihaly Csikszentmihalyi', cover: '/images/flow.jpg' },
-    { id: 4, title: 'Sapiens', author: 'Yuval Noah Harari', cover: '/images/sapiens.jpg' },
-    { id: 5, title: 'The Remains of the Day', author: 'Kazuo Ishiguro', cover: '/images/remains.jpg' },
-    { id: 6, title: 'Kokoro', author: 'Natsume Sōseki', cover: '/images/kokoro.jpg' },
+    { id: 3, title: 'Flow', author: 'Mihaly Csikszentmihalyi', cover: '/assets/svg/610GM3WYL7L.jpg' },
+    { id: 4, title: 'Sapiens', author: 'Yuval Noah Harari', cover: '/assets/svg/81YfoqcSp6L._UF1000,1000_QL80_.jpg' },
+    { id: 5, title: 'The Remains of the Day', author: 'Kazuo Ishiguro', cover: '/assets/svg/4929 copy.jpg' },
+    { id: 6, title: 'Kokoro', author: 'Natsume Sōseki', cover: '/assets/svg/71liK4Q6NeL._UF1000,1000_QL80_.jpg' },
   ],
   'read': [
-    { id: 7, title: 'Meditations', author: 'Marcus Aurelius', cover: '/images/meditations.jpg', rating: 4.5 },
-    { id: 8, title: 'Flow', author: 'Mihaly Csikszentmihalyi', cover: '/images/flow.jpg', rating: 5 },
-    { id: 9, title: 'Sapiens', author: 'Yuval Noah Harari', cover: '/images/sapiens.jpg', rating: 3 },
-    { id: 10, title: 'The Remains of the Day', author: 'Kazuo Ishiguro', cover: '/images/remains.jpg', rating: 4 },
-    { id: 11, title: 'Norwegian Wood', author: 'Haruki Murakami', cover: '/images/norwegian.jpg', rating: 4.5 },
-    { id: 12, title: 'Kokoro', author: 'Natsume Sōseki', cover: '/images/kokoro.jpg', rating: 3.5 },
+    { id: 7, title: 'Meditations', author: 'Marcus Aurelius', cover: '/assets/svg/41alKvN9GwL.jpg', rating: 5 },
+    { id: 8, title: 'Flow', author: 'Mihaly Csikszentmihalyi', cover: '/assets/svg/610GM3WYL7L.jpg', rating: 5 },
+    { id: 9, title: 'Sapiens', author: 'Yuval Noah Harari', cover: '/assets/svg/81YfoqcSp6L._UF1000,1000_QL80_.jpg', rating: 3 },
+    { id: 10, title: 'The Remains of the Day', author: 'Kazuo Ishiguro', cover: '/assets/svg/4929 copy.jpg', rating: 4 },
+    { id: 11, title: 'Kafka on the Shore', author: 'Haruki Murakami', cover: '/assets/svg/28921.jpg', rating: 5 },
+    { id: 12, title: 'Kokoro', author: 'Natsume Sōseki', cover: '/assets/svg/71liK4Q6NeL._UF1000,1000_QL80_.jpg', rating: 4 },
   ],
 }
 
@@ -78,12 +78,15 @@ export default function BookshelfPage() {
       </div>
 
       {/* Show books for active shelf only */}
-      {activeShelf && (
-        <AnimatedBookGrid
-          books={books[activeShelf]}
-          isExpanded={true}
-        />
-      )}
+      <AnimatePresence mode="wait">
+        {activeShelf && (
+          <AnimatedBookGrid
+            key={activeShelf}
+            books={books[activeShelf]}
+            isExpanded={true}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }
@@ -95,7 +98,11 @@ interface AnimatedBookGridProps {
 
 function AnimatedBookGrid({ books, isExpanded }: AnimatedBookGridProps) {
   const containerVariants = {
-    stacked: {},
+    stacked: {
+      transition: {
+        staggerChildren: 0.05,
+      },
+    },
     expanded: {
       transition: {
         staggerChildren: 0.08,
@@ -137,12 +144,19 @@ function AnimatedBookGrid({ books, isExpanded }: AnimatedBookGridProps) {
       variants={containerVariants}
       initial="stacked"
       animate="expanded"
+      layout
     >
       {books.map((book, index) => (
         <motion.div
           key={book.id}
           custom={index}
           variants={bookVariants}
+          layout
+          style={
+            {
+              position: 'relative',
+            }
+          }
         >
           <BookCard {...book} showRating={isExpanded} />
         </motion.div>

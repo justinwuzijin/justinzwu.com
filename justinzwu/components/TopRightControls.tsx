@@ -54,12 +54,8 @@ const socialLinks = [
 ]
 
 export function TopRightControls() {
-  const { theme, setTheme } = useTheme()
+  const { theme } = useTheme()
   const [isExpanded, setIsExpanded] = useState(false)
-
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark')
-  }
 
   const toggleSocialLinks = () => {
     setIsExpanded(!isExpanded)
@@ -76,7 +72,7 @@ export function TopRightControls() {
           aria-expanded={isExpanded}
         >
           <img
-            src="/assets/svg/hamburgericon.svg"
+            src={theme === 'orange' ? '/assets/svg/hamburger(orange).svg' : '/assets/svg/hamburgericon.svg'}
             alt="Social menu"
             className={styles.hamburgerImage}
           />
@@ -106,62 +102,20 @@ export function TopRightControls() {
             }}
           >
             <img
-              src="/assets/svg/menuitem.svg"
+              src={theme === 'orange' ? '/assets/svg/menuitem(orange).svg' : '/assets/svg/menuitem.svg'}
               alt=""
               className={styles.menuItemBg}
               aria-hidden="true"
             />
-            <span className={styles.iconWrapper}>
+            <span 
+              className={styles.iconWrapper}
+              style={{ color: theme === 'orange' ? '#CB5500' : 'currentColor' }}
+            >
               {link.icon}
             </span>
           </a>
         ))}
       </div>
-
-      {/* Theme toggle - to the right of hamburger */}
-      <button
-        onClick={toggleTheme}
-        className={styles.themeToggle}
-        aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-      >
-        {theme === 'dark' ? (
-          // Sun icon - shown when in dark mode (clicking switches to light)
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <circle cx="12" cy="12" r="4"/>
-            <path d="M12 2v2"/>
-            <path d="M12 20v2"/>
-            <path d="m4.93 4.93 1.41 1.41"/>
-            <path d="m17.66 17.66 1.41 1.41"/>
-            <path d="M2 12h2"/>
-            <path d="M20 12h2"/>
-            <path d="m6.34 17.66-1.41 1.41"/>
-            <path d="m19.07 4.93-1.41 1.41"/>
-          </svg>
-        ) : (
-          // Moon icon - shown when in light mode (clicking switches to dark)
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-          </svg>
-        )}
-      </button>
     </div>
   )
 }

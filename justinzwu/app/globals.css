@@ -123,11 +123,20 @@
   --sidebar-ring: oklch(0.439 0 0);
 }
 
-/* Orange theme (token-ready) */
+/* Orange theme */
 [data-theme="orange"] {
-  --color-background: #fef7f0;
-  --color-foreground: #1a1a1a;
-  --color-accent: #c45a1c;
+  --color-background: #CB5500;
+  --color-foreground: #ffffff;
+  --color-muted: #ffffff;
+  --color-accent: #ffffff;
+  --color-accent-light: #ffffff;
+  --color-highlight-orange: #ffffff;
+  --color-highlight-yellow: #ffffff;
+  --color-highlight-green: #ffffff;
+  --color-highlight-blue: #ffffff;
+  --color-highlight-brown: #ffffff;
+  --color-footer-bg: #CB5500;
+  --color-footer-text: #ffffff;
 }
 
 @theme inline {
