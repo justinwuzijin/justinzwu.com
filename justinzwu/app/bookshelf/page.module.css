@@ -88,6 +88,19 @@
   }
 }
 
+.loading,
+.error,
+.empty {
+  padding: var(--spacing-xl);
+  text-align: center;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.error {
+  color: #ef4444;
+}
+
 @media (max-width: 480px) {
   .booksGrid {
     grid-template-columns: 1fr;
