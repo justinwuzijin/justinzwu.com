@@ -1,34 +1,60 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import SidebarNav from "../components/SidebarNav";
-import Header from "../components/Header";
-import { ThemeProvider } from "../components/ThemeProvider";
+import React from "react"
+import type { Metadata, Viewport } from 'next'
+import { Inter, Noto_Serif_SC } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
+import './globals.css'
+import styles from './layout.module.css'
+import { SidebarNav } from '@/components/SidebarNav'
+import { Footer } from '@/components/Footer'
+import { ThemeProvider } from '@/components/ThemeProvider'
+
+const inter = Inter({ 
+  subsets: ['latin'],
+  variable: '--font-inter'
+})
+
+const notoSerifSC = Noto_Serif_SC({
+  weight: ['400', '700'],
+  subsets: ['latin'],
+  variable: '--font-noto-serif-sc'
+})
 
 export const metadata: Metadata = {
-  title: "justinzwu.com",
-  description: "Personal site",
-};
+  title: 'Justin Wu | justinzwu.com',
+  description: 'Personal website of Justin Wu - Systems Design Engineering at UWaterloo',
+}
+
+export const viewport: Viewport = {
+  themeColor: '#c45a1c',
+  width: 'device-width',
+  initialScale: 1,
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.variable} ${notoSerifSC.variable}`}>
         <ThemeProvider>
-          <div style={{ display: "grid", gridTemplateColumns: "var(--sidebar-width) 1fr", minHeight: "100vh" }}>
-            <SidebarNav />
-            <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-              <Header />
-              <main style={{ flex: 1, margin: "0 auto", width: "100%", maxWidth: "var(--layout-max-width)", padding: "24px" }}>
+          <div className={styles.appContainer}>
+            <div className={styles.mainWrapper}>
+              <aside className={styles.sidebar}>
+                <SidebarNav />
+              </aside>
+              
+              <main className={styles.mainContent}>
                 {children}
               </main>
             </div>
+            
+            <Footer />
           </div>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
-  );
+  )
 }

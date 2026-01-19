@@ -1,0 +1,27 @@
+.titleContainer {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  margin-bottom: var(--spacing-md);
+  width: 100%;
+  max-width: 500px;
+}
+
+.titleImage {
+  display: block;
+  height: auto;
+  width: 100%;
+  transition: opacity 0.3s ease;
+}
+
+.titleImage.visible {
+  opacity: 1;
+}
+
+.titleImage.hidden {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}

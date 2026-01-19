@@ -1,25 +1,37 @@
-"use client";
+'use client'
 
-import styles from "./Header.module.css";
-import SocialLinks from "./SocialLinks";
-import { useTheme } from "../components/ThemeProvider";
+import { useState, useEffect } from 'react'
+import { TopRightControls } from './TopRightControls'
+import styles from './Header.module.css'
 
-export default function Header() {
-  const { cycleLightDark } = useTheme();
+export function Header() {
+  const [isVisible, setIsVisible] = useState(true)
+  const [lastScrollY, setLastScrollY] = useState(0)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+
+      // Show header when scrolling up or at the top
+      if (currentScrollY < lastScrollY || currentScrollY < 10) {
+        setIsVisible(true)
+      } 
+      // Hide header when scrolling down
+      else if (currentScrollY > lastScrollY && currentScrollY > 10) {
+        setIsVisible(false)
+      }
+
+      setLastScrollY(currentScrollY)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [lastScrollY])
+
   return (
-    <header className={styles.root}>
-      <SocialLinks />
-      <button
-        type="button"
-        aria-label="Toggle light and dark theme"
-        className={styles.themeBtn}
-        onClick={cycleLightDark}
-      >
-        {/* placeholder moon icon */}
-        <svg viewBox="0 0 24 24" className={styles.moon} aria-hidden="true">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
-        </svg>
-      </button>
+    <header className={`${styles.header} ${isVisible ? styles.visible : styles.hidden}`}>
+      <a href="/" className={styles.logo}>JUSTINZWU.COM</a>
+      <TopRightControls />
     </header>
-  );
+  )
 }

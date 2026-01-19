@@ -1,0 +1,142 @@
+.footer {
+  margin-top: auto;
+  width: 100%;
+}
+
+.preFooter {
+  width: 100%;
+  background-color: #000000;
+}
+
+.preFooterImage {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.footerBar {
+  width: 100%;
+  background-color: var(--color-background);
+  padding: var(--spacing-md) var(--spacing-2xl);
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+}
+
+.footerContent {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-xl);
+}
+
+.logoSection {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.logoImage {
+  height: 60px;
+  width: auto;
+  display: block;
+}
+
+.copyrightSection {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.copyright {
+  font-size: 0.75rem;
+  color: var(--color-foreground);
+  margin: 0;
+  font-weight: 400;
+}
+
+.logoPlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  height: 40px;
+  max-height: 40px;
+}
+
+.logoPlaceholder > *,
+.logoPlaceholder a,
+.logoPlaceholder img,
+.logoPlaceholder svg {
+  max-height: 40px;
+  height: auto;
+  width: auto;
+  display: block;
+}
+
+.placeholderBox {
+  width: 60px;
+  height: 48px;
+  border-radius: 18px;
+  background-color: var(--color-muted);
+  opacity: 0.3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed var(--color-muted);
+}
+
+.placeholderText {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+@media (max-width: 768px) {
+  .preFooterImage {
+    width: 100%;
+    height: auto;
+  }
+  
+  .footerBar {
+    padding: var(--spacing-md) var(--spacing-lg);
+    min-height: auto;
+  }
+  
+  .footerContent {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: center;
+  }
+  
+  .logoImage {
+    height: 40px;
+  }
+  
+  .copyrightSection {
+    order: 2;
+  }
+  
+  .logoPlaceholder {
+    order: 3;
+    height: 30px;
+    max-height: 30px;
+  }
+  
+  .logoPlaceholder > *,
+  .logoPlaceholder a,
+  .logoPlaceholder img,
+  .logoPlaceholder svg {
+    max-height: 30px;
+  }
+  
+  .placeholderBox {
+    width: 50px;
+    height: 40px;
+  }
+}

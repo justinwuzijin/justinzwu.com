@@ -1,43 +1,38 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import styles from "./SidebarNav.module.css";
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import styles from './SidebarNav.module.css'
 
-const nav = [
-  { href: "/", label: "me" }, // Figma shows 'me' as first item while Home content is hero
-  { href: "/experience", label: "experience" },
-  { href: "/drawer-of-thoughts", label: "drawer of thoughts" },
-  { href: "/bookshelf", label: "bookshelf" },
-  { href: "/art-gallery", label: "art gallery" },
-];
+const navItems = [
+  { href: '/me', label: 'me' },
+  { href: '/experience', label: 'experience' },
+  { href: '/drawer-of-thoughts', label: 'drawer of thoughts' },
+  { href: '/bookshelf', label: 'bookshelf' },
+  { href: '/art-gallery', label: 'art gallery' },
+]
 
-export default function SidebarNav() {
-  const pathname = usePathname();
+export function SidebarNav() {
+  const pathname = usePathname()
+
   return (
-    <aside className={styles.root} aria-label="Primary">
-      <Link href="/" aria-label="JUSTINZWU.COM">
-        <img
-          className={styles.logo}
-          src="/assets/svg/heading-dot.svg"
-          alt="JUSTINZWU.COM"
-        />
-      </Link>
-      <nav className={styles.nav}>
-        {nav.map((n) => {
-          const isActive = pathname === n.href;
+    <nav className={styles.nav} aria-label="Main navigation">
+      <ul className={styles.navList}>
+        {navItems.map((item) => {
+          const isActive = pathname === item.href || (pathname === '/' && item.href === '/me')
           return (
-            <Link
-              key={n.href}
-              href={n.href}
-              className={`${styles.item} ${isActive ? styles.active : ""}`}
-              aria-current={isActive ? "page" : undefined}
-            >
-              {n.label}
-            </Link>
-          );
+            <li key={item.href}>
+              <Link
+                href={item.href}
+                className={`${styles.navLink} ${isActive ? styles.active : ''}`}
+                aria-current={isActive ? 'page' : undefined}
+              >
+                {item.label}
+              </Link>
+            </li>
+          )
         })}
-      </nav>
-    </aside>
-  );
+      </ul>
+    </nav>
+  )
 }

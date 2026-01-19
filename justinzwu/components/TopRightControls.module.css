@@ -1,0 +1,151 @@
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.fluidContainer {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.triggerButton {
+  position: absolute;
+  right: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  padding: 0;
+  z-index: 50;
+  will-change: transform;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.triggerButton:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+.triggerButton:focus {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.hamburgerImage {
+  height: 50px;
+  width: auto;
+  pointer-events: none;
+  display: block;
+}
+
+.socialIcon {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  flex-shrink: 0;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  pointer-events: auto;
+}
+
+.menuItemBg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.iconWrapper {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.socialIcon:hover {
+  transform: translateX(var(--translate-x, 0)) scale(1.1);
+  opacity: 0.9;
+}
+
+.socialIcon:focus {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.themeToggle {
+  width: auto;
+  height: auto;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--color-foreground);
+  transition: color 0.2s ease, transform 0.2s ease;
+  padding: 4px;
+  flex-shrink: 0;
+}
+
+.themeToggle svg {
+  width: 18px;
+  height: 18px;
+}
+
+.themeToggle:hover {
+  color: var(--color-accent);
+  transform: scale(1.1);
+}
+
+.themeToggle:focus {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  .fluidContainer {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .hamburgerImage {
+    height: 40px;
+  }
+  
+  .triggerButton,
+  .socialIcon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .controls {
+    gap: 8px;
+  }
+  
+  .themeToggle svg {
+    width: 16px;
+    height: 16px;
+  }
+}

@@ -1,0 +1,124 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.hero {
+  margin-bottom: 0;
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 1.125rem;
+  color: var(--color-foreground);
+  margin: 0;
+  margin-top: 0;
+  margin-bottom: var(--spacing-sm);
+  line-height: 1.4;
+}
+
+.highlightOrange {
+  background-color: #CB5500;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.highlightGreen {
+  background-color: #2d8a4e;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.highlightGrey {
+  background-color: #4a4a4a;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.highlightBlue {
+  background-color: #3b82f6;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.highlightRed {
+  background-color: #dc2626;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.highlightPurple {
+  background-color: #9333ea;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.about {
+  margin-top: calc(-1 * var(--spacing-lg));
+  margin-bottom: var(--spacing-md);
+}
+
+.sectionTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-md);
+}
+
+.bulletList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  padding-left: calc(var(--spacing-lg) / 2);
+  list-style: none;
+}
+
+.bulletList li {
+  color: var(--color-foreground);
+}
+
+.projects {
+  margin-top: var(--spacing-3xl);
+  padding-top: var(--spacing-xl);
+}
+
+.projectsTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-md);
+}
+
+.orangeDot {
+  width: 16px;
+  height: 16px;
+  background-color: #c45a1c;
+  border-radius: var(--radius-full);
+}
+
+.projectsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-2xl);
+  row-gap: var(--spacing-3xl);
+}
+
+@media (max-width: 768px) {
+  .projectsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .chineseName {
+    font-size: 4rem;
+  }
+}

@@ -1,0 +1,58 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.coverWrapper {
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.coverPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md);
+  background: linear-gradient(135deg, #f5e6d3 0%, #e8d5c4 100%);
+  text-align: center;
+  gap: var(--spacing-sm);
+}
+
+.bookTitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2a2a2a;
+  line-height: 1.3;
+}
+
+.bookAuthor {
+  font-size: 0.7rem;
+  color: #666;
+}
+
+.rating {
+  display: flex;
+  gap: 2px;
+}
+
+.star {
+  font-size: 0.75rem;
+  color: #ddd;
+}
+
+.star.filled {
+  color: #c45a1c;
+}
+
+.star.half {
+  background: linear-gradient(90deg, #c45a1c 50%, #ddd 50%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
