@@ -5,20 +5,30 @@
 }
 
 .logoArea {
-  min-height: 60px;
+  aspect-ratio: 16 / 10;
   display: flex;
   align-items: center;
+  justify-content: flex-start;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background-color: #f0f0f0;
 }
 
 .logo {
   width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: var(--spacing-md);
 }
 
 .logoImage {
-  max-width: 100%;
-  height: auto;
-  max-height: 60px;
   width: auto;
+  height: auto;
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
 }
 
 .content {
