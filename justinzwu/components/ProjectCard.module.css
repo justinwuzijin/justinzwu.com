@@ -55,7 +55,7 @@
 .date {
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--color-foreground);
+  color: var(--color-muted);
 }
 
 .description {
