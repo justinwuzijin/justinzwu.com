@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTheme } from './ThemeProvider'
 import styles from './BookSidePanel.module.css'
@@ -11,14 +11,59 @@ interface BookSidePanelProps {
     title: string
     author: string
     rating?: number
+    goodreadsId?: string | null
+    review?: string | null
   }
+  shelf: 'to read' | 'reading' | 'read'
   isOpen: boolean
   onClose: () => void
 }
 
-export function BookSidePanel({ book, isOpen, onClose }: BookSidePanelProps) {
+export function BookSidePanel({ book, shelf, isOpen, onClose }: BookSidePanelProps) {
   const { theme } = useTheme()
   const isOrangeMode = theme === 'orange'
+  const [synopsis, setSynopsis] = useState<string | null>(null)
+  const [synopsisLoading, setSynopsisLoading] = useState(false)
+  const [synopsisError, setSynopsisError] = useState<string | null>(null)
+
+  // Determine if we should show review or synopsis
+  const shouldShowSynopsis = shelf === 'to read' || shelf === 'reading'
+  const shouldShowReview = shelf === 'read'
+  const hasReview = book.review && book.review.trim().length > 0
+
+  // Fetch synopsis when panel opens and we need it
+  useEffect(() => {
+    if (isOpen && shouldShowSynopsis && !synopsis && !synopsisLoading && !synopsisError) {
+      setSynopsisLoading(true)
+      setSynopsisError(null)
+      
+      fetch(`/api/book-synopsis?title=${encodeURIComponent(book.title)}&author=${encodeURIComponent(book.author)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.synopsis) {
+            setSynopsis(data.synopsis)
+          } else {
+            setSynopsisError(data.error || 'Failed to generate synopsis')
+          }
+        })
+        .catch(err => {
+          console.error('Error fetching synopsis:', err)
+          setSynopsisError('Failed to load synopsis')
+        })
+        .finally(() => {
+          setSynopsisLoading(false)
+        })
+    }
+  }, [isOpen, shouldShowSynopsis, book.title, book.author, synopsis, synopsisLoading, synopsisError])
+
+  // Reset synopsis when panel closes
+  useEffect(() => {
+    if (!isOpen) {
+      setSynopsis(null)
+      setSynopsisError(null)
+      setSynopsisLoading(false)
+    }
+  }, [isOpen])
   
   return (
     <AnimatePresence>
@@ -76,11 +121,49 @@ export function BookSidePanel({ book, isOpen, onClose }: BookSidePanelProps) {
                 </div>
               )}
               
-              {/* Review */}
-              <div className={styles.reviewSection}>
-                <h3 className={styles.reviewTitle}>My Review</h3>
-                <p className={styles.noReview}>No review available.</p>
-              </div>
+              {/* Review or Synopsis */}
+              {shouldShowReview && (
+                <div className={styles.reviewSection}>
+                  <h3 className={styles.reviewTitle}>My Review</h3>
+                  {hasReview ? (
+                    <div 
+                      className={styles.review}
+                      dangerouslySetInnerHTML={{ __html: book.review.replace(/\n/g, '<br />') }}
+                    />
+                  ) : (
+                    <p className={styles.noReview}>No review written yet.</p>
+                  )}
+                </div>
+              )}
+
+              {shouldShowSynopsis && (
+                <div className={styles.reviewSection}>
+                  <h3 className={styles.reviewTitle}>Synopsis</h3>
+                  {synopsisLoading ? (
+                    <p className={styles.loading}>Generating synopsis...</p>
+                  ) : synopsisError ? (
+                    <p className={styles.noReview}>{synopsisError}</p>
+                  ) : synopsis ? (
+                    <p className={styles.review}>{synopsis}</p>
+                  ) : (
+                    <p className={styles.noReview}>Loading synopsis...</p>
+                  )}
+                </div>
+              )}
+
+              {/* Goodreads Link */}
+              {book.goodreadsId && (
+                <div className={styles.goodreadsSection}>
+                  <a
+                    href={`https://www.goodreads.com/book/show/${book.goodreadsId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.goodreadsButton}
+                  >
+                    View on Goodreads
+                  </a>
+                </div>
+              )}
             </div>
           </motion.div>
         </>

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Script from 'next/script'
 import { useTheme } from './ThemeProvider'
 import styles from './Footer.module.css'
 
@@ -46,12 +47,13 @@ export function Footer() {
           </Link>
           
           {/* Right: Waterloo Network logo placeholder */}
-          <div className={styles.logoPlaceholder}>
-          <script 
-  src="https://uwaterloo.network/embed.js" 
-  data-webring
-  data-user="justin-wu"
-></script>
+          <div className={styles.logoPlaceholder} suppressHydrationWarning>
+            <Script 
+              src="https://uwaterloo.network/embed.js" 
+              strategy="afterInteractive"
+              data-webring
+              data-user="justin-wu"
+            />
           </div>
         </div>
       </div>

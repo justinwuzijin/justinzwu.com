@@ -1,7 +1,6 @@
 -- Create books table matching GoodReads CSV structure
 CREATE TABLE IF NOT EXISTS books (
   id SERIAL PRIMARY KEY,
-  goodreads_id VARCHAR(255) UNIQUE NOT NULL,
   title VARCHAR(500) NOT NULL,
   author VARCHAR(500),
   author_lf VARCHAR(500),
@@ -31,12 +30,38 @@ CREATE TABLE IF NOT EXISTS books (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create indexes for better query performance
-CREATE INDEX IF NOT EXISTS idx_books_exclusive_shelf ON books(exclusive_shelf);
-CREATE INDEX IF NOT EXISTS idx_books_my_rating ON books(my_rating);
-CREATE INDEX IF NOT EXISTS idx_books_date_read ON books(date_read);
-CREATE INDEX IF NOT EXISTS idx_books_date_added ON books(date_added);
-CREATE INDEX IF NOT EXISTS idx_books_goodreads_id ON books(goodreads_id);
+-- Add goodreads_id column if it doesn't exist
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'books' AND column_name = 'goodreads_id') THEN
+    ALTER TABLE books ADD COLUMN goodreads_id VARCHAR(255);
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_books_goodreads_id_unique ON books(goodreads_id) WHERE goodreads_id IS NOT NULL;
+  END IF;
+END $$;
+
+-- Create indexes for better query performance (only if columns exist)
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'books' AND column_name = 'exclusive_shelf') THEN
+    CREATE INDEX IF NOT EXISTS idx_books_exclusive_shelf ON books(exclusive_shelf);
+  END IF;
+  
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'books' AND column_name = 'my_rating') THEN
+    CREATE INDEX IF NOT EXISTS idx_books_my_rating ON books(my_rating);
+  END IF;
+  
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'books' AND column_name = 'date_read') THEN
+    CREATE INDEX IF NOT EXISTS idx_books_date_read ON books(date_read);
+  END IF;
+  
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'books' AND column_name = 'date_added') THEN
+    CREATE INDEX IF NOT EXISTS idx_books_date_added ON books(date_added);
+  END IF;
+  
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'books' AND column_name = 'goodreads_id') THEN
+    CREATE INDEX IF NOT EXISTS idx_books_goodreads_id ON books(goodreads_id);
+  END IF;
+END $$;
 
 -- Create function to update updated_at timestamp
 CREATE OR REPLACE FUNCTION update_updated_at_column()

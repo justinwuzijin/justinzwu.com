@@ -52,8 +52,18 @@ export async function GET(request: Request) {
     return NextResponse.json(transformedRows)
   } catch (err: any) {
     console.error('Error fetching books:', err);
+    console.error('Error details:', {
+      message: err.message,
+      code: err.code,
+      detail: err.detail,
+      stack: err.stack
+    });
     return NextResponse.json(
-      { error: "Failed to fetch books" },
+      { 
+        error: "Failed to fetch books",
+        details: err.message || 'Unknown error',
+        code: err.code
+      },
       { status: 500 }
     );
   }

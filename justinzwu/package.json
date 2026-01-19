@@ -11,7 +11,11 @@
     "import-books": "bun run scripts/import-books.ts",
     "test-db": "bun run scripts/test-db.ts",
     "update-covers": "bun run scripts/update-covers.ts",
-    "search-covers": "bun run scripts/search-and-update-covers.ts"
+    "search-covers": "bun run scripts/search-and-update-covers.ts",
+    "find-missing-covers": "bun run scripts/find-all-missing-covers.ts",
+    "update-specific-covers": "bun run scripts/update-specific-book-covers.ts",
+    "fix-white-covers": "bun run scripts/fix-white-book-covers.ts",
+    "add-review-column": "bun run scripts/add-my-review-column.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

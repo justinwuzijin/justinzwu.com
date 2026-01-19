@@ -11,6 +11,17 @@ export default function ArtGalleryPage() {
       {/* Masonry gallery section */}
       <section className={styles.gallery}>
         <div className={styles.masonryGrid}>
+          {/* byjustinwu SVG */}
+          <div className={`${styles.galleryItem} ${styles.artItem}`}>
+            <div className={styles.svgContainer}>
+              <img 
+                src="/assets/svg/byjustinwu.svg" 
+                alt="byjustinwu" 
+                className={styles.artImage}
+              />
+            </div>
+          </div>
+
           {/* Polaroid grid */}
           <div className={`${styles.galleryItem} ${styles.polaroidGrid}`}>
             {Array.from({ length: 10 }).map((_, i) => (
@@ -18,18 +29,6 @@ export default function ArtGalleryPage() {
                 <div className={styles.polaroidImage} />
               </div>
             ))}
-          </div>
-          
-          {/* badge */}
-          <div className={styles.floatingBadge}>
-            <span></span>
-          </div>
-          
-          {/* SYDE shirt */}
-          <div className={`${styles.galleryItem} ${styles.shirtItem}`}>
-            <div className={styles.shirtPlaceholder}>
-              <span></span>
-            </div>
           </div>
           
         </div>

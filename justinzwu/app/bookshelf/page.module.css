@@ -15,7 +15,7 @@
 .orangeDot {
   width: 16px;
   height: 16px;
-  background-color: #c45a1c;
+  background-color: white;
   border-radius: var(--radius-full);
 }
 
