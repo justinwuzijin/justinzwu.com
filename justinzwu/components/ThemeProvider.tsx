@@ -1,59 +1,46 @@
-\"use client\";
+'use client'
 
-import React from \"react\";
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 
-type Theme = \"light\" | \"dark\" | \"orange\";
+type Theme = 'light' | 'dark' | 'orange'
 
-const THEME_STORAGE_KEY = \"theme\";
-
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = React.useState<Theme>(\"light\");
-
-  React.useEffect(() => {
-    const stored = window.localStorage.getItem(THEME_STORAGE_KEY) as Theme | null;
-    const next: Theme = stored ?? \"light\";
-    setTheme(next);
-    document.documentElement.setAttribute(\"data-theme\", next);
-  }, []);
-
-  React.useEffect(() => {
-    document.documentElement.setAttribute(\"data-theme\", theme);
-    window.localStorage.setItem(THEME_STORAGE_KEY, theme);
-  }, [theme]);
-
-  // TODO: Confirm the exact keyboard combo to enable orange mode.
-  // Temporarily disabled to avoid guessing.
-  // React.useEffect(() => {
-  //   function onKey(e: KeyboardEvent) {
-  //     if ((e.ctrlKey || e.metaKey) && e.altKey && e.key.toLowerCase() === \"o\") {
-  //       setTheme((prev) => (prev === \"orange\" ? \"light\" : \"orange\"));
-  //     }
-  //   }
-  //   window.addEventListener(\"keydown\", onKey);
-  //   return () => window.removeEventListener(\"keydown\", onKey);
-  // }, []);
-
-  const cycleLightDark = React.useCallback(() => {
-    setTheme((prev) => (prev === \"dark\" ? \"light\" : \"dark\"));
-  }, []);
-
-  return (
-    <ThemeContext.Provider value={{ theme, setTheme, cycleLightDark }}>
-      {children}
-    </ThemeContext.Provider>
-  );
+interface ThemeContextType {
+  theme: Theme
+  setTheme: (theme: Theme) => void
 }
 
-type ThemeContextType = {
-  theme: Theme;
-  setTheme: (t: Theme) => void;
-  cycleLightDark: () => void;
-};
-
-const ThemeContext = React.createContext<ThemeContextType | null>(null);
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function useTheme() {
-  const ctx = React.useContext(ThemeContext);
-  if (!ctx) throw new Error(\"useTheme must be used within ThemeProvider\");
-  return ctx;
+  const context = useContext(ThemeContext)
+  if (!context) {
+    throw new Error('useTheme must be used within a ThemeProvider')
+  }
+  return context
+}
+
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  const [theme, setTheme] = useState<Theme>('light')
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+    const savedTheme = localStorage.getItem('theme') as Theme | null
+    if (savedTheme && ['light', 'dark', 'orange'].includes(savedTheme)) {
+      setTheme(savedTheme)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (mounted) {
+      document.documentElement.setAttribute('data-theme', theme)
+      localStorage.setItem('theme', theme)
+    }
+  }, [theme, mounted])
+
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  )
 }

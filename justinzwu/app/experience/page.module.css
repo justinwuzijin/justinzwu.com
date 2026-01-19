@@ -1,0 +1,32 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+}
+
+.pageTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.orangeDot {
+  width: 16px;
+  height: 16px;
+  background-color: #c45a1c;
+  border-radius: var(--radius-full);
+}
+
+.experienceGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-2xl) var(--spacing-xl);
+}
+
+@media (max-width: 768px) {
+  .experienceGrid {
+    grid-template-columns: 1fr;
+  }
+}
