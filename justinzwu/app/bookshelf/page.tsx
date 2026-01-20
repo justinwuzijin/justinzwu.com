@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import styles from './page.module.css'
 import { BookCard } from '@/components/BookCard'
 import { BookSidePanel } from '@/components/BookSidePanel'
+import { useTheme } from '@/components/ThemeProvider'
 
 type ShelfType = 'to read' | 'reading' | 'read'
 
@@ -22,12 +23,13 @@ interface Book {
 }
 
 const shelfColors: Record<ShelfType, string> = {
-  'to read': '#8b4513',
-  'reading': '#c45a1c',
-  'read': '#2d8a4e',
+  'to read': '#dc2626',
+  'reading': '#eab308',
+  'read': '#16a34a',
 }
 
 export default function BookshelfPage() {
+  const { theme } = useTheme()
   const [activeShelf, setActiveShelf] = useState<ShelfType>('read')
   const [books, setBooks] = useState<Record<ShelfType, Book[]>>({
     'to read': [],
@@ -98,24 +100,32 @@ export default function BookshelfPage() {
         bookshelf
       </h1>
 
+      <p className={styles.quote}>
+        "Think before you speak. Read before you think."
+      </p>
+
       {/* Filter tabs */}
       <div className={styles.tabs}>
-        {shelves.map((shelf) => (
-          <button
-            key={shelf}
-            onClick={() => handleShelfClick(shelf)}
-            className={`${styles.tab} ${activeShelf === shelf ? styles.activeTab : ''}`}
-            style={{ 
-              '--tab-color': shelfColors[shelf] 
-            } as React.CSSProperties}
-          >
-            <span 
-              className={styles.tabDot} 
-              style={{ backgroundColor: shelfColors[shelf] }}
-            />
-            {shelf}
-          </button>
-        ))}
+        {shelves.map((shelf) => {
+          const color = shelfColors[shelf]
+          
+          return (
+            <button
+              key={shelf}
+              onClick={() => handleShelfClick(shelf)}
+              className={`${styles.tab} ${activeShelf === shelf ? styles.activeTab : ''}`}
+              style={{ 
+                '--tab-color': color 
+              } as React.CSSProperties}
+            >
+              <span 
+                className={styles.tabDot} 
+                style={{ backgroundColor: color }}
+              />
+              {shelf}
+            </button>
+          )
+        })}
       </div>
 
       {/* Show books for active shelf */}
@@ -158,7 +168,7 @@ export default function BookshelfPage() {
 }
 
 interface AnimatedBookGridProps {
-  books: Array<{ id: number; title: string; author: string; cover: string | null; isbn?: string | null; isbn13?: string | null; rating?: number }>
+  books: Array<{ id: number; title: string; author: string; cover: string | null; isbn?: string | null; isbn13?: string | null; rating?: number; review?: string | null }>
   isExpanded: boolean
   expandedBookId: number | null
   onBookClick: (book: Book) => void

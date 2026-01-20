@@ -15,8 +15,13 @@
 .orangeDot {
   width: 16px;
   height: 16px;
-  background-color: white;
+  background-color: #000000;
   border-radius: var(--radius-full);
+}
+
+:global([data-theme="dark"]) .orangeDot,
+:global([data-theme="orange"]) .orangeDot {
+  background-color: #ffffff;
 }
 
 .experienceGrid {
