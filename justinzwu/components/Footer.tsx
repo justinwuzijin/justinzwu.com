@@ -46,11 +46,11 @@ export function Footer() {
             <p className={styles.copyright}>@2026 justinzwu.com</p>
           </Link>
           
-          {/* Right: Waterloo Network logo placeholder */}
+          {/* Right: Waterloo Network webring */}
           <div className={styles.logoPlaceholder} suppressHydrationWarning>
             <Script 
               src="https://uwaterloo.network/embed.js" 
-              strategy="afterInteractive"
+              strategy="lazyOnload"
               data-webring
               data-user="justin-wu"
             />

@@ -16,8 +16,13 @@
 .orangeDot {
   width: 16px;
   height: 16px;
-  background-color: white;
+  background-color: #000000;
   border-radius: var(--radius-full);
+}
+
+:global([data-theme="dark"]) .orangeDot,
+:global([data-theme="orange"]) .orangeDot {
+  background-color: #ffffff;
 }
 
 .thoughtsList {
@@ -40,11 +45,20 @@
   font-weight: 600;
 }
 
+:global([data-theme="orange"]) .gradeTitle {
+  color: #ffffff;
+}
+
 .smallOrangeDot {
   width: 12px;
   height: 12px;
-  background-color: #c45a1c;
+  background-color: #000000;
   border-radius: var(--radius-full);
+}
+
+:global([data-theme="dark"]) .smallOrangeDot,
+:global([data-theme="orange"]) .smallOrangeDot {
+  background-color: #ffffff;
 }
 
 .itemsList {

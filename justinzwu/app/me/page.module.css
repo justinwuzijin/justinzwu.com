@@ -19,52 +19,108 @@
 }
 
 .highlightOrange {
-  background-color: #CB5500;
-  color: white;
+  background-color: #fdba74;
+  color: #000000;
   padding: 2px 6px;
   border-radius: 3px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.highlightOrange:hover {
+  background-color: #f97316;
+  color: white;
+  text-decoration: none;
 }
 
 .highlightYellow {
-  background-color: #FAAF04;
-  color: white;
+  background-color: #fde047;
+  color: #000000;
   padding: 2px 6px;
   border-radius: 3px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.highlightYellow:hover {
+  background-color: #eab308;
+  color: white;
+  text-decoration: none;
 }
 
 .highlightGreen {
-  background-color: #2d8a4e;
-  color: white;
+  background-color: #86efac;
+  color: #000000;
   padding: 2px 6px;
   border-radius: 3px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.highlightGreen:hover {
+  background-color: #22c55e;
+  color: white;
+  text-decoration: none;
 }
 
 .highlightGrey {
-  background-color: #4a4a4a;
-  color: white;
+  background-color: #cbd5e1;
+  color: #000000;
   padding: 2px 6px;
   border-radius: 3px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.highlightGrey:hover {
+  background-color: #64748b;
+  color: white;
+  text-decoration: none;
 }
 
 .highlightBlue {
-  background-color: #3b82f6;
-  color: white;
+  background-color: #93c5fd;
+  color: #000000;
   padding: 2px 6px;
   border-radius: 3px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.highlightBlue:hover {
+  background-color: #3b82f6;
+  color: white;
+  text-decoration: none;
 }
 
 .highlightRed {
-  background-color: #dc2626;
-  color: white;
+  background-color: #fca5a5;
+  color: #000000;
   padding: 2px 6px;
   border-radius: 3px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.highlightRed:hover {
+  background-color: #ef4444;
+  color: white;
+  text-decoration: none;
 }
 
 .highlightPurple {
-  background-color: #9333ea;
-  color: white;
+  background-color: #d8b4fe;
+  color: #000000;
   padding: 2px 6px;
   border-radius: 3px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.highlightPurple:hover {
+  background-color: #a855f7;
+  color: white;
+  text-decoration: none;
 }
 
 .about {
@@ -109,8 +165,13 @@
 .orangeDot {
   width: 16px;
   height: 16px;
-  background-color: white;
+  background-color: #000000;
   border-radius: var(--radius-full);
+}
+
+:global([data-theme="dark"]) .orangeDot,
+:global([data-theme="orange"]) .orangeDot {
+  background-color: #ffffff;
 }
 
 .projectsGrid {

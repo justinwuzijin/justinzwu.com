@@ -55,6 +55,10 @@
   color: var(--color-muted);
 }
 
+:global([data-theme="orange"]) .type {
+  color: #ffffff;
+}
+
 .description {
   font-size: 0.75rem;
   color: var(--color-muted);

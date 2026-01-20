@@ -38,6 +38,7 @@
 }
 
 .logoSection {
+  flex: 1;
   display: flex;
   align-items: center;
   flex-shrink: 0;
@@ -82,37 +83,71 @@
 }
 
 .logoPlaceholder {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  flex-shrink: 0;
-  height: 15px;
-  max-height: 15px;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
   background: transparent !important;
-  background-color: transparent !important;
-  margin-right: -10px; /* Pull it closer to the edge */
+  border: none !important;
 }
 
-.logoPlaceholder > *,
-.logoPlaceholder a,
-.logoPlaceholder img,
-.logoPlaceholder svg,
-.logoPlaceholder div,
-.logoPlaceholder span,
-.logoPlaceholder [id*="uwaterloo"] {
-  max-height: 15px !important;
-  height: 15px !important;
-  width: auto !important;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
+/* Catch-all for any injected elements with backgrounds/borders */
+.logoPlaceholder *,
+.logoPlaceholder :global(div),
+.logoPlaceholder :global(a),
+.logoPlaceholder :global(span) {
   background: transparent !important;
   background-color: transparent !important;
-  margin: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Force the widget injected by the script to be invisible/minimal */
+.logoPlaceholder :global(#uwaterloo-webring),
+.logoPlaceholder :global([id*="uwaterloo"]) {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
   padding: 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.logoPlaceholder :global(#uwaterloo-webring) a,
+.logoPlaceholder :global([id*="uwaterloo"]) a {
+  color: var(--color-foreground) !important;
+  text-decoration: none !important;
+  font-size: 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: opacity 0.2s ease !important;
+}
+
+.logoPlaceholder :global(#uwaterloo-webring) a:hover,
+.logoPlaceholder :global([id*="uwaterloo"]) a:hover {
+  opacity: 0.7 !important;
+}
+
+/* Make the icon/arrows smaller */
+.logoPlaceholder :global(#uwaterloo-webring) img,
+.logoPlaceholder :global(#uwaterloo-webring) svg,
+.logoPlaceholder :global([id*="uwaterloo"]) img,
+.logoPlaceholder :global([id*="uwaterloo"]) svg {
+  height: 14px !important;
+  width: auto !important;
+}
+
+/* If the script injects a specific container with background */
+.logoPlaceholder :global(.webring-container),
+.logoPlaceholder :global(.uwaterloo-webring) {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .placeholderBox {
