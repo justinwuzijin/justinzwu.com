@@ -25,6 +25,7 @@
   min-height: 60px;
   display: flex;
   align-items: center;
+  position: relative; /* Base for absolute positioning */
 }
 
 .footerContent {
@@ -33,15 +34,14 @@
   margin: 0 auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  position: relative;
+  justify-content: center; /* Center the middle item */
 }
 
 .logoSection {
-  flex: 1;
+  position: absolute;
+  left: var(--spacing-lg);
   display: flex;
   align-items: center;
-  justify-content: flex-start;
   text-decoration: none;
   cursor: pointer;
   transition: opacity 0.2s ease;
@@ -58,7 +58,6 @@
 }
 
 .copyrightSection {
-  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -73,18 +72,22 @@
 }
 
 .logoPlaceholder {
-  flex: 1;
+  position: absolute;
+  right: 0;
   display: flex;
   align-items: center;
   justify-content: flex-end;
   background: transparent !important;
   border: none !important;
+  min-width: 60px;
   min-height: 20px;
+  padding-right: var(--spacing-lg);
 }
 
 /* Force the widget injected by the script to be invisible/minimal */
 .logoPlaceholder :global(#uwaterloo-webring),
-.logoPlaceholder :global([id*="uwaterloo"]) {
+.logoPlaceholder :global([id*="uwaterloo"]),
+.logoPlaceholder :global(.uwaterloo-webring) {
   background: transparent !important;
   background-color: transparent !important;
   border: none !important;
@@ -93,23 +96,20 @@
   margin: 0 !important;
   display: flex !important;
   align-items: center !important;
-  gap: 8px !important;
+  gap: 4px !important;
 }
 
 .logoPlaceholder :global(#uwaterloo-webring) a,
 .logoPlaceholder :global([id*="uwaterloo"]) a {
   color: var(--color-foreground) !important;
   text-decoration: none !important;
-  font-size: 14px !important;
+  font-size: 12px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   transition: opacity 0.2s ease !important;
-}
-
-.logoPlaceholder :global(#uwaterloo-webring) a:hover,
-.logoPlaceholder :global([id*="uwaterloo"]) a:hover {
-  opacity: 0.7 !important;
+  background: transparent !important;
+  border: none !important;
 }
 
 /* Make the icon/arrows smaller */
@@ -117,16 +117,10 @@
 .logoPlaceholder :global(#uwaterloo-webring) svg,
 .logoPlaceholder :global([id*="uwaterloo"]) img,
 .logoPlaceholder :global([id*="uwaterloo"]) svg {
-  height: 14px !important;
+  height: 12px !important;
   width: auto !important;
-}
-
-/* If the script injects a specific container with background */
-.logoPlaceholder :global(.webring-container),
-.logoPlaceholder :global(.uwaterloo-webring) {
+  filter: grayscale(1) !important;
   background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
 }
 
 @media (max-width: 768px) {
@@ -140,8 +134,8 @@
     align-items: center;
   }
 
-  .logoSection, .copyrightSection, .logoPlaceholder {
+  .logoSection, .logoPlaceholder {
+    position: static;
     justify-content: center;
-    flex: none;
   }
 }

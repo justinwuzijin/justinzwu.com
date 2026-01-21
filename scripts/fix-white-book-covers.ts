@@ -66,13 +66,91 @@ const verifiedCovers: Array<{
     coverUrl: 'https://covers.openlibrary.org/b/isbn/9780141439518-L.jpg',
     source: 'openlibrary-isbn-verified'
   },
+  {
+    titleKeywords: ['think', 'grow', 'rich'],
+    authorKeywords: ['hill'],
+    coverUrl: 'https://covers.openlibrary.org/b/isbn/9781585424337-L.jpg',
+    source: 'openlibrary-isbn-verified'
+  },
+  {
+    titleKeywords: ['into', 'wild'],
+    authorKeywords: ['krakauer'],
+    coverUrl: 'https://covers.openlibrary.org/b/isbn/9780385486804-L.jpg',
+    source: 'openlibrary-isbn-verified'
+  },
+  {
+    titleKeywords: ['perks', 'wallflower'],
+    authorKeywords: ['chbosky'],
+    coverUrl: 'https://covers.openlibrary.org/b/isbn/9781439146835-L.jpg',
+    source: 'openlibrary-isbn-verified'
+  },
+  {
+    titleKeywords: ['convenience', 'store', 'woman'],
+    authorKeywords: ['murata'],
+    coverUrl: 'https://covers.openlibrary.org/b/isbn/9781611856071-L.jpg',
+    source: 'openlibrary-isbn-verified'
+  },
+  {
+    titleKeywords: ['song', 'achilles'],
+    authorKeywords: ['miller'],
+    coverUrl: 'https://covers.openlibrary.org/b/isbn/9780062060624-L.jpg',
+    source: 'openlibrary-isbn-verified'
+  },
+  {
+    titleKeywords: ['atomic', 'habits'],
+    authorKeywords: ['clear'],
+    coverUrl: 'https://covers.openlibrary.org/b/isbn/9780735211292-L.jpg',
+    source: 'openlibrary-isbn-verified'
+  },
+  {
+    titleKeywords: ['crooked', 'kingdom'],
+    authorKeywords: ['bardugo'],
+    coverUrl: 'https://covers.openlibrary.org/b/isbn/9781780622316-L.jpg',
+    source: 'openlibrary-isbn-verified'
+  },
 ]
+
+async function searchGoogleBooks(title: string, author?: string): Promise<string | null> {
+  try {
+    let query = `intitle:${title}`
+    if (author) {
+      query += ` inauthor:${author}`
+    }
+
+    const searchUrl = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=5`
+    
+    const response = await fetch(searchUrl)
+    if (!response.ok) return null
+
+    const data = await response.json()
+    
+    if (data.items && data.items.length > 0) {
+      for (const item of data.items) {
+        const volumeInfo = item.volumeInfo
+        if (volumeInfo.imageLinks) {
+          const coverUrl = volumeInfo.imageLinks.extraLarge ||
+                         volumeInfo.imageLinks.large ||
+                         volumeInfo.imageLinks.medium ||
+                         volumeInfo.imageLinks.small ||
+                         volumeInfo.imageLinks.thumbnail
+          
+          if (coverUrl) {
+            return coverUrl.replace('http:', 'https:').replace('&edge=curl', '').replace(/&zoom=\d/, '&zoom=0')
+          }
+        }
+      }
+    }
+    return null
+  } catch (error) {
+    return null
+  }
+}
 
 async function fixWhiteCovers() {
   try {
-    console.log('🔍 Finding books with white/placeholder covers...\n')
+    console.log('🔍 Finding books with missing or invalid covers...\n')
 
-    // Find books that might have white/placeholder covers
+    // Find all books that don't have a legitimate cover
     const { rows: books } = await pool.query(`
       SELECT id, title, author, cover_url, isbn, isbn13
       FROM books
@@ -81,22 +159,13 @@ async function fixWhiteCovers() {
          OR cover_url LIKE '%placeholder%'
          OR cover_url LIKE '%via.placeholder%'
          OR cover_url LIKE '%data:image/svg%'
-         OR LOWER(title) LIKE '%empire%ai%'
-         OR LOWER(title) LIKE '%city%uncertain%walls%'
-         OR LOWER(title) LIKE '%strange%weather%tokyo%'
-         OR LOWER(title) LIKE '%charisma%myth%'
-         OR LOWER(title) LIKE '%shadow%bone%'
-         OR LOWER(title) LIKE '%braiding%sweetgrass%'
-         OR LOWER(title) LIKE '%thus%spoke%zarathustra%'
-         OR LOWER(title) LIKE '%sanshiro%'
-         OR LOWER(title) LIKE '%pride%prejudice%'
       ORDER BY title
     `)
 
     console.log(`Found ${books.length} books to check\n`)
 
     if (books.length === 0) {
-      console.log('✅ No books found that need cover updates!')
+      console.log('✅ All books already have covers!')
       await pool.end()
       process.exit(0)
     }
@@ -104,64 +173,46 @@ async function fixWhiteCovers() {
     let updated = 0
 
     for (const book of books) {
+      console.log(`📚 Searching for: "${book.title}" by ${book.author}`)
+
+      // Try verified covers list first
+      let matchedCoverUrl: string | null = null
+      
       const bookTitleLower = book.title.toLowerCase()
-      const bookAuthorLower = (book.author || '').toLowerCase()
-
-      console.log(`📚 Checking: "${book.title}" by ${book.author}`)
-
-      // Try to match with verified covers
-      let matchedCover: typeof verifiedCovers[0] | null = null
-
       for (const coverInfo of verifiedCovers) {
-        const titleMatches = coverInfo.titleKeywords.every(keyword => 
-          bookTitleLower.includes(keyword.toLowerCase())
-        )
-        
-        const authorMatches = !coverInfo.authorKeywords || 
-          coverInfo.authorKeywords.some(keyword => 
-            bookAuthorLower.includes(keyword.toLowerCase())
-          )
-
-        if (titleMatches && authorMatches) {
-          matchedCover = coverInfo
+        if (coverInfo.titleKeywords.every(keyword => bookTitleLower.includes(keyword.toLowerCase()))) {
+          matchedCoverUrl = coverInfo.coverUrl
           break
         }
       }
 
-      if (matchedCover) {
-        console.log(`   ✅ Found match: ${matchedCover.source}`)
-        console.log(`   Updating cover: ${matchedCover.coverUrl}`)
-
-        // Verify the cover URL exists before updating
-        try {
-          const coverTest = await fetch(matchedCover.coverUrl, { method: 'HEAD' })
-          if (coverTest.ok) {
-            await pool.query(
-              'UPDATE books SET cover_url = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
-              [matchedCover.coverUrl, book.id]
-            )
-            updated++
-            console.log(`   ✅ Updated!\n`)
-          } else {
-            console.log(`   ⚠️  Cover URL not accessible, skipping\n`)
-          }
-        } catch (error) {
-          console.log(`   ⚠️  Error verifying cover URL: ${error}\n`)
-        }
-      } else {
-        console.log(`   ⚠️  No verified cover found\n`)
+      // If not in verified list, search Google Books
+      if (!matchedCoverUrl) {
+        matchedCoverUrl = await searchGoogleBooks(book.title, book.author)
       }
+
+      if (matchedCoverUrl) {
+        await pool.query(
+          'UPDATE books SET cover_url = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
+          [matchedCoverUrl, book.id]
+        )
+        updated++
+        console.log(`   ✅ Updated!\n`)
+      } else {
+        console.log(`   ⚠️  No cover found\n`)
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 300))
     }
 
     console.log(`\n📊 Summary:`)
     console.log(`   ✅ Updated: ${updated} books`)
-    console.log(`   📚 Total checked: ${books.length} books\n`)
+    console.log(`   📚 Total processed: ${books.length} books\n`)
 
     await pool.end()
     process.exit(0)
   } catch (error: any) {
     console.error('❌ Script failed:', error.message)
-    console.error('Error stack:', error.stack)
     await pool.end()
     process.exit(1)
   }

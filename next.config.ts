@@ -25,6 +25,10 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'image.pollinations.ai', // AI image generation
+      },
+      {
+        protocol: 'https',
         hostname: 'via.placeholder.com', // Placeholder service
       },
     ],

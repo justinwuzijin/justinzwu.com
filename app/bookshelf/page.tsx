@@ -140,7 +140,7 @@ export default function BookshelfPage() {
           ) : (
             <AnimatedBookGrid
               books={books[activeShelf]}
-              isExpanded={true}
+              showRating={activeShelf === 'read'}
               expandedBookId={expandedBookId}
               onBookClick={(book) => {
                 setExpandedBookId(book.id)
@@ -169,12 +169,12 @@ export default function BookshelfPage() {
 
 interface AnimatedBookGridProps {
   books: Array<{ id: number; title: string; author: string; cover: string | null; isbn?: string | null; isbn13?: string | null; rating?: number; review?: string | null }>
-  isExpanded: boolean
+  showRating: boolean
   expandedBookId: number | null
   onBookClick: (book: Book) => void
 }
 
-function AnimatedBookGrid({ books, isExpanded, expandedBookId, onBookClick }: AnimatedBookGridProps) {
+function AnimatedBookGrid({ books, showRating, expandedBookId, onBookClick }: AnimatedBookGridProps) {
   const containerVariants = {
     stacked: {
       transition: {
@@ -238,7 +238,7 @@ function AnimatedBookGrid({ books, isExpanded, expandedBookId, onBookClick }: An
         >
           <BookCard 
             {...book} 
-            showRating={isExpanded}
+            showRating={showRating}
             onClick={() => onBookClick(book)}
             isExpanded={expandedBookId === book.id}
           />

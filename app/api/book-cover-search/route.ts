@@ -34,9 +34,10 @@ async function searchOpenLibrary(title: string, author: string): Promise<SearchR
       // Try to get cover image
       if (book.isbn && book.isbn.length > 0) {
         // Use first ISBN (prefer ISBN13)
-        const isbn = book.isbn[book.isbn.length - 1] // Usually ISBN13 is last
+        const isbn = book.isbn[book.isbn.length - 1] 
+        const url = `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`
         return {
-          coverUrl: `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`,
+          coverUrl: url,
           source: 'openlibrary-search',
         }
       }
@@ -59,14 +60,9 @@ async function searchOpenLibrary(title: string, author: string): Promise<SearchR
 
 async function searchGoogleBooks(title: string, author: string): Promise<SearchResult | null> {
   try {
-    // Google Books API (requires API key, but has better coverage)
-    const apiKey = process.env.GOOGLE_BOOKS_API_KEY
-    if (!apiKey) {
-      return null // Skip if no API key
-    }
-
     const searchQuery = `intitle:${title} inauthor:${author}`.trim()
-    const searchUrl = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(searchQuery)}&maxResults=1&key=${apiKey}`
+    const apiKey = process.env.GOOGLE_BOOKS_API_KEY
+    const searchUrl = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(searchQuery)}&maxResults=1${apiKey ? `&key=${apiKey}` : ''}`
     
     const response = await fetch(searchUrl)
 
@@ -80,16 +76,17 @@ async function searchGoogleBooks(title: string, author: string): Promise<SearchR
       const book = data.items[0]
       const volumeInfo = book.volumeInfo
       
-      // Try different image sizes (prefer large)
       if (volumeInfo.imageLinks) {
-        const coverUrl = volumeInfo.imageLinks.thumbnail?.replace('zoom=1', 'zoom=3') || 
+        // Try to get higher resolution
+        const coverUrl = volumeInfo.imageLinks.extraLarge ||
+                        volumeInfo.imageLinks.large ||
                         volumeInfo.imageLinks.medium ||
                         volumeInfo.imageLinks.small ||
                         volumeInfo.imageLinks.thumbnail
         
         if (coverUrl) {
           return {
-            coverUrl: coverUrl,
+            coverUrl: coverUrl.replace('http:', 'https:').replace('&edge=curl', ''),
             source: 'google-books',
           }
         }

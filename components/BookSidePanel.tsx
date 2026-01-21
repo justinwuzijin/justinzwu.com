@@ -104,7 +104,7 @@ export function BookSidePanel({ book, shelf, isOpen, onClose }: BookSidePanelPro
               <p className={styles.author}>by {book.author}</p>
               
               {/* Rating */}
-              {book.rating !== undefined && (
+              {shelf === 'read' && book.rating !== undefined && (
                 <div className={styles.rating}>
                   {Array.from({ length: book.rating }).map((_, i) => {
                     const starClass = isOrangeMode ? styles.starWhite : styles.filled
