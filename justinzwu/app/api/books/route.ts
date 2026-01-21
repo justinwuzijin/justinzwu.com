@@ -24,7 +24,8 @@ export async function GET(request: Request) {
         my_rating,
         exclusive_shelf,
         cover_url,
-        date_added
+        date_added,
+        my_review
       from books
     `
 
@@ -47,6 +48,7 @@ export async function GET(request: Request) {
       isbn: row.isbn || null,
       isbn13: row.isbn13 || null,
       rating: row.my_rating || undefined,
+      review: row.my_review || null,
     }))
 
     return NextResponse.json(transformedRows)

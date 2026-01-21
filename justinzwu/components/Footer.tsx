@@ -50,7 +50,7 @@ export function Footer() {
           <div className={styles.logoPlaceholder} suppressHydrationWarning>
             <Script 
               src="https://uwaterloo.network/embed.js" 
-              strategy="lazyOnload"
+              strategy="afterInteractive"
               data-webring
               data-user="justin-wu"
             />

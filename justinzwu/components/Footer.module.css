@@ -35,6 +35,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--spacing-xl);
+  position: relative;
 }
 
 .logoSection {
@@ -83,12 +84,15 @@
 }
 
 .logoPlaceholder {
-  flex: 1;
+  position: absolute;
+  right: 0;
   display: flex;
   align-items: center;
   justify-content: flex-end;
   background: transparent !important;
   border: none !important;
+  min-width: 60px;
+  min-height: 20px;
 }
 
 /* Catch-all for any injected elements with backgrounds/borders */
@@ -138,8 +142,9 @@
 .logoPlaceholder :global(#uwaterloo-webring) svg,
 .logoPlaceholder :global([id*="uwaterloo"]) img,
 .logoPlaceholder :global([id*="uwaterloo"]) svg {
-  height: 14px !important;
+  height: 12px !important;
   width: auto !important;
+  filter: grayscale(1) brightness(0.8) !important;
 }
 
 /* If the script injects a specific container with background */
