@@ -27,7 +27,7 @@ export function Footer() {
           alt="Pre-footer collage" 
           className={styles.preFooterImage}
         />
-          </div>
+      </div>
           
       {/* Footer bar */}
       <div className={styles.footerBar}>
@@ -42,9 +42,9 @@ export function Footer() {
           </Link>
           
           {/* Center: Copyright text */}
-          <Link href="/" className={styles.copyrightSection}>
+          <div className={styles.copyrightSection}>
             <p className={styles.copyright}>@2026 justinzwu.com</p>
-          </Link>
+          </div>
           
           {/* Right: Waterloo Network webring */}
           <div className={styles.logoPlaceholder} suppressHydrationWarning>

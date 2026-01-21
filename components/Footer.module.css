@@ -34,7 +34,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-xl);
   position: relative;
 }
 
@@ -42,7 +41,7 @@
   flex: 1;
   display: flex;
   align-items: center;
-  flex-shrink: 0;
+  justify-content: flex-start;
   text-decoration: none;
   cursor: pointer;
   transition: opacity 0.2s ease;
@@ -63,15 +62,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  text-decoration: none;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-  border: none !important;
-  outline: none !important;
-}
-
-.copyrightSection:hover {
-  opacity: 0.8;
 }
 
 .copyright {
@@ -79,32 +69,17 @@
   color: var(--color-foreground);
   margin: 0;
   font-weight: 400;
-  border: none !important;
-  outline: none !important;
+  text-align: center;
 }
 
 .logoPlaceholder {
-  position: absolute;
-  right: 0;
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: flex-end;
   background: transparent !important;
   border: none !important;
-  min-width: 60px;
   min-height: 20px;
-}
-
-/* Catch-all for any injected elements with backgrounds/borders */
-.logoPlaceholder *,
-.logoPlaceholder :global(div),
-.logoPlaceholder :global(a),
-.logoPlaceholder :global(span) {
-  background: transparent !important;
-  background-color: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  outline: none !important;
 }
 
 /* Force the widget injected by the script to be invisible/minimal */
@@ -142,9 +117,8 @@
 .logoPlaceholder :global(#uwaterloo-webring) svg,
 .logoPlaceholder :global([id*="uwaterloo"]) img,
 .logoPlaceholder :global([id*="uwaterloo"]) svg {
-  height: 12px !important;
+  height: 14px !important;
   width: auto !important;
-  filter: grayscale(1) brightness(0.8) !important;
 }
 
 /* If the script injects a specific container with background */
@@ -155,34 +129,9 @@
   box-shadow: none !important;
 }
 
-.placeholderBox {
-  width: 60px;
-  height: 48px;
-  border-radius: 18px;
-  background-color: var(--color-muted);
-  opacity: 0.3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px dashed var(--color-muted);
-}
-
-.placeholderText {
-  font-size: 0.75rem;
-  color: var(--color-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
 @media (max-width: 768px) {
-  .preFooterImage {
-    width: 100%;
-    height: auto;
-  }
-  
-  .footerBar {
-    padding: var(--spacing-md) var(--spacing-lg);
-    min-height: auto;
+  .logoImage {
+    height: 35px;
   }
   
   .footerContent {
@@ -190,30 +139,9 @@
     gap: var(--spacing-md);
     align-items: center;
   }
-  
-  .logoImage {
-    height: 35px;
-  }
-  
-  .copyrightSection {
-    order: 2;
-  }
-  
-  .logoPlaceholder {
-    order: 3;
-    height: 25px;
-    max-height: 25px;
-  }
-  
-  .logoPlaceholder > *,
-  .logoPlaceholder a,
-  .logoPlaceholder img,
-  .logoPlaceholder svg {
-    max-height: 25px;
-  }
-  
-  .placeholderBox {
-    width: 50px;
-    height: 40px;
+
+  .logoSection, .copyrightSection, .logoPlaceholder {
+    justify-content: center;
+    flex: none;
   }
 }
