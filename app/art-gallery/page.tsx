@@ -21,10 +21,9 @@ export default function ArtGalleryPage() {
               />
             </div>
             <div>
-            <h3>coming soon.</h3>
+            <p>coming soon.</p>
           </div>
           </div>
-          
         </div>
       </section>
     </div>

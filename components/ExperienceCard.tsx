@@ -20,9 +20,9 @@ export function ExperienceCard({ company, logo, role, type, description, seconda
       case 'clipabit':
         return '/assets/svg/CLIPABIT.svg'
       case 'cursor':
-        return '/assets/svg/cursor.svg'
+        return '/assets/svg/Cursor.png'
       case 'socratica':
-        return '/assets/svg/socratica.svg'
+        return '/assets/svg/socratica.png'
       case 'bridging':
         return '/assets/svg/BG.svg'
       default:
