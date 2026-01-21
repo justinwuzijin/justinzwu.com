@@ -18,17 +18,31 @@ interface BookCardProps {
   isExpanded?: boolean
 }
 
-// Generate a placeholder cover using data URI (no external service needed)
+// Generate an AI cover using a prompt
+function getAICoverUrl(title: string, author: string): string {
+  const prompt = `professional book cover for "${title}" by ${author}, clean typography, artistic, high quality, minimal design, 300x450, no realistic photos, graphic design style`;
+  return `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=300&height=450&nologo=true&seed=${title.length + author.length}`;
+}
+
+// Generate a placeholder cover using a nice gradient
 function getPlaceholderCover(title: string, author: string): string {
-  // Create a simple SVG placeholder as data URI
-  const text = title.substring(0, 30).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-  const svg = `<svg width="300" height="450" xmlns="http://www.w3.org/2000/svg"><rect width="300" height="450" fill="#8b7355"/><text x="150" y="225" font-family="Arial, sans-serif" font-size="16" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">${text}</text></svg>`
-  // Encode SVG for data URI (works in browser)
+  // Create a beautiful dark gradient SVG as data URI
+  const svg = `<svg width="300" height="450" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#333333;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#1a1a1a;stop-opacity:1" />
+      </linearGradient>
+    </defs>
+    <rect width="300" height="450" fill="url(#grad)"/>
+    <rect width="10" height="450" fill="rgba(255,255,255,0.05)"/>
+  </svg>`.trim().replace(/\n/g, '')
+  
   return `data:image/svg+xml,${encodeURIComponent(svg)}`
 }
 
 // Generate fallback cover URLs to try
-function getCoverFallbacks(cover: string | null, isbn13: string | null, isbn: string | null): string[] {
+function getCoverFallbacks(cover: string | null, isbn13: string | null, isbn: string | null, title: string, author: string): string[] {
   const fallbacks: string[] = []
   
   // Add the primary cover if it exists
@@ -45,6 +59,9 @@ function getCoverFallbacks(cover: string | null, isbn13: string | null, isbn: st
   if (isbn && isbn !== isbn13) {
     fallbacks.push(`https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`)
   }
+
+  // Add AI generated cover as the final legitimate option before placeholder
+  fallbacks.push(getAICoverUrl(title, author))
   
   return fallbacks
 }
@@ -55,10 +72,11 @@ export function BookCard({ title, author, cover, isbn, isbn13, rating, showRatin
   const [fallbackIndex, setFallbackIndex] = React.useState(0)
   const [isSearching, setIsSearching] = React.useState(false)
   const [hasSearched, setHasSearched] = React.useState(false)
+  const [imageLoaded, setImageLoaded] = React.useState(false)
   
   // Generate fallback URLs
   const fallbacks = React.useMemo(() => {
-    const urls = getCoverFallbacks(cover, isbn13 || null, isbn || null)
+    const urls = getCoverFallbacks(cover, isbn13 || null, isbn || null, title, author)
     return urls.length > 0 ? urls : [getPlaceholderCover(title, author)]
   }, [cover, isbn13, isbn, title, author])
   
@@ -112,16 +130,19 @@ export function BookCard({ title, author, cover, isbn, isbn13, rating, showRatin
   }, [title, author, isbn, isbn13, isSearching, hasSearched])
   
   const handleImageError = () => {
-    // Try next fallback
+    // If the image failed, we want to try the next fallback
+    // But first, let's make sure we're not just seeing a white screen
+    setImageLoaded(false);
+
     if (fallbackIndex < fallbacks.length - 1) {
       const nextIndex = fallbackIndex + 1
       setFallbackIndex(nextIndex)
       setCurrentCover(fallbacks[nextIndex])
     } else if (!hasSearched) {
-      // All fallbacks failed, search the web
+      // All static fallbacks failed, search the web
       searchForCover()
     } else {
-      // All options exhausted, use placeholder
+      // Everything, including search and AI gen, has failed. Use the final local gradient.
       setCurrentCover(getPlaceholderCover(title, author))
     }
   }
@@ -141,13 +162,16 @@ export function BookCard({ title, author, cover, isbn, isbn13, rating, showRatin
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
     >
       <div className={styles.coverWrapper}>
+        {!imageLoaded && <div className={styles.loadingGradient} />}
         <Image
           src={currentCover}
           alt={`${title} by ${author}`}
           fill
           className={styles.bookCover}
           sizes="(max-width: 768px) 50vw, 33vw"
+          onLoad={() => setImageLoaded(true)}
           onError={handleImageError}
+          priority={false}
         />
       </div>
       {rating !== undefined && showRating && (

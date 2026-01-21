@@ -29,13 +29,12 @@ export async function GET(request: Request) {
     // Call Gemini API
     const prompt = `Write a brief 5-sentence synopsis of the book "${title}" by ${author}. Keep it concise and informative.`;
 
-    // Comprehensive model fallback list
+    // Comprehensive model fallback list - prioritizing v1beta for better model coverage
     const modelsToTry = [
-      { model: 'gemini-1.5-flash', version: 'v1' },
-      { model: 'gemini-1.5-flash-8b', version: 'v1' },
-      { model: 'gemini-1.5-pro', version: 'v1' },
       { model: 'gemini-1.5-flash', version: 'v1beta' },
       { model: 'gemini-1.5-pro', version: 'v1beta' },
+      { model: 'gemini-pro', version: 'v1beta' },
+      { model: 'gemini-1.5-flash', version: 'v1' },
     ];
 
     let lastError: any = null;

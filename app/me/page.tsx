@@ -153,8 +153,10 @@ export default function MePage() {
           <li>
             {'>'} made films with{' '}
             <LinkPreview 
-              url="https://www.yorkregion.com/news/markham-teens-heartwarming-piece-wins-people-s-choice-award-for-24-hour-film-challenge/article_adc3510e-8599-556e-9867-71ba2ba3234b.html" 
+              url="https://www.instagram.com/five24.film/" 
               className={styles.highlightPurple}
+              isStatic
+              imageSrc="/assets/svg/Screenshot 2026-01-21 at 2.44.58 PM.png"
             >
               five24
             </LinkPreview>{' '}
