@@ -69,10 +69,8 @@ export default function MePage() {
         <HeroHeader />
         <TitleHover />
         <p className={styles.subtitle}>
-          Systems Design Engineering{' '}
-          <LinkPreview url="https://uwaterloo.ca/" className={styles.highlightYellow}>
+          i study <LinkPreview url="https://uwaterloo.ca/future-students/programs/systems-design-engineering" className={styles.highlightYellow}>Systems Design Engineering</LinkPreview> at{' '}
             @UWaterloo
-          </LinkPreview>
         </p>
       </section>
 

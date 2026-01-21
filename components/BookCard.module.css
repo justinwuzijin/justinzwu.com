@@ -62,7 +62,7 @@
   color: #d5d5d5; /* Light gray for unfilled stars on white background */
   display: inline-block;
   line-height: 1;
-  font-family: Arial, sans-serif;
+  font-family: var(--font-sans);
 }
 
 .star.filled {
