@@ -5,13 +5,19 @@
   margin-bottom: var(--spacing-md);
   width: 100%;
   max-width: 500px;
+  /* Use the aspect ratio of the SVGs to prevent layout shifts */
+  aspect-ratio: 672 / 270;
 }
 
 .titleImage {
-  display: block;
-  height: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
+  height: 100%;
+  object-fit: contain;
   transition: opacity 0.3s ease;
+  display: block;
 }
 
 .titleImage.visible {
@@ -20,8 +26,5 @@
 
 .titleImage.hidden {
   opacity: 0;
-  position: absolute;
-  top: 0;
-  left: 0;
   pointer-events: none;
 }
