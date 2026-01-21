@@ -24,50 +24,6 @@
   background-color: #ffffff;
 }
 
-.heroCollage {
-  position: relative;
-}
-
-.collageGrid {
-  position: relative;
-}
-
-.mainCollage {
-  width: 100%;
-  max-width: 400px;
-  aspect-ratio: 1;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-}
-
-.collagePlaceholder {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 1rem;
-}
-
-.jBadge {
-  position: absolute;
-  right: 0;
-  bottom: 20%;
-  width: 50px;
-  height: 50px;
-  background-color: #3b82f6;
-  border-radius: var(--radius-full);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 1.5rem;
-  font-weight: 700;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-}
-
 .gallery {
   margin-top: var(--spacing-xl);
 }
@@ -90,78 +46,37 @@
 }
 
 .artItem {
-  border: none;
-  background: transparent;
-}
-
-.letterItem {
   grid-column: span 1;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
-.letterPlaceholder {
-  padding: var(--spacing-lg);
-  background-color: #f9f9f9;
-  border: 2px solid #e0e0e0;
-  min-height: 200px;
-}
-
-.letterPlaceholder h3 {
-  font-size: 0.9rem;
-  font-weight: 700;
-  margin-bottom: var(--spacing-md);
-  color: #1a1a1a;
-}
-
-.letterPlaceholder p {
-  font-size: 0.75rem;
-  color: #666;
-  margin: 0;
-}
-
-.signature {
-  margin-top: var(--spacing-lg) !important;
-  font-style: italic;
-}
-
-.hackathonItem {
-  grid-column: span 1;
-}
-
-.imagePlaceholder {
+.svgContainer {
   width: 100%;
-  aspect-ratio: 4 / 5;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-weight: 700;
-  font-size: 0.9rem;
+  background-color: transparent !important;
+  background: transparent !important;
+  padding: 0;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
-.acceptanceItem {
-  grid-column: span 1;
-}
-
-.acceptancePlaceholder {
-  padding: var(--spacing-md);
-  background-color: #fef9e7;
-  min-height: 100px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-.acceptancePlaceholder span {
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  color: #1a1a1a;
-}
-
-.gotIn {
-  font-size: 0.9rem;
-  font-style: italic;
-  margin: 0;
+.artImage {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 .polaroidGrid {
@@ -183,82 +98,6 @@
   background-color: #e0e0e0;
 }
 
-.floatingBadge {
-  position: absolute;
-  right: 10%;
-  top: 50%;
-  width: 60px;
-  height: 60px;
-  background-color: #3b82f6;
-  border-radius: var(--radius-full);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 2rem;
-  font-weight: 700;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-  z-index: 10;
-}
-
-.shirtItem {
-  grid-column: span 1;
-}
-
-.shirtPlaceholder {
-  width: 100%;
-  aspect-ratio: 1;
-  background-color: #f5f5dc;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #1a1a1a;
-}
-
-.artItem {
-  grid-column: span 1;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  background: transparent !important;
-  background-color: transparent !important;
-}
-
-.artPlaceholder {
-  width: 100%;
-  aspect-ratio: 3 / 4;
-  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-}
-
-.svgContainer {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: transparent !important;
-  background: transparent !important;
-  padding: var(--spacing-sm);
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-.artImage {
-  width: 60%;
-  height: 60%;
-  max-width: 200px;
-  max-height: 200px;
-  object-fit: contain;
-  display: block;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  background: transparent !important;
-  background-color: transparent !important;
-}
-
 @media (max-width: 768px) {
   .masonryGrid {
     grid-template-columns: repeat(2, 1fr);
@@ -267,10 +106,6 @@
   .polaroidGrid {
     grid-column: span 2;
     grid-template-columns: repeat(3, 1fr);
-  }
-  
-  .floatingBadge {
-    display: none;
   }
 }
 

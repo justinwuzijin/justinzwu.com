@@ -20,15 +20,9 @@ export default function ArtGalleryPage() {
                 className={styles.artImage}
               />
             </div>
+            <div>
+            <h3>coming soon.</h3>
           </div>
-
-          {/* Polaroid grid */}
-          <div className={`${styles.galleryItem} ${styles.polaroidGrid}`}>
-            {Array.from({ length: 10 }).map((_, i) => (
-              <div key={i} className={styles.polaroid}>
-                <div className={styles.polaroidImage} />
-              </div>
-            ))}
           </div>
           
         </div>
