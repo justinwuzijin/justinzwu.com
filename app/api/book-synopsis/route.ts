@@ -29,19 +29,20 @@ export async function GET(request: Request) {
     // Call Gemini API
     const prompt = `Write a brief 5-sentence synopsis of the book "${title}" by ${author}. Keep it concise and informative.`;
 
-    // Comprehensive model fallback list - prioritizing v1beta for better model coverage
+    // Comprehensive model fallback list
     const modelsToTry = [
-      { model: 'gemini-1.5-flash', version: 'v1beta' },
-      { model: 'gemini-1.5-pro', version: 'v1beta' },
-      { model: 'gemini-pro', version: 'v1beta' },
       { model: 'gemini-1.5-flash', version: 'v1' },
+      { model: 'gemini-1.5-pro', version: 'v1' },
+      { model: 'gemini-pro', version: 'v1' },
     ];
 
+    console.log(`🔍 [Gemini API] Requesting synopsis for: "${title}" by ${author}`);
+    
     let lastError: any = null;
     
     for (const { model, version } of modelsToTry) {
       try {
-        console.log(`🤖 Attempting synopsis with ${model} (${version})...`);
+        console.log(`🤖 [Gemini API] Attempting model: ${model} (${version})...`);
         const response = await fetch(
           `https://generativelanguage.googleapis.com/${version}/models/${model}:generateContent?key=${apiKey}`,
           {
@@ -64,17 +65,17 @@ export async function GET(request: Request) {
           
           if (data.candidates && data.candidates[0] && data.candidates[0].content) {
             const synopsis = data.candidates[0].content.parts[0].text;
-            console.log(`✅ Synopsis generated successfully using ${model}`);
+            console.log(`✅ [Gemini API] Success using ${model}`);
             return NextResponse.json({ synopsis });
           }
         } else {
           const errorData = await response.text();
-          console.warn(`⚠️  Model ${model} failed:`, errorData);
+          console.warn(`⚠️ [Gemini API] Model ${model} failed with status ${response.status}:`, errorData);
           lastError = errorData;
           continue;
         }
       } catch (error: any) {
-        console.warn(`⚠️  Error with model ${model}:`, error.message);
+        console.error(`❌ [Gemini API] Fetch error for ${model}:`, error.message);
         lastError = error.message;
         continue;
       }
