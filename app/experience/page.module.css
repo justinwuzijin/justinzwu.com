@@ -1,0 +1,37 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+}
+
+.pageTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.orangeDot {
+  width: 16px;
+  height: 16px;
+  background-color: #000000;
+  border-radius: var(--radius-full);
+}
+
+:global([data-theme="dark"]) .orangeDot,
+:global([data-theme="orange"]) .orangeDot {
+  background-color: #ffffff;
+}
+
+.experienceGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-2xl) var(--spacing-xl);
+}
+
+@media (max-width: 768px) {
+  .experienceGrid {
+    grid-template-columns: 1fr;
+  }
+}
