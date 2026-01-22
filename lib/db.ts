@@ -22,8 +22,9 @@ const pool = new Pool({
   connectionTimeoutMillis: 2000, // Return an error after 2 seconds if connection cannot be established
 })
 
-// Test the connection
-pool.on('connect', () => {
+// Set search_path to public schema for all connections
+pool.on('connect', async (client) => {
+  await client.query('SET search_path TO public')
   if (process.env.NODE_ENV === 'development') {
     console.log('✅ Connected to PostgreSQL database')
   }
