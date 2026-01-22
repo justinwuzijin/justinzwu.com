@@ -20,8 +20,7 @@ const notoSerifSC = Noto_Serif_SC({
 })
 
 export const metadata: Metadata = {
-  title: 'Justin Wu | justinzwu.com',
-  description: 'Personal website of Justin Wu - Systems Design Engineering at UWaterloo',
+  title: 'justinzwu.com',
 }
 
 export const viewport: Viewport = {
