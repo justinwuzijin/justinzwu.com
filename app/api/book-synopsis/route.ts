@@ -161,7 +161,24 @@ export async function GET(request: Request) {
           const data = await response.json();
           
           if (data.candidates && data.candidates[0] && data.candidates[0].content) {
-            const synopsis = data.candidates[0].content.parts[0].text;
+            let synopsis = data.candidates[0].content.parts[0].text;
+            
+            // Clean up common AI-generated prefixes
+            const prefixPatterns = [
+              // Remove everything up to and including the first occurrence of these phrases
+              /^(?:Okay,?\s+)?(?:I have searched the web for information about|after searching the web,|based on (?:web searches|information gathered)|gleaned from web research).+?(?:\.|,)\s*(?:Here'?s?|Alright,? here'?s?)\s+a\s+(?:concise|brief)\s+synopsis(?:\s+of\s+.+?)?:\s*/is,
+              /^Okay,?\s+(?:after searching the web,?\s+)?here'?s?\s+a\s+(?:concise|brief)\s+synopsis\s+of\s+.+?(?:,\s+based on information gathered from (?:across )?the web)?\s*:\s*/is,
+              /^Okay,?\s+I'?ve\s+searched\s+the\s+web\s+and\s+gathered\s+information\s+about\s+.+?\.\s*(?:Here'?s?\s+a\s+(?:concise|brief)\s+synopsis:\s*)?/is,
+              /^Here'?s?\s+a\s+(?:concise|brief)\s+synopsis(?:\s+of\s+.+?)?,?\s+(?:based on|compiled from)\s+(?:information gathered|widely available information|various sources)(?:\s+(?:from\s+)?(?:across|on)\s+the\s+web)?\s*:\s*/is,
+              /^Alright,?\s+here'?s?\s+a\s+(?:concise|brief)\s+synopsis\s+of\s+.+?,?\s+based on\s+.+?\s*:\s*/is,
+              /^Here'?s?\s+a\s+(?:concise|brief)\s+synopsis:\s*/i,
+              /^Here'?s?\s+a\s+summary\s+of\s+.+?:\s*/i,
+            ];
+            
+            for (const pattern of prefixPatterns) {
+              synopsis = synopsis.replace(pattern, '').trim();
+            }
+            
             console.log(`✅ [Gemini API] Success using ${model}`);
             
             // Save synopsis to database if bookId is provided
