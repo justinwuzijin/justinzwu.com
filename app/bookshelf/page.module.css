@@ -94,6 +94,7 @@
   row-gap: var(--spacing-3xl);
   position: relative;
   min-height: 400px;
+  overflow: visible;
 }
 
 /* Tablet responsive */
