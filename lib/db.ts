@@ -1,14 +1,15 @@
 import { Pool } from 'pg'
 
-// Validate DATABASE_URL is set
-if (!process.env.DATABASE_URL) {
+// Validate DATABASE_URL is set (check both DATABASE_URL and Vercel's STORAGE_DATABASE_URL)
+const databaseUrl = process.env.DATABASE_URL || process.env.STORAGE_DATABASE_URL
+if (!databaseUrl) {
   console.warn('⚠️  DATABASE_URL is not set. Database operations will fail.')
   console.warn('   Please create .env.local with: DATABASE_URL=postgresql://...')
 }
 
 // Create a connection pool
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: databaseUrl,
   // For local development, you can also use individual env vars:
   // host: process.env.DB_HOST,
   // port: parseInt(process.env.DB_PORT || '5432'),
