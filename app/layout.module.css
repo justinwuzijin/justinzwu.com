@@ -11,20 +11,22 @@
 }
 
 .sidebar {
-  position: fixed;
-  left: var(--spacing-xl);
+  position: sticky;
   top: var(--spacing-xl);
   width: var(--sidebar-width);
+  height: fit-content;
   flex-shrink: 0;
   background-color: var(--color-background);
   z-index: 10;
+  margin-left: var(--spacing-xl);
+  margin-top: var(--spacing-xl);
 }
 
 .mainContent {
   flex: 1;
   max-width: var(--content-max-width);
   padding: var(--spacing-xl) var(--spacing-2xl);
-  margin-left: calc(var(--sidebar-width) + var(--spacing-xl) + var(--spacing-lg)); /* Account for sidebar width + left padding + gap */
+  margin-left: var(--spacing-lg); /* Reduced margin since sidebar is now in-flow */
 }
 
 /* Mobile responsive */
@@ -40,6 +42,7 @@
     left: 0;
     width: 100%;
     padding: var(--spacing-md) 0;
+    margin: 0;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   }
   

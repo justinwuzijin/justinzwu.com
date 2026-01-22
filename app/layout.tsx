@@ -7,6 +7,7 @@ import styles from './layout.module.css'
 import { SidebarNav } from '@/components/SidebarNav'
 import { Footer } from '@/components/Footer'
 import { ThemeProvider } from '@/components/ThemeProvider'
+import { LoadingScreen } from '@/components/LoadingScreen'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -39,6 +40,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${notoSerifSC.variable}`}>
         <ThemeProvider>
+          <LoadingScreen />
           <div className={styles.appContainer}>
             <div className={styles.mainWrapper}>
               <aside className={styles.sidebar}>

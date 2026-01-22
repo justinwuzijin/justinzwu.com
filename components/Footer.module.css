@@ -10,7 +10,7 @@
 }
 
 .preFooterImage {
-  width: 100%;
+  width: 100%; /* Slightly over 100% to prevent fractional pixel gaps */
   height: auto;
   display: block;
   max-height: 425px;
