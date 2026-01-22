@@ -14,11 +14,6 @@ export default function ArtGalleryPage() {
           {/* byjustinwu SVG */}
           <div className={`${styles.galleryItem} ${styles.artItem}`}>
             <div className={styles.svgContainer}>
-              <img 
-                src="/assets/svg/byjustinwu.svg" 
-                alt="byjustinwu" 
-                className={styles.artImage}
-              />
             </div>
             <div>
             <p>coming soon.</p>
