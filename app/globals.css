@@ -217,6 +217,7 @@ body {
   color: var(--color-foreground); /* Preserve existing usage */
   line-height: 1.6;
   min-height: 100vh;
+  overscroll-behavior-y: none;
 }
 
 /* Typography */
