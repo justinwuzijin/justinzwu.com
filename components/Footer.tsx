@@ -79,11 +79,9 @@ export function Footer() {
     : theme === 'dark' 
     ? '/assets/svg/zijin(dm).svg' 
     : '/assets/svg/zijin.svg'
-  const preFooterSrc = theme === 'orange' 
-    ? '/assets/svg/Pre-Footer(orange).svg' 
-    : theme === 'dark' 
-    ? '/assets/svg/Pre-Footer(dm).svg' 
-    : '/assets/svg/Pre-Footer.svg'
+  const preFooterSrc = theme === 'orange' || theme === 'dark'
+    ? '/assets/svg/Pre-Footer(dm).png' 
+    : '/assets/svg/Pre-Footer.png'
 
   return (
     <footer className={styles.footer}>
