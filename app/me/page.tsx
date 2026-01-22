@@ -104,16 +104,16 @@ export default function MePage() {
             >
               Cursor
             </LinkPreview>{' '}
-            community in Waterloo and running campus events
+            community @Waterloo & running campus events
           </li>
       
           <li>
             {'>'} produced videos for{' '}
             <LinkPreview 
-              url="https://cursor.com/home?from=agents" 
-              className={styles.highlightGrey}
+              url="https://www.bridginggens.com/" 
+              className={styles.highlightBlue}
             >
-              Cursor
+              Bridging Gens
             </LinkPreview>
             ,{' '}
             <LinkPreview 
@@ -129,12 +129,12 @@ export default function MePage() {
             >
               Figma Waterloo
             </LinkPreview>
-            , and{' '}
+            ,{' '}
             <LinkPreview 
-              url="https://www.bridginggens.com/" 
-              className={styles.highlightBlue}
+              url="https://cursor.com/home?from=agents" 
+              className={styles.highlightGrey}
             >
-              Bridging Generations
+              Cursor
             </LinkPreview>{' '}
             in 1a
           </li>
@@ -146,7 +146,7 @@ export default function MePage() {
             >
               TrudeauSAC
             </LinkPreview>
-            , my hs student council, as president in gr11 & 12
+             as president in g11 & 12 
           </li>
           <li>
             {'>'} made films with{' '}
@@ -158,10 +158,10 @@ export default function MePage() {
             >
               five24
             </LinkPreview>{' '}
-            and personal youtube videos in hs
+            and cool personal youtube videos in hs
           </li>
           <li>
-            {'>'} seeking fall 2026 internship opportunities!
+            {'>'} seeking <b>fall 2026</b> internship opportunities!
           </li>
         </ul>
       </section>

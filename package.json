@@ -15,7 +15,8 @@
     "find-missing-covers": "bun run scripts/find-all-missing-covers.ts",
     "update-specific-covers": "bun run scripts/update-specific-book-covers.ts",
     "fix-white-covers": "bun run scripts/fix-white-book-covers.ts",
-    "add-review-column": "bun run scripts/add-my-review-column.ts"
+    "add-review-column": "bun run scripts/add-my-review-column.ts",
+    "pregenerate-synopses": "bun run scripts/pregenerate-synopses.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

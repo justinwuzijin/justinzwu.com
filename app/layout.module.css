@@ -22,6 +22,13 @@
   margin-top: var(--spacing-xl);
 }
 
+/* Hide desktop sidebar on mobile */
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+}
+
 .mainContent {
   flex: 1;
   max-width: var(--content-max-width);
@@ -29,25 +36,40 @@
   margin-left: var(--spacing-lg); /* Reduced margin since sidebar is now in-flow */
 }
 
-/* Mobile responsive */
+/* Tablet responsive (iPads) */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 140px;
+    margin-left: var(--spacing-md);
+    margin-top: var(--spacing-md);
+  }
+  
+  .mainContent {
+    padding: var(--spacing-lg) var(--spacing-lg);
+    margin-left: var(--spacing-md);
+  }
+}
+
+/* Mobile responsive (phones and small tablets) */
 @media (max-width: 768px) {
   .mainWrapper {
     flex-direction: column;
     padding: 0 var(--spacing-md);
   }
   
-  .sidebar {
-    position: relative;
-    top: 0;
-    left: 0;
-    width: 100%;
-    padding: var(--spacing-md) 0;
-    margin: 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  .mainContent {
+    padding: var(--spacing-lg) 0;
+    margin-left: 0;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .mainWrapper {
+    padding: 0 var(--spacing-sm);
   }
   
   .mainContent {
-    padding: var(--spacing-lg) 0;
-    margin-left: 0; /* No sidebar margin on mobile */
+    padding: var(--spacing-md) 0;
   }
 }

@@ -78,6 +78,18 @@
   font-weight: 400;
 }
 
+/* Tablet responsive */
+@media (max-width: 1024px) {
+  .navLink {
+    font-size: 0.85rem;
+  }
+  
+  .orangeModeHint {
+    font-size: 0.4rem;
+  }
+}
+
+/* Mobile responsive */
 @media (max-width: 768px) {
   .nav {
     position: static;
@@ -87,6 +99,7 @@
     flex-direction: row;
     flex-wrap: wrap;
     gap: var(--spacing-sm) var(--spacing-lg);
+    justify-content: center;
   }
   
   .navLink {
@@ -97,10 +110,21 @@
   
   .themeToggleContainer {
     margin-top: var(--spacing-md);
-    align-items: flex-start;
+    align-items: center;
   }
   
   .orangeModeHint {
-    text-align: left;
+    text-align: center;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .navList {
+    gap: var(--spacing-xs) var(--spacing-md);
+  }
+  
+  .navLink {
+    font-size: 0.8rem;
   }
 }

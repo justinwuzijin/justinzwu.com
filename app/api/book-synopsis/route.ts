@@ -1,12 +1,15 @@
 import { NextResponse } from "next/server";
+import pool from "@/lib/db";
 
 /**
  * API endpoint to generate book synopsis using Google Gemini
+ * Caches synopses in database for faster subsequent loads
  */
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
+    const bookId = searchParams.get('id');
     const title = searchParams.get('title');
     const author = searchParams.get('author');
 
@@ -15,6 +18,24 @@ export async function GET(request: Request) {
         { error: "Title and author are required" },
         { status: 400 }
       );
+    }
+
+    // Check if synopsis already exists in database
+    if (bookId) {
+      try {
+        const { rows } = await pool.query(
+          'SELECT synopsis FROM books WHERE id = $1',
+          [bookId]
+        );
+        
+        if (rows[0]?.synopsis) {
+          console.log(`✅ [Synopsis Cache] Found cached synopsis for book ID ${bookId}`);
+          return NextResponse.json({ synopsis: rows[0].synopsis, cached: true });
+        }
+      } catch (dbError) {
+        console.warn('⚠️ [Synopsis Cache] Database check failed:', dbError);
+        // Continue to generate if DB check fails
+      }
     }
 
     const apiKey = process.env.GEMINI_API_KEY;
@@ -142,7 +163,22 @@ export async function GET(request: Request) {
           if (data.candidates && data.candidates[0] && data.candidates[0].content) {
             const synopsis = data.candidates[0].content.parts[0].text;
             console.log(`✅ [Gemini API] Success using ${model}`);
-            return NextResponse.json({ synopsis });
+            
+            // Save synopsis to database if bookId is provided
+            if (bookId) {
+              try {
+                await pool.query(
+                  'UPDATE books SET synopsis = $1 WHERE id = $2',
+                  [synopsis, bookId]
+                );
+                console.log(`💾 [Synopsis Cache] Saved synopsis for book ID ${bookId}`);
+              } catch (saveError) {
+                console.warn('⚠️ [Synopsis Cache] Failed to save to database:', saveError);
+                // Don't fail the request if save fails
+              }
+            }
+            
+            return NextResponse.json({ synopsis, cached: false });
           }
         } else {
           const errorData = await response.text();
