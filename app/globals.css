@@ -13,6 +13,7 @@
   --selection-bg: #CB5500;
   /* Colors */
   --color-background: #ffffff;
+  --color-background-rgb: 255, 255, 255;
   --color-foreground: #1a1a1a;
   --color-muted: #888888;
   --color-accent: #c45a1c;
@@ -89,6 +90,7 @@
 [data-theme="dark"] {
   --selection-bg: #CB5500;
   --color-background: #0a0a0a;
+  --color-background-rgb: 10, 10, 10;
   --color-foreground: #f5f5f5;
   --color-muted: #888888;
   --color-accent: #d4742f;
@@ -134,6 +136,7 @@
 [data-theme="orange"] {
   --selection-bg: oklch(48.8% 0.243 264.376);
   --color-background: #CB5500;
+  --color-background-rgb: 203, 85, 0;
   --color-foreground: #ffffff;
   --color-muted: #ffffff;
   --color-accent: #ffffff;
@@ -237,6 +240,35 @@ h2 {
 
 h3 {
   font-size: 1.25rem;
+}
+
+/* Responsive typography */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.25rem;
+  }
+  
+  h3 {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.75rem;
+  }
+  
+  h2 {
+    font-size: 1.15rem;
+  }
+  
+  h3 {
+    font-size: 1rem;
+  }
 }
 
 p {

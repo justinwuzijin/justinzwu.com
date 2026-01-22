@@ -5,6 +5,7 @@ import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import styles from './layout.module.css'
 import { SidebarNav } from '@/components/SidebarNav'
+import { MobileNav } from '@/components/MobileNav'
 import { Footer } from '@/components/Footer'
 import { ThemeProvider } from '@/components/ThemeProvider'
 
@@ -38,8 +39,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${notoSerifSC.variable}`}>
         <ThemeProvider>
+          {/* Mobile Navigation */}
+          <MobileNav />
+          
           <div className={styles.appContainer}>
             <div className={styles.mainWrapper}>
+              {/* Desktop Sidebar */}
               <aside className={styles.sidebar}>
                 <SidebarNav />
               </aside>

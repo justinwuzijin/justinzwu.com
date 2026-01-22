@@ -96,9 +96,30 @@
   min-height: 400px;
 }
 
+/* Tablet responsive */
+@media (max-width: 1024px) {
+  .booksGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-xl);
+    row-gap: var(--spacing-2xl);
+  }
+}
+
+/* Mobile responsive */
 @media (max-width: 768px) {
   .booksGrid {
     grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-lg);
+    row-gap: var(--spacing-xl);
+  }
+  
+  .tabs {
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+  }
+  
+  .tab {
+    font-size: 0.85rem;
   }
 }
 
@@ -115,8 +136,19 @@
   color: #ef4444;
 }
 
+/* Small phones */
 @media (max-width: 480px) {
   .booksGrid {
     grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+    row-gap: var(--spacing-lg);
+  }
+  
+  .pageTitle {
+    font-size: 1rem;
+  }
+  
+  .quote {
+    font-size: 0.8rem;
   }
 }

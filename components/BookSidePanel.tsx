@@ -37,7 +37,7 @@ export function BookSidePanel({ book, shelf, isOpen, onClose }: BookSidePanelPro
       setSynopsisLoading(true)
       setSynopsisError(null)
       
-      fetch(`/api/book-synopsis?title=${encodeURIComponent(book.title)}&author=${encodeURIComponent(book.author)}`)
+      fetch(`/api/book-synopsis?id=${book.id}&title=${encodeURIComponent(book.title)}&author=${encodeURIComponent(book.author)}`)
         .then(res => res.json())
         .then(data => {
           if (data.synopsis) {
