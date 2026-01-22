@@ -61,7 +61,7 @@ const thoughts = [
       'frustrations w/ the current media market — quality good (non-slop UGC content) videos are taken for granted and not even respected money-wise, whereas slop bad non-authentic content is rewarded.',
       'stay winning.',
       'learning how to be happy for others while also counting your own wins — challenges of being in a cohort that is so ambitious; everyone was president of major clubs @ school, super smart, maxed-out people skills and professional skillsets already',
-      'being able to stay grounded/grateful/humble — you are the one who does to yourself not someone else\'s successes or comments or how they make you feel.',
+      'being able to stay grounded/grateful/humble — you are the one who does harm to yourself not someone else\'s successes or comments or how they make you feel. it is a choice.',
       'how to trust our grind/process and maintain a good attitude.',
       'it is pretty hard to keep social skills when at the moment you are juggling high effort academics — midterm hell week season — so being able to freely speak and not resort to older informal mannerisms during interviews is difficult.',
       'how do i stay humble but not be humbled by other ppl ',
