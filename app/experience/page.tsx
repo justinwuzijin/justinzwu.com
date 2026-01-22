@@ -17,7 +17,7 @@ const experiences = [
     logo: 'clipabit',
     role: 'Full Stack Developer',
     type: 'design team',
-    description: 'During Fall 2025 and Winter 2026, I worked as a full-stack developer with six other UW students. Building ClipABit, a semantic search plug-in that uses natural language queries to find exact clips straight from your DaVinci Resolve library.',
+    description: 'During Fall 2025 and Winter 2026, I worked as a full-stack developer with seven other UW students. Building ClipABit, a semantic search plug-in that uses natural language queries to find exact clips straight from your DaVinci Resolve library.',
     secondaryLogo: 'watai',
     link: 'https://clipabit.web.app/',
   },

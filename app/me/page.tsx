@@ -9,7 +9,7 @@ const projects = [
     id: 'cision',
     title: 'Cision',
     date: "Jan '26",
-    description: 'Cursor for city planners. We built an interactive 3D map that redesigns dangerous Toronto intersections. User can find high-risk locations on our heatmap view, generated improvements in real-time, and chat with voice agent stakeholders.',
+    description: 'Cursor for city planners. Built an interactive 3D heatmap that redesigns dangerous Toronto intersections. Users can find high-risk locations, generate improvements in real-time, and chat with voice agent stakeholders.',
     image: '/assets/svg/cision.svg',
     url: 'https://github.com/Lemirq/cision',
     dark: true,
@@ -88,7 +88,7 @@ export default function MePage() {
             </LinkPreview>
           </li>
           <li>
-            {'>'} building ClipABit, asemantic search plug-in{' '}
+            {'>'} building ClipABit, a semantic search DaVinci Resolve plug-in{' '}
             <LinkPreview 
               url="https://clipabit.web.app/" 
               className={styles.highlightYellow}
@@ -97,7 +97,7 @@ export default function MePage() {
             </LinkPreview>
           </li>
           <li>
-            {'>'} building a{' '}
+            {'>'} starting a{' '}
             <LinkPreview 
               url="https://cursor.com/home?from=agents" 
               className={styles.highlightGrey}
@@ -144,9 +144,9 @@ export default function MePage() {
               url="https://www.tsac.ca/" 
               className={styles.highlightRed}
             >
-              TrudeauSAC
+             TrudeauSAC
             </LinkPreview>
-              as president in g11 & 12 
+              as president in gr11 & 12 
           </li>
           <li>
             {'>'} made films with{' '}
