@@ -27,7 +27,7 @@ export function BookSidePanel({ book, shelf, isOpen, onClose }: BookSidePanelPro
   const [synopsisError, setSynopsisError] = useState<string | null>(null)
 
   // Determine if we should show review or synopsis
-  const shouldShowSynopsis = shelf === 'to read' || shelf === 'reading'
+  const shouldShowSynopsis = shelf === 'to read' || shelf === 'reading' || shelf === 'read'
   const shouldShowReview = shelf === 'read'
   const hasReview = book.review && book.review.trim().length > 0
 
@@ -121,7 +121,7 @@ export function BookSidePanel({ book, shelf, isOpen, onClose }: BookSidePanelPro
                 </div>
               )}
               
-              {/* Review or Synopsis */}
+              {/* Review (for read shelf) */}
               {shouldShowReview && (
                 <div className={styles.reviewSection}>
                   <h3 className={styles.reviewTitle}>My Review</h3>
@@ -136,6 +136,7 @@ export function BookSidePanel({ book, shelf, isOpen, onClose }: BookSidePanelPro
                 </div>
               )}
 
+              {/* Synopsis (for all shelves, including read) */}
               {shouldShowSynopsis && (
                 <div className={styles.reviewSection}>
                   <h3 className={styles.reviewTitle}>Synopsis</h3>

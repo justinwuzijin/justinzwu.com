@@ -26,23 +26,105 @@ export async function GET(request: Request) {
       );
     }
 
-    // Call Gemini API
-    const prompt = `Write a brief 5-sentence synopsis of the book "${title}" by ${author}. Keep it concise and informative.`;
+    // Test API key first - try listing models and then test with a simple model
+    console.log('🔑 [Gemini API] Testing API key...');
+    try {
+      // First, try to list available models to verify API key
+      const listModelsResponse = await fetch(
+        `https://generativelanguage.googleapis.com/v1/models?key=${apiKey}`
+      );
+      
+      if (listModelsResponse.ok) {
+        const modelsData = await listModelsResponse.json();
+        console.log('✅ [Gemini API] API key is valid. Available models:', 
+          modelsData.models?.map((m: any) => m.name).join(', ') || 'none listed');
+      } else {
+        const listError = await listModelsResponse.text();
+        console.warn('⚠️ [Gemini API] Could not list models:', listError);
+      }
+      
+      // Try a simple test with the most basic model name
+      const testModels = ['gemini-pro', 'gemini-1.5-pro', 'gemini-1.5-flash'];
+      let testPassed = false;
+      
+      for (const testModel of testModels) {
+        try {
+          const testResponse = await fetch(
+            `https://generativelanguage.googleapis.com/v1/models/${testModel}:generateContent?key=${apiKey}`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                contents: [{
+                  parts: [{
+                    text: 'Say "API key works"'
+                  }]
+                }]
+              }),
+            }
+          );
 
-    // Comprehensive model fallback list
+          if (testResponse.ok) {
+            const testData = await testResponse.json();
+            console.log(`✅ [Gemini API] API key is valid and working with ${testModel}`);
+            testPassed = true;
+            break;
+          }
+        } catch (e) {
+          // Try next model
+          continue;
+        }
+      }
+      
+      if (!testPassed) {
+        console.warn('⚠️ [Gemini API] Could not test with common models, but API key may still be valid');
+      }
+    } catch (error: any) {
+      console.error('❌ [Gemini API] API key test error:', error.message);
+      // Don't fail here - continue and let the actual request try
+    }
+
+    // Call Gemini API
+    const prompt = `Please search the web and find information about the book "${title}" by ${author}. After gathering the data, provide a brief synopsis in a maximum of 3 sentences. Keep it concise and informative.`;
+
+    // Comprehensive model fallback list - start with basic v1 models, then try v1beta with grounding
     const modelsToTry = [
-      { model: 'gemini-1.5-flash', version: 'v1' },
-      { model: 'gemini-1.5-pro', version: 'v1' },
-      { model: 'gemini-pro', version: 'v1' },
+      // Start with basic models that should definitely work
+      { model: 'gemini-pro', version: 'v1', tool: null },
+      { model: 'gemini-1.5-pro', version: 'v1', tool: null },
+      { model: 'gemini-1.5-flash', version: 'v1', tool: null },
+      // Then try v1beta models with grounding support
+      { model: 'gemini-2.5-flash', version: 'v1beta', tool: 'google_search' },
+      { model: 'gemini-1.5-flash', version: 'v1beta', tool: 'google_search_retrieval' },
+      { model: 'gemini-1.5-pro', version: 'v1beta', tool: 'google_search_retrieval' },
     ];
 
     console.log(`🔍 [Gemini API] Requesting synopsis for: "${title}" by ${author}`);
     
     let lastError: any = null;
     
-    for (const { model, version } of modelsToTry) {
+    for (const { model, version, tool } of modelsToTry) {
       try {
         console.log(`🤖 [Gemini API] Attempting model: ${model} (${version})...`);
+        
+        // Build request body - include tools only if tool is specified
+        const requestBody: any = {
+          contents: [{
+            parts: [{
+              text: prompt
+            }]
+          }]
+        };
+        
+        // Only add tools if tool is specified (not null)
+        if (tool) {
+          requestBody.tools = [{
+            [tool]: {}
+          }];
+        }
+        
         const response = await fetch(
           `https://generativelanguage.googleapis.com/${version}/models/${model}:generateContent?key=${apiKey}`,
           {
@@ -50,13 +132,7 @@ export async function GET(request: Request) {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-              contents: [{
-                parts: [{
-                  text: prompt
-                }]
-              }]
-            }),
+            body: JSON.stringify(requestBody),
           }
         );
 
