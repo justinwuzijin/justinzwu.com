@@ -10,5 +10,5 @@
 (b) built using V0, Cursor. next.js, tailwindcss, postgreSQL, gemini, goodreads CSV file.
 
 next steps:
-going to build out "art gallery" & add some more cool features (pre-footer image can be edited user side, some cool stop motion) 
+going to build out "art gallery" & add some more cool features (pre-footer image can be edited user side, some cool stop motion, sound effects+music?) 
 
