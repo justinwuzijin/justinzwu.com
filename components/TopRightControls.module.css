@@ -3,6 +3,7 @@
   align-items: center;
   gap: 12px;
   justify-content: flex-end;
+  height: 100%;
 }
 
 .fluidContainer {
@@ -128,26 +129,62 @@
 
 @media (max-width: 768px) {
   .fluidContainer {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
   }
   
   .hamburgerImage {
-    height: 36px;
+    height: 32px;
   }
   
   .triggerButton,
   .socialIcon {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
   }
   
   .controls {
-    gap: 8px;
+    gap: 6px;
   }
   
-  .themeToggle svg {
-    width: 16px;
-    height: 16px;
+  .socialIcon {
+    font-size: 13px;
+  }
+  
+  .menuItemBg {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .iconWrapper svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .fluidContainer {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .hamburgerImage {
+    height: 28px;
+  }
+  
+  .triggerButton,
+  .socialIcon {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .menuItemBg {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .iconWrapper svg {
+    width: 12px;
+    height: 12px;
   }
 }

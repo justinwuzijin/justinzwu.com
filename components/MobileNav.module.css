@@ -1,15 +1,8 @@
 /* Mobile Header Bar */
 .mobileHeader {
   display: none;
-  position: fixed;
-  top: 0;
-  right: 0;
-  height: 50px;
-  padding: 0 var(--spacing-md);
   align-items: center;
-  justify-content: flex-end;
-  z-index: 1000;
-  pointer-events: none;
+  justify-content: center;
 }
 
 /* Hamburger Menu Button */
@@ -18,14 +11,13 @@
   flex-direction: column;
   justify-content: space-around;
   width: 24px;
-  height: 24px;
+  height: 20px;
   background: transparent;
   border: none;
   cursor: pointer;
   padding: 0;
-  z-index: 1002;
+  z-index: 1000;
   transition: transform 0.3s ease;
-  pointer-events: all;
 }
 
 .hamburger:hover {
@@ -38,7 +30,7 @@
 
 .hamburgerLine {
   width: 24px;
-  height: 2px;
+  height: 2.5px;
   background-color: var(--color-foreground);
   border-radius: 2px;
   transition: all 0.3s ease;
@@ -46,7 +38,7 @@
 }
 
 .hamburgerOpen .hamburgerLine:nth-child(1) {
-  transform: translateY(7px) rotate(45deg);
+  transform: translateY(8px) rotate(45deg);
 }
 
 .hamburgerOpen .hamburgerLine:nth-child(2) {
@@ -54,7 +46,7 @@
 }
 
 .hamburgerOpen .hamburgerLine:nth-child(3) {
-  transform: translateY(-7px) rotate(-45deg);
+  transform: translateY(-8px) rotate(-45deg);
 }
 
 /* Overlay */
@@ -195,6 +187,29 @@
 
 /* Extra small screens */
 @media (max-width: 480px) {
+  .mobileHeader {
+    top: 0;
+    right: 0;
+  }
+  
+  .hamburger {
+    width: 20px;
+    height: 16px;
+  }
+  
+  .hamburgerLine {
+    width: 20px;
+    height: 2px;
+  }
+  
+  .hamburgerOpen .hamburgerLine:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  
+  .hamburgerOpen .hamburgerLine:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+  
   .sidebar {
     width: 75vw;
     padding: 50px var(--spacing-sm) var(--spacing-lg);

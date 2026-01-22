@@ -5,6 +5,13 @@
   margin-bottom: var(--spacing-lg);
 }
 
+.rightControls {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  position: relative;
+}
+
 .logo {
   display: inline-block;
   text-decoration: none;
@@ -22,8 +29,38 @@
 
 @media (max-width: 768px) {
   .heroHeader {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-md);
+    position: relative;
+    min-height: 3rem;
+  }
+  
+  .logoImage {
+    height: 3rem;
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+  }
+  
+  .rightControls {
     gap: var(--spacing-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .heroHeader {
+    min-height: 2.5rem;
+  }
+  
+  .logoImage {
+    height: 2.5rem;
+  }
+  
+  .rightControls {
+    gap: var(--spacing-sm);
   }
 }
