@@ -128,7 +128,7 @@ export function BookSidePanel({ book, shelf, isOpen, onClose }: BookSidePanelPro
                   {hasReview ? (
                     <div 
                       className={styles.review}
-                      dangerouslySetInnerHTML={{ __html: book.review.replace(/\n/g, '<br />') }}
+                      dangerouslySetInnerHTML={{ __html: book.review?.replace(/\n/g, '<br />') || '' }}
                     />
                   ) : (
                     <p className={styles.noReview}>No review written yet.</p>
