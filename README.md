@@ -4,6 +4,7 @@
 > built between January 18th 2:03PM and January 22nd 12:51PM.
 
 (a) design: https://www.figma.com/design/owcszrqmF8xIcbiN717V1k/justinzwu.com-V1.0?node-id=0-1&t=QislyHLAtevJ6twV-1
+
 (b) built using V0, Cursor. next.js, tailwindcss, postgreSQL, gemini, goodreads CSV file.
 
 next steps:
