@@ -120,7 +120,7 @@ export function Footer() {
         {/* Attribution text */}
         <div className={styles.attribution}>
           <p className={styles.attributionText}>
-            built with next.js, tailwindcss. bookshelf stored in postgreSQL from my goodreads data. deployed on vercel. made with help from v0 and cursor.
+            designed on figma. built with next.js & tailwindcss. bookshelf goodreads data stored in postgreSQL. deployed on vercel. made with help from v0 and cursor.
           </p>
         </div>
       </div>
