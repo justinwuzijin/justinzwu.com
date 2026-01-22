@@ -116,6 +116,13 @@ export function Footer() {
             <Webring />
           </div>
         </div>
+        
+        {/* Attribution text */}
+        <div className={styles.attribution}>
+          <p className={styles.attributionText}>
+            built with next.js, tailwindcss. bookshelf stored in postgreSQL from my goodreads data. deployed on vercel. made with help from v0 and cursor.
+          </p>
+        </div>
       </div>
     </footer>
   )
