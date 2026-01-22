@@ -39,9 +39,6 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${notoSerifSC.variable}`}>
         <ThemeProvider>
-          {/* Mobile Navigation */}
-          <MobileNav />
-          
           <div className={styles.appContainer}>
             <div className={styles.mainWrapper}>
               {/* Desktop Sidebar */}

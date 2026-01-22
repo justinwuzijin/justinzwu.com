@@ -69,7 +69,7 @@ export default function MePage() {
         <HeroHeader />
         <TitleHover />
         <p className={styles.subtitle}>
-          i study <LinkPreview url="https://uwaterloo.ca/future-students/programs/systems-design-engineering" className={styles.highlightYellow}>Systems Design Engineering</LinkPreview> at{' '}
+          <LinkPreview url="https://uwaterloo.ca/future-students/programs/systems-design-engineering" className={styles.highlightYellow}>Systems Design Engineering</LinkPreview>{' '}
             @UWaterloo
         </p>
       </section>
@@ -88,7 +88,7 @@ export default function MePage() {
             </LinkPreview>
           </li>
           <li>
-            {'>'} building ClipABit, a DaVinci Resolve semantic search plug-in{' '}
+            {'>'} building ClipABit, asemantic search plug-in{' '}
             <LinkPreview 
               url="https://clipabit.web.app/" 
               className={styles.highlightYellow}
@@ -104,7 +104,7 @@ export default function MePage() {
             >
               Cursor
             </LinkPreview>{' '}
-            community @Waterloo & running campus events
+            campus community @Waterloo
           </li>
       
           <li>
@@ -136,7 +136,7 @@ export default function MePage() {
             >
               Cursor
             </LinkPreview>{' '}
-            in 1a
+            in 1A
           </li>
           <li>
             {'>'} lead{' '}
@@ -146,7 +146,7 @@ export default function MePage() {
             >
               TrudeauSAC
             </LinkPreview>
-             as president in g11 & 12 
+              as president in g11 & 12 
           </li>
           <li>
             {'>'} made films with{' '}
@@ -158,7 +158,7 @@ export default function MePage() {
             >
               five24
             </LinkPreview>{' '}
-            and cool personal youtube videos in hs
+            and cool youtube videos in hs
           </li>
           <li>
             {'>'} seeking <b>fall 2026</b> internship opportunities!

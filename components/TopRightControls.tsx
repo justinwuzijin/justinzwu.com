@@ -88,7 +88,7 @@ export function TopRightControls() {
             className={styles.socialIcon}
             aria-label={link.name}
             style={{
-              transform: `translateX(${isExpanded ? -(index + 1) * 42 : 0}px)`,
+              transform: `translateX(${isExpanded ? -(index + 1) * (typeof window !== 'undefined' && window.innerWidth <= 480 ? 32 : 36) : 0}px)`,
               opacity: isExpanded ? 1 : 0,
               zIndex: 40 - index,
               clipPath: index === socialLinks.length - 1 
