@@ -39,6 +39,35 @@ export async function GET(request: Request) {
 
     const { rows } = await pool.query(query, params)
 
+    // Debug: Log query and results for reviews
+    if (process.env.NODE_ENV === 'development') {
+      console.log('📚 Books query:', query)
+      console.log('📚 Query params:', params)
+      console.log('📚 Rows returned:', rows.length)
+      
+      // Check for Birthday Girl specifically
+      const birthdayGirl = rows.find((r: any) => 
+        r.title && r.title.toLowerCase().includes('birthday girl')
+      )
+      if (birthdayGirl) {
+        console.log('🎂 Found Birthday Girl:', {
+          id: birthdayGirl.id,
+          title: birthdayGirl.title,
+          my_review: birthdayGirl.my_review,
+          review_length: birthdayGirl.my_review?.length || 0,
+          review_type: typeof birthdayGirl.my_review,
+          review_is_null: birthdayGirl.my_review === null,
+          review_is_empty: birthdayGirl.my_review === '',
+        })
+      }
+      
+      // Count books with reviews
+      const booksWithReviews = rows.filter((r: any) => 
+        r.my_review && r.my_review.trim().length > 0
+      )
+      console.log(`📝 Books with reviews: ${booksWithReviews.length} out of ${rows.length}`)
+    }
+
     // Transform to match frontend expectations
     const transformedRows = rows.map((row: any) => ({
       id: row.id,
