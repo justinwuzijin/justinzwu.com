@@ -1,3 +1,6 @@
+-- Set schema
+SET search_path TO public;
+
 -- Create books table matching GoodReads CSV structure
 CREATE TABLE IF NOT EXISTS books (
   id SERIAL PRIMARY KEY,
@@ -73,5 +76,6 @@ END;
 $$ language 'plpgsql';
 
 -- Create trigger to automatically update updated_at
+DROP TRIGGER IF EXISTS update_books_updated_at ON books;
 CREATE TRIGGER update_books_updated_at BEFORE UPDATE ON books
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
