@@ -168,7 +168,14 @@ export default function MePage() {
             >
               five24
             </LinkPreview>{' '}
-            and cool youtube videos in hs
+            and cool youtube videos{' '}
+            <LinkPreview 
+              url="https://www.youtube.com/@byjustinwu" 
+              className={styles.highlightPurple}
+            >
+              @byjustinwu
+            </LinkPreview>{' '}
+            in hs
           </li>
           <li>
             {'>'} seeking <b>fall 2026</b> internship opportunities!

@@ -16,15 +16,15 @@ export function ExperienceCard({ company, logo, role, type, description, seconda
   const getLogoPath = () => {
     switch (logo) {
       case 'ontario':
-        return '/assets/svg/OPS.svg'
+        return '/assets/svg/bestttonee.png'
       case 'clipabit':
-        return '/assets/svg/CLIPABIT.svg'
+        return '/assets/svg/clipp.png'
       case 'cursor':
         return '/assets/svg/Cursor.png'
       case 'socratica':
         return '/assets/svg/socratica.png'
       case 'bridging':
-        return '/assets/svg/BG.svg'
+        return '/assets/svg/bgbggbbg.png'
       default:
         return null
     }
