@@ -23,16 +23,16 @@ interface CoverOptions {
 export function getBookCoverUrl(options: CoverOptions): string {
   const { isbn, isbn13, goodreadsId, title, author } = options
 
-  // Try Open Library with ISBN13 first (most reliable)
+  // Try Open Library with ISBN13 first (most reliable) - use -M for faster loading
   if (isbn13) {
-    const openLibraryUrl = `https://covers.openlibrary.org/b/isbn/${isbn13}-L.jpg`
+    const openLibraryUrl = `https://covers.openlibrary.org/b/isbn/${isbn13}-M.jpg`
     // Return URL - we'll validate on the frontend
     return openLibraryUrl
   }
 
   // Try Open Library with ISBN10
   if (isbn) {
-    const openLibraryUrl = `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`
+    const openLibraryUrl = `https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`
     return openLibraryUrl
   }
 
@@ -103,14 +103,14 @@ export function getCoverUrlFallbacks(options: CoverOptions): string[] {
   const urls: string[] = []
   const { isbn, isbn13, goodreadsId, title, author } = options
 
-  // 1. Open Library ISBN13 (best quality)
+  // 1. Open Library ISBN13 (use -M for faster loading)
   if (isbn13) {
-    urls.push(`https://covers.openlibrary.org/b/isbn/${isbn13}-L.jpg`)
+    urls.push(`https://covers.openlibrary.org/b/isbn/${isbn13}-M.jpg`)
   }
 
   // 2. Open Library ISBN10
   if (isbn) {
-    urls.push(`https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`)
+    urls.push(`https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`)
   }
 
   // 3. GoodReads

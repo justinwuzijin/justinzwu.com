@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
     root: path.resolve(__dirname),
   },
   images: {
+    minimumCacheTTL: 60 * 60 * 24 * 30, // Cache images for 30 days
     remotePatterns: [
       {
         protocol: 'https',

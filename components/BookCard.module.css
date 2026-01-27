@@ -84,3 +84,40 @@
   background-clip: text;
   color: #ddd; /* Fallback */
 }
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .card {
+    gap: var(--spacing-xs);
+  }
+  
+  .rating {
+    margin-top: var(--spacing-xs);
+    gap: 2px;
+  }
+  
+  .star {
+    font-size: 0.75rem;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .card {
+    gap: 2px;
+  }
+  
+  .rating {
+    margin-top: 2px;
+    min-height: 14px;
+    gap: 1px;
+  }
+  
+  .star {
+    font-size: 0.6rem;
+  }
+  
+  .coverWrapper {
+    border-radius: var(--radius-xs, 4px);
+  }
+}

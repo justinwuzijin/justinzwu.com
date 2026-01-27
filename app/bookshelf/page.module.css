@@ -109,9 +109,9 @@
 /* Mobile responsive */
 @media (max-width: 768px) {
   .booksGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--spacing-lg);
-    row-gap: var(--spacing-xl);
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-md);
+    row-gap: var(--spacing-lg);
   }
   
   .tabs {
@@ -140,9 +140,9 @@
 /* Small phones */
 @media (max-width: 480px) {
   .booksGrid {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-md);
-    row-gap: var(--spacing-lg);
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-sm);
+    row-gap: var(--spacing-md);
   }
   
   .pageTitle {
