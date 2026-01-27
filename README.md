@@ -1,5 +1,4 @@
-# justinzwu.com
-> a personal website v2
+# justinzwu.com; a personal website v2
 
 > designed on Thursday, January 15th 8:13AM until 6:56PM.
 
