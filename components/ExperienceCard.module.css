@@ -65,3 +65,53 @@
   line-height: 1.5;
   margin: 0;
 }
+
+@media (max-width: 768px) {
+  .card {
+    gap: var(--spacing-sm);
+  }
+  
+  .logoArea {
+    border-radius: var(--radius-md);
+  }
+  
+  .role {
+    font-size: 0.8rem;
+  }
+  
+  .type {
+    font-size: 0.7rem;
+  }
+  
+  .description {
+    font-size: 0.65rem;
+    line-height: 1.4;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    gap: var(--spacing-xs);
+  }
+  
+  .logoArea {
+    border-radius: var(--radius-sm);
+  }
+  
+  .role {
+    font-size: 0.7rem;
+  }
+  
+  .type {
+    font-size: 0.6rem;
+  }
+  
+  .description {
+    font-size: 0.55rem;
+    line-height: 1.3;
+  }
+  
+  .content {
+    gap: 2px;
+  }
+}

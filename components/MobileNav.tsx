@@ -84,8 +84,9 @@ export function MobileNav() {
             })}
           </ul>
           
-          {/* Theme toggle button */}
+          {/* Theme toggle buttons - side by side */}
           <div className={styles.themeToggleContainer}>
+            {/* Light/Dark mode toggle */}
             <button
               onClick={toggleTheme}
               className={styles.themeToggle}
@@ -93,8 +94,8 @@ export function MobileNav() {
             >
               {theme === 'dark' ? (
                 <svg
-                  width="24"
-                  height="24"
+                  width="20"
+                  height="20"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -114,8 +115,8 @@ export function MobileNav() {
                 </svg>
               ) : (
                 <svg
-                  width="24"
-                  height="24"
+                  width="20"
+                  height="20"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -127,8 +128,22 @@ export function MobileNav() {
                 </svg>
               )}
             </button>
-            <p className={styles.orangeModeHint}>(shift+o for orange-mode)</p>
+            
+            {/* Orange mode toggle */}
+            <button
+              onClick={() => setTheme(theme === 'orange' ? 'light' : 'orange')}
+              className={styles.orangeToggle}
+              aria-label={theme === 'orange' ? 'Exit orange mode' : 'Enter orange mode'}
+            >
+              <img 
+                src={theme === 'orange' ? '/assets/svg/hamburger(orange).svg' : '/assets/svg/hamburgericon.svg'} 
+                alt="Orange mode"
+                className={styles.orangeIcon}
+              />
+            </button>
           </div>
+          
+          <p className={styles.orangeModeHint}>click for orange-mode</p>
         </nav>
       </aside>
     </>

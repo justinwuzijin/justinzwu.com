@@ -1,8 +1,12 @@
 /* Mobile Header Bar */
 .mobileHeader {
   display: none;
+  position: fixed;
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
   align-items: center;
   justify-content: center;
+  z-index: 999;
 }
 
 /* Hamburger Menu Button */
@@ -140,23 +144,23 @@
   color: var(--color-foreground);
 }
 
-/* Theme Toggle */
+/* Theme Toggle - side by side below nav items */
 .themeToggleContainer {
-  margin-top: auto;
-  padding-top: var(--spacing-xl);
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--spacing-xs);
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-xs) 0;
 }
 
 .themeToggle {
-  padding: var(--spacing-xs);
+  padding: 0;
   background: none;
   border: none;
   cursor: pointer;
   color: var(--color-foreground);
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, transform 0.2s ease;
   display: flex;
   align-items: center;
   opacity: 0.7;
@@ -164,6 +168,7 @@
 
 .themeToggle:hover {
   opacity: 1;
+  transform: scale(1.1);
 }
 
 .themeToggle svg {
@@ -171,10 +176,34 @@
   height: 20px;
 }
 
+/* Orange mode toggle */
+.orangeToggle {
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  display: flex;
+  align-items: center;
+  opacity: 0.9;
+}
+
+.orangeToggle:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.orangeIcon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+}
+
 .orangeModeHint {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   color: var(--color-muted);
   margin: 0;
+  margin-top: var(--spacing-xs);
   opacity: 0.7;
 }
 
@@ -182,14 +211,16 @@
 @media (max-width: 768px) {
   .mobileHeader {
     display: flex;
+    top: calc(var(--spacing-lg) + 6px);
+    right: var(--spacing-md);
   }
 }
 
 /* Extra small screens */
 @media (max-width: 480px) {
   .mobileHeader {
-    top: 0;
-    right: 0;
+    top: calc(var(--spacing-md) + 10px);
+    right: var(--spacing-sm);
   }
   
   .hamburger {
@@ -220,7 +251,17 @@
   }
   
   .orangeModeHint {
-    font-size: 0.6rem;
+    font-size: 0.55rem;
+  }
+  
+  .orangeIcon {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .themeToggle svg {
+    width: 18px;
+    height: 18px;
   }
 }
 

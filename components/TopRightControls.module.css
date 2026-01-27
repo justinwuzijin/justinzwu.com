@@ -145,6 +145,7 @@
   
   .controls {
     gap: 6px;
+    margin-right: 36px;
   }
   
   .socialIcon {
@@ -176,6 +177,10 @@
   .socialIcon {
     width: 28px;
     height: 28px;
+  }
+  
+  .controls {
+    margin-right: 32px;
   }
   
   .menuItemBg {

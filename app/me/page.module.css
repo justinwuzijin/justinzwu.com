@@ -183,10 +183,20 @@
 
 @media (max-width: 768px) {
   .projectsGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+    row-gap: var(--spacing-lg);
   }
   
   .chineseName {
     font-size: 4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .projectsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-sm);
+    row-gap: var(--spacing-md);
   }
 }
