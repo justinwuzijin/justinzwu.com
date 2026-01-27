@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import { TopRightControls } from './TopRightControls'
-import { MobileNav } from './MobileNav'
 import { useTheme } from './ThemeProvider'
 import styles from './HeroHeader.module.css'
 
@@ -23,10 +22,7 @@ export function HeroHeader() {
           className={styles.logoImage}
         />
       </Link>
-      <div className={styles.rightControls}>
-        <TopRightControls />
-        <MobileNav />
-      </div>
+      <TopRightControls />
     </div>
   )
 }

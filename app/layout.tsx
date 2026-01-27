@@ -39,6 +39,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${notoSerifSC.variable}`}>
         <ThemeProvider>
+          {/* Mobile Navigation - Always visible on mobile */}
+          <MobileNav />
+          
           <div className={styles.appContainer}>
             <div className={styles.mainWrapper}>
               {/* Desktop Sidebar */}
@@ -47,7 +50,7 @@ export default function RootLayout({
               </aside>
               
               <main className={styles.mainContent}>
-        {children}
+                {children}
               </main>
             </div>
             
