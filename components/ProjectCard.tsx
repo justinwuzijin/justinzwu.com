@@ -9,15 +9,17 @@ interface ProjectCardProps {
   image: string
   url?: string
   dark?: boolean
+  zoom?: number
 }
 
-export function ProjectCard({ title, date, description, image, url, dark }: ProjectCardProps) {
+export function ProjectCard({ title, date, description, image, url, dark, zoom }: ProjectCardProps) {
   const imageContent = (
     <div className={`${styles.imageWrapper} ${dark ? styles.darkBg : ''}`}>
       <img 
         src={image} 
         alt={title}
         className={styles.projectImage}
+        style={zoom ? { transform: `scale(${zoom})` } : undefined}
       />
     </div>
   )
