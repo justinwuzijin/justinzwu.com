@@ -78,10 +78,10 @@ export default function MePage() {
       <section className={styles.hero}>
         <HeroHeader />
         <TitleHover />
-        <p className={styles.subtitle}>
+        <div className={styles.subtitle}>
           <LinkPreview url="https://uwaterloo.ca/future-students/programs/systems-design-engineering" className={styles.highlightYellow}>Systems Design Engineering</LinkPreview>{' '}
             @UWaterloo
-        </p>
+        </div>
       </section>
 
       {/* About section */}
