@@ -50,14 +50,14 @@ function getCoverFallbacks(cover: string | null, isbn13: string | null, isbn: st
     fallbacks.push(cover)
   }
   
-  // Try Open Library with ISBN13
+  // Try Open Library with ISBN13 (use -M for medium size, much faster than -L)
   if (isbn13) {
-    fallbacks.push(`https://covers.openlibrary.org/b/isbn/${isbn13}-L.jpg`)
+    fallbacks.push(`https://covers.openlibrary.org/b/isbn/${isbn13}-M.jpg`)
   }
   
   // Try Open Library with ISBN10
   if (isbn && isbn !== isbn13) {
-    fallbacks.push(`https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`)
+    fallbacks.push(`https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`)
   }
 
   // Add AI generated cover as the final legitimate option before placeholder
@@ -168,10 +168,11 @@ export function BookCard({ title, author, cover, isbn, isbn13, rating, showRatin
           alt={`${title} by ${author}`}
           fill
           className={styles.bookCover}
-          sizes="(max-width: 768px) 50vw, 33vw"
+          sizes="(max-width: 768px) 33vw, 25vw"
           onLoad={() => setImageLoaded(true)}
           onError={handleImageError}
           priority={false}
+          unoptimized={currentCover.startsWith('http')}
         />
       </div>
       {rating !== undefined && showRating && (

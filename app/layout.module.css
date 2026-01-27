@@ -55,7 +55,7 @@
 @media (max-width: 768px) {
   .mainWrapper {
     flex-direction: column;
-    padding: 0 var(--spacing-md);
+    padding: 0 var(--spacing-lg);
   }
   
   .mainContent {
@@ -67,7 +67,7 @@
 /* Small phones */
 @media (max-width: 480px) {
   .mainWrapper {
-    padding: 0 var(--spacing-sm);
+    padding: 0 var(--spacing-md);
   }
   
   .mainContent {
