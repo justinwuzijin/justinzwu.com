@@ -1,3 +1,6 @@
+'use client'
+
+import { useRef } from 'react'
 import styles from './page.module.css'
 
 const thoughts = [
@@ -71,7 +74,24 @@ const thoughts = [
   },
 ]
 
+const gradeColors: Record<string, string> = {
+  'grade 9': '#dc2626',
+  'grade 10': '#eab308',
+  'grade 11': '#16a34a',
+  'grade 12': '#3b82f6',
+  '1a & 1st co-op': '#8b5cf6',
+}
+
 export default function DrawerOfThoughtsPage() {
+  const sectionRefs = useRef<Record<string, HTMLElement | null>>({})
+
+  const scrollToGrade = (grade: string) => {
+    const element = sectionRefs.current[grade]
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
   return (
     <div className={styles.container}>
       <h1 className={styles.pageTitle}>
@@ -79,11 +99,41 @@ export default function DrawerOfThoughtsPage() {
         drawer of thoughts
       </h1>
 
+      {/* Grade filter tabs */}
+      <div className={styles.tabs}>
+        {thoughts.map((section) => {
+          const color = gradeColors[section.grade] || '#000000'
+          
+          return (
+            <button
+              key={section.grade}
+              onClick={() => scrollToGrade(section.grade)}
+              className={styles.tab}
+            >
+              <span 
+                className={styles.tabDot} 
+                style={{ backgroundColor: color }}
+              />
+              {section.grade}
+            </button>
+          )
+        })}
+      </div>
+
       <div className={styles.thoughtsList}>
         {thoughts.map((section) => (
-          <section key={section.grade} className={styles.section}>
+          <section 
+            key={section.grade} 
+            className={styles.section}
+            ref={(el) => {
+              sectionRefs.current[section.grade] = el
+            }}
+          >
             <h2 className={styles.gradeTitle}>
-              <span className={styles.smallOrangeDot} />
+              <span 
+                className={styles.smallOrangeDot}
+                style={{ backgroundColor: gradeColors[section.grade] }}
+              />
               {section.grade}
             </h2>
             <ul className={styles.itemsList}>
