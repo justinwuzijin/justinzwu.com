@@ -16,6 +16,12 @@
 
 .video {
   object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.video.loaded {
+  opacity: 1;
 }
 
 .error {

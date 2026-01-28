@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import styles from './AutoPlayVideo.module.css'
 
 interface AutoPlayVideoProps {
@@ -47,13 +47,31 @@ export function AutoPlayVideo({
 }: AutoPlayVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const iframeRef = useRef<HTMLIFrameElement>(null)
+  const [isLoaded, setIsLoaded] = useState(false)
 
   // Handle self-hosted video autoplay
   useEffect(() => {
-    if (videoRef.current && videoUrl) {
-      videoRef.current.play().catch((error) => {
+    const video = videoRef.current
+    if (!video || !videoUrl) return
+
+    const playVideo = () => {
+      video.play().catch((error) => {
         console.warn('Autoplay prevented:', error)
       })
+    }
+
+    // Try to play when video data is loaded
+    video.addEventListener('loadeddata', playVideo)
+    video.addEventListener('canplay', playVideo)
+    
+    // Also try immediately in case already loaded
+    if (video.readyState >= 2) {
+      playVideo()
+    }
+
+    return () => {
+      video.removeEventListener('loadeddata', playVideo)
+      video.removeEventListener('canplay', playVideo)
     }
   }, [videoUrl])
 
@@ -92,9 +110,9 @@ export function AutoPlayVideo({
           controls={controls}
           playsInline
           autoPlay
-          preload="none"
-          loading="lazy"
-          className={styles.video}
+          preload="auto"
+          onLoadedData={() => setIsLoaded(true)}
+          className={`${styles.video} ${isLoaded ? styles.loaded : ''}`}
           aria-label={alt || title}
         />
       ) : embedUrl ? (
