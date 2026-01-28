@@ -4,6 +4,14 @@
   gap: var(--spacing-2xl);
 }
 
+.workInProgress {
+  font-size: 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif;
+  font-weight: 400;
+  color: var(--color-foreground);
+  margin-top: calc(-1 * var(--spacing-lg));
+}
+
 .pageTitle {
   display: flex;
   align-items: center;
@@ -31,12 +39,14 @@
 .masonryGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-lg);
+  gap: var(--spacing-2xl);
+  row-gap: var(--spacing-2xl);
+  column-gap: var(--spacing-2xl);
   position: relative;
 }
 
 .galleryItem {
-  border-radius: var(--radius-md);
+  border-radius: 0;
   overflow: visible;
 }
 
@@ -77,6 +87,21 @@
   box-shadow: none !important;
   background: transparent !important;
   background-color: transparent !important;
+}
+
+.videoItem {
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.distortedVideo :global(.video),
+.distortedVideo :global(.iframe) {
+  width: 100%;
+  height: 100%;
+  object-fit: fill !important; /* This ensures the video fills the container and gets stretched/squished */
+  transform: scale(1.4); /* Zoom in 1.40x */
 }
 
 .polaroidGrid {

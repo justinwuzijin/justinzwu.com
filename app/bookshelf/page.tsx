@@ -100,8 +100,8 @@ export default function BookshelfPage() {
         bookshelf
       </h1>
 
-      <p className={styles.quote}>
-        "Think before you speak. Read before you think."
+      <p>
+        think before you speak. read before you think.
       </p>
 
       {/* Filter tabs */}

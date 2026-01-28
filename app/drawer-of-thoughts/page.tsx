@@ -98,6 +98,7 @@ export default function DrawerOfThoughtsPage() {
         <span className={styles.orangeDot} />
         drawer of thoughts
       </h1>
+      <p className={styles.description}>an assortment of ideas documented since age 13.</p>
 
       {/* Grade filter tabs */}
       <div className={styles.tabs}>

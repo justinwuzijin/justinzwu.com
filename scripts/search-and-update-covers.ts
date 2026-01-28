@@ -10,7 +10,7 @@ async function searchAndUpdateCovers() {
     console.log('🔍 Finding books with missing or invalid covers...\n')
 
     // Find books that might need cover updates
-    // We'll check books with placeholder covers or no covers
+    // We'll check books with placeholder covers, no covers, or broken pollinations.ai URLs
     const { rows: booksToUpdate } = await pool.query(`
       SELECT id, title, author, isbn, isbn13, cover_url
       FROM books
@@ -19,8 +19,9 @@ async function searchAndUpdateCovers() {
          OR cover_url LIKE '%placeholder%'
          OR cover_url LIKE '%via.placeholder%'
          OR cover_url LIKE '%data:image/svg%'
+         OR cover_url LIKE '%pollinations.ai%'
       ORDER BY id
-      LIMIT 100
+      LIMIT 200
     `)
 
     console.log(`Found ${booksToUpdate.length} books to search for covers\n`)

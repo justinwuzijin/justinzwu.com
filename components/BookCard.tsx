@@ -18,11 +18,8 @@ interface BookCardProps {
   isExpanded?: boolean
 }
 
-// Generate an AI cover using a prompt
-function getAICoverUrl(title: string, author: string): string {
-  const prompt = `professional book cover for "${title}" by ${author}, clean typography, artistic, high quality, minimal design, 300x450, no realistic photos, graphic design style`;
-  return `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=300&height=450&nologo=true&seed=${title.length + author.length}`;
-}
+// Note: Previously used pollinations.ai for AI-generated covers, but that service has migrated.
+// If you want AI covers, you'll need to find an alternative service or use the new pollinations endpoint.
 
 // Generate a placeholder cover using a nice gradient
 function getPlaceholderCover(title: string, author: string): string {
@@ -59,9 +56,6 @@ function getCoverFallbacks(cover: string | null, isbn13: string | null, isbn: st
   if (isbn && isbn !== isbn13) {
     fallbacks.push(`https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`)
   }
-
-  // Add AI generated cover as the final legitimate option before placeholder
-  fallbacks.push(getAICoverUrl(title, author))
   
   return fallbacks
 }

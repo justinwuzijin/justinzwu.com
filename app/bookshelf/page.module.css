@@ -24,6 +24,16 @@
   background-color: #ffffff;
 }
 
+.description {
+  font-size: 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif;
+  font-weight: 400;
+  color: var(--color-foreground);
+  margin-top: calc(-1 * var(--spacing-lg));
+  margin-bottom: calc(-1 * var(--spacing-lg));
+  line-height: 1.6;
+}
+
 .quote {
   font-size: 0.85rem;
   font-style: italic;
