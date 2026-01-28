@@ -187,7 +187,7 @@ export default function MePage() {
       <section className={styles.projects}>
         <h2 className={styles.projectsTitle}>
           <span className={styles.orangeDot} />
-          Projects
+          projects
         </h2>
         <div className={styles.projectsGrid}>
           {projects.map((project) => (

@@ -25,6 +25,16 @@
   background-color: #ffffff;
 }
 
+.description {
+  font-size: 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif;
+  font-weight: 400;
+  color: var(--color-foreground);
+  margin-top: calc(-1 * var(--spacing-lg));
+  margin-bottom: 0;
+  line-height: 1.6;
+}
+
 .tabs {
   display: flex;
   gap: var(--spacing-lg);
