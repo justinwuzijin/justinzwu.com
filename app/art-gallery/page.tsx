@@ -10,6 +10,15 @@ function LazyVideo({ videoUrl, aspectRatio, className }: { videoUrl: string; asp
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    // Check if already in viewport on mount
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect()
+      if (rect.top < window.innerHeight + 500) {
+        setIsVisible(true)
+        return
+      }
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -20,8 +29,8 @@ function LazyVideo({ videoUrl, aspectRatio, className }: { videoUrl: string; asp
         })
       },
       {
-        rootMargin: '200px', // Start loading 200px before entering viewport for smoother experience
-        threshold: 0.1,
+        rootMargin: '500px', // Start loading 500px before entering viewport
+        threshold: 0,
       }
     )
 
@@ -35,7 +44,7 @@ function LazyVideo({ videoUrl, aspectRatio, className }: { videoUrl: string; asp
   }, [])
 
   return (
-    <div ref={containerRef} className={className} style={{ aspectRatio: aspectRatio, backgroundColor: '#000', minHeight: '100px' }}>
+    <div ref={containerRef} className={className} style={{ aspectRatio: aspectRatio, backgroundColor: '#111', minHeight: '100px' }}>
       {isVisible ? (
         <AutoPlayVideo
           videoUrl={videoUrl}
@@ -43,36 +52,36 @@ function LazyVideo({ videoUrl, aspectRatio, className }: { videoUrl: string; asp
           className={styles.distortedVideo}
         />
       ) : (
-        <div style={{ width: '100%', height: '100%', backgroundColor: '#000' }} />
+        <div style={{ width: '100%', height: '100%', backgroundColor: '#111' }} />
       )}
     </div>
   )
 }
 
-// List of all videos in public/assets/videos/
+// List of all videos in public/assets/videos/ (MP4 format for browser compatibility)
 const videoFiles = [
-  'Screen Recording 2024-06-22 at 10.53.30 AM.mov',
-  'Screen Recording 2024-06-22 at 10.56.15 AM.mov',
-  'Screen Recording 2024-06-22 at 10.56.26 AM.mov',
-  'Screen Recording 2024-06-22 at 10.56.44 AM.mov',
-  'Screen Recording 2024-06-22 at 10.57.05 AM.mov',
-  'Screen Recording 2024-06-22 at 10.57.23 AM.mov',
-  'Screen Recording 2024-06-22 at 10.57.52 AM.mov',
-  'Screen Recording 2024-07-24 at 12.00.48 PM.mov',
-  'Screen Recording 2024-07-24 at 12.03.27 PM.mov',
-  'Screen Recording 2024-07-24 at 12.04.28 PM.mov',
-  'Screen Recording 2025-04-23 at 9.38.28 PM.mov',
-  'Screen Recording 2025-04-23 at 9.38.59 PM.mov',
-  'Screen Recording 2025-04-23 at 9.39.21 PM.mov',
-  'Screen Recording 2025-04-23 at 9.39.40 PM.mov',
-  'Screen Recording 2025-07-22 at 8.41.58 AM.mov',
-  'Screen Recording 2025-07-22 at 8.42.33 AM.mov',
-  'Screen Recording 2025-07-28 at 12.19.38 PM.mov',
-  'Screen Recording 2025-09-15 at 8.54.20 AM.mov',
-  'Screen Recording 2025-12-25 at 8.31.06 PM.mov',
-  'Screen Recording 2025-12-25 at 8.33.41 PM.mov',
-  'Screen Recording 2025-12-25 at 8.34.06 PM.mov',
-  'Screen Recording 2025-12-25 at 8.34.23 PM.mov',
+  'Screen Recording 2024-06-22 at 10.53.30 AM.mp4',
+  'Screen Recording 2024-06-22 at 10.56.15 AM.mp4',
+  'Screen Recording 2024-06-22 at 10.56.26 AM.mp4',
+  'Screen Recording 2024-06-22 at 10.56.44 AM.mp4',
+  'Screen Recording 2024-06-22 at 10.57.05 AM.mp4',
+  'Screen Recording 2024-06-22 at 10.57.23 AM.mp4',
+  'Screen Recording 2024-06-22 at 10.57.52 AM.mp4',
+  'Screen Recording 2024-07-24 at 12.00.48 PM.mp4',
+  'Screen Recording 2024-07-24 at 12.03.27 PM.mp4',
+  'Screen Recording 2024-07-24 at 12.04.28 PM.mp4',
+  'Screen Recording 2025-04-23 at 9.38.28 PM.mp4',
+  'Screen Recording 2025-04-23 at 9.38.59 PM.mp4',
+  'Screen Recording 2025-04-23 at 9.39.21 PM.mp4',
+  'Screen Recording 2025-04-23 at 9.39.40 PM.mp4',
+  'Screen Recording 2025-07-22 at 8.41.58 AM.mp4',
+  'Screen Recording 2025-07-22 at 8.42.33 AM.mp4',
+  'Screen Recording 2025-07-28 at 12.19.38 PM.mp4',
+  'Screen Recording 2025-09-15 at 8.54.20 AM.mp4',
+  'Screen Recording 2025-12-25 at 8.31.06 PM.mp4',
+  'Screen Recording 2025-12-25 at 8.33.41 PM.mp4',
+  'Screen Recording 2025-12-25 at 8.34.06 PM.mp4',
+  'Screen Recording 2025-12-25 at 8.34.23 PM.mp4',
 ]
 
 // Generate random distortion and grid placement for each video
