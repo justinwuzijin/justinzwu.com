@@ -45,6 +45,7 @@ interface VideoPopup {
 export function RandomVideoPopup() {
   const { digitalDroplets } = useTheme()
   const [popups, setPopups] = useState<VideoPopup[]>([])
+  const [readyPopups, setReadyPopups] = useState<Set<number>>(new Set())
   const [isOverInteractive, setIsOverInteractive] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [isMouseOnScreen, setIsMouseOnScreen] = useState(false)
@@ -244,6 +245,11 @@ export function RandomVideoPopup() {
       // All videos disappear after 0.5 seconds
       setTimeout(() => {
         setPopups(p => p.filter(popup => popup.id !== newId))
+        setReadyPopups(prev => {
+          const next = new Set(prev)
+          next.delete(newId)
+          return next
+        })
       }, 500)
       
       return [...prev, {
@@ -271,41 +277,53 @@ export function RandomVideoPopup() {
 
   return (
     <div className={styles.container} style={{ opacity: isOverInteractive ? 0 : 1 }}>
-      {popups.map(popup => (
-        <div
-          key={popup.id}
-          className={styles.popup}
-          style={{
-            left: popup.x,
-            top: popup.y,
-            zIndex: popup.zIndex,
-          }}
-        >
-          <video
-            src={popup.videoUrl}
-            autoPlay
-            muted
-            loop
-            playsInline
-            webkit-playsinline="true"
-            preload="auto"
-            className={styles.video}
+      {popups.map(popup => {
+        const isReady = readyPopups.has(popup.id)
+        return (
+          <div
+            key={popup.id}
+            className={styles.popup}
             style={{
-              width: popup.width,
-              height: popup.height,
+              left: popup.x,
+              top: popup.y,
+              zIndex: popup.zIndex,
+              display: isReady ? 'block' : 'none',
             }}
-            // Force play on Safari which may block autoplay
-            ref={(el) => {
-              if (el) {
-                el.play().catch(() => {
-                  // Retry once after a short delay
-                  setTimeout(() => el.play().catch(() => {}), 50)
+          >
+            <video
+              src={popup.videoUrl}
+              autoPlay
+              muted
+              loop
+              playsInline
+              webkit-playsinline="true"
+              preload="metadata"
+              className={styles.video}
+              data-ready={isReady ? 'true' : undefined}
+              style={{
+                width: popup.width,
+                height: popup.height,
+              }}
+              onLoadedData={(e) => {
+                const video = e.currentTarget
+                setReadyPopups(prev => new Set(prev).add(popup.id))
+                video.play().catch(() => {
+                  setTimeout(() => video.play().catch(() => {}), 50)
                 })
-              }
-            }}
-          />
-        </div>
-      ))}
+              }}
+              onCanPlay={(e) => {
+                const video = e.currentTarget
+                if (!readyPopups.has(popup.id)) {
+                  setReadyPopups(prev => new Set(prev).add(popup.id))
+                  video.play().catch(() => {
+                    setTimeout(() => video.play().catch(() => {}), 50)
+                  })
+                }
+              }}
+            />
+          </div>
+        )
+      })}
     </div>
   )
 }
