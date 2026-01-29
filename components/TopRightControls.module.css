@@ -1,11 +1,112 @@
 .topRightControls {
-  position: fixed;
-  top: var(--spacing-xl);
-  right: var(--spacing-2xl);
+  position: fixed !important;
+  top: 1.75rem !important;
+  right: 1.5rem !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  z-index: 9999 !important;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+/* Visible state */
+.visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Hidden state (on scroll down) */
+.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Desktop only elements - hidden on mobile */
+.desktopOnly {
+  display: flex;
+}
+
+.socialControls {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
-  z-index: 100;
+  height: 42px;
+  margin-right: calc((104.5vw - var(--content-max-width)) / 2);
+}
+
+.fluidContainer {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.triggerButton {
+  position: absolute;
+  right: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  padding: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  box-shadow: none;
+}
+
+.triggerButton:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+.triggerButton:focus {
+  outline: none;
+}
+
+.hamburgerImage {
+  height: 42px;
+  width: auto;
+  pointer-events: none;
+  display: block;
+}
+
+.socialIcon {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-decoration: none;
+  flex-shrink: 0;
+  pointer-events: auto;
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+.menuItemBg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.iconWrapper {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .controlButton {
@@ -72,7 +173,7 @@
 
 .shiftOKey {
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: 400;
   line-height: 1;
 }
 
@@ -80,32 +181,36 @@
 @media (max-width: 1024px) {
   .topRightControls {
     top: var(--spacing-md);
-    right: var(--spacing-xl);
+    right: var(--spacing-lg);
     gap: var(--spacing-sm);
   }
 }
 
-/* Mobile responsive */
+/* Mobile responsive - show only social hamburger, positioned left of MobileNav hamburger */
 @media (max-width: 768px) {
   .topRightControls {
-    top: var(--spacing-sm);
-    right: var(--spacing-md);
-    gap: var(--spacing-xs);
+    display: flex !important;
+    top: calc(var(--spacing-lg) + 2px) !important;
+    /* Position to the left of MobileNav hamburger (which is at right: var(--spacing-lg)) */
+    right: calc(var(--spacing-lg) + 40px) !important;
   }
   
+  /* Remove margin-right on mobile */
+  .socialControls {
+    margin-right: 0;
+  }
+  
+  /* Hide shift+o and light/dark buttons on mobile */
+  .shiftOButton,
   .controlButton {
-    padding: var(--spacing-xs);
+    display: none !important;
   }
 }
 
 /* Small phones */
 @media (max-width: 480px) {
   .topRightControls {
-    gap: var(--spacing-xs);
-  }
-  
-  .controlButton svg {
-    width: 16px;
-    height: 16px;
+    top: calc(var(--spacing-md) - 2px) !important;
+    right: calc(var(--spacing-sm) + 36px) !important;
   }
 }
