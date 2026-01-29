@@ -44,7 +44,7 @@ export default function RootLayout({
           {/* Random video popups near mouse */}
           <RandomVideoPopup />
           
-          {/* Top right controls (theme toggle, orange mode, digital droplets) */}
+          {/* Top right controls - fixed position, hides on scroll */}
           <TopRightControls />
           
           {/* Mobile Navigation - Always visible on mobile */}
@@ -53,7 +53,7 @@ export default function RootLayout({
           <div className={styles.appContainer}>
             <div className={styles.mainWrapper}>
               {/* Desktop Sidebar */}
-              <aside className={styles.sidebar}>
+              <aside className={styles.sidebar} data-sidebar="true">
                 <SidebarNav />
               </aside>
               

@@ -22,6 +22,11 @@
   margin-top: var(--spacing-xl);
 }
 
+.sidebar * {
+  position: relative;
+  z-index: 20;
+}
+
 /* Hide desktop sidebar on mobile */
 @media (max-width: 768px) {
   .sidebar {
@@ -35,6 +40,8 @@
   padding: var(--spacing-xl) var(--spacing-2xl);
   margin-left: var(--spacing-lg); /* Reduced margin since sidebar is now in-flow */
   overflow-x: clip;
+  position: relative;
+  z-index: 30;
 }
 
 /* Tablet responsive (iPads) */

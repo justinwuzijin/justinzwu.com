@@ -67,6 +67,11 @@ export function RandomVideoPopup() {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
+  useEffect(() => {
+    const isActive = digitalDroplets && popups.length > 0
+    document.documentElement.setAttribute('data-droplets-active', isActive ? 'true' : 'false')
+  }, [digitalDroplets, popups.length])
+
   // Preload videos in background for smoother playback
   // Videos are small (~200KB) so they can load on-demand if needed
   useEffect(() => {
