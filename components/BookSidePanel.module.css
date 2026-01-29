@@ -37,7 +37,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--radius-sm);
+  border-radius: 0;
   transition: background-color 0.2s ease;
   z-index: 1000;
 }
@@ -151,7 +151,7 @@
   background-color: var(--color-accent);
   color: #ffffff;
   text-decoration: none;
-  border-radius: var(--radius-sm);
+  border-radius: 0;
   font-size: 0.9rem;
   font-weight: 500;
   transition: background-color 0.2s ease, transform 0.2s ease;

@@ -11,7 +11,7 @@
 
 .logoArea {
   aspect-ratio: 16 / 10;
-  border-radius: var(--radius-lg);
+  border-radius: 0;
   overflow: hidden;
   background-color: #f0f0f0;
   position: relative;
@@ -72,7 +72,7 @@
   }
   
   .logoArea {
-    border-radius: var(--radius-md);
+    border-radius: 0;
   }
   
   .role {
@@ -95,7 +95,7 @@
   }
   
   .logoArea {
-    border-radius: var(--radius-sm);
+    border-radius: 0;
   }
   
   .role {

@@ -130,7 +130,7 @@ export default function BookshelfPage() {
       
       {/* Attribution note */}
       <p className={styles.attributionNote}>
-        Goodreads data stored in PostgreSQL. book synopses generated with Gemini.
+        Goodreads data stored in PostgreSQL. book synopses generated with Gemini. book covers fetched from Google Books API.
       </p>
 
       {/* Show books for active shelf */}

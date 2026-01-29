@@ -10,9 +10,10 @@ interface ExperienceCardProps {
   description: string
   secondaryLogo?: string
   link?: string
+  zoom?: number
 }
 
-export function ExperienceCard({ company, logo, role, type, description, secondaryLogo, link }: ExperienceCardProps) {
+export function ExperienceCard({ company, logo, role, type, description, secondaryLogo, link, zoom }: ExperienceCardProps) {
   const getLogoPath = () => {
     switch (logo) {
       case 'ontario':
@@ -41,6 +42,7 @@ export function ExperienceCard({ company, logo, role, type, description, seconda
           fill
           className={styles.logoImage}
           sizes="(max-width: 768px) 100vw, 50vw"
+          style={zoom ? { transform: `scale(${zoom})` } : undefined}
         />
       )}
     </div>
