@@ -69,13 +69,14 @@ export function RandomVideoPopup() {
 
   // Preload videos for faster rendering
   // Videos are now only 2 seconds each (~200KB avg) so they load quickly
+  // Enable immediately since videos are small enough to load on-demand
   useEffect(() => {
     if (isMobile) return
 
-    let loadedCount = 0
-    const minReadyCount = 3
+    // Enable immediately - videos are small enough to load quickly on-demand
+    setVideosReady(true)
 
-    // Preload all videos by creating hidden video elements
+    // Still preload videos in background for smoother playback
     videoFiles.forEach((videoFile) => {
       const videoUrl = `${VIDEO_BASE_PATH}/${videoFile}`
       if (preloadedVideos.current.has(videoUrl)) return
@@ -88,25 +89,12 @@ export function RandomVideoPopup() {
       video.setAttribute('webkit-playsinline', 'true')
       video.style.cssText = 'position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;z-index:-9999;'
       
-      video.addEventListener('canplay', () => {
-        loadedCount++
-        if (loadedCount >= minReadyCount) {
-          setVideosReady(true)
-        }
-      }, { once: true })
-      
       video.load()
       preloadedVideos.current.set(videoUrl, video)
       document.body.appendChild(video)
     })
 
-    // Fallback: enable after 1 second even if preloading isn't complete
-    const fallbackTimer = setTimeout(() => {
-      setVideosReady(true)
-    }, 1000)
-
     return () => {
-      clearTimeout(fallbackTimer)
       preloadedVideos.current.forEach((video) => {
         video.pause()
         video.removeAttribute('src')
