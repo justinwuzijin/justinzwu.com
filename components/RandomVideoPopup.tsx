@@ -55,7 +55,6 @@ export function RandomVideoPopup() {
   const lastPopupPos = useRef({ x: 0, y: 0, width: 0, height: 0 })
   const mouseStopTimer = useRef<NodeJS.Timeout | null>(null)
   const preloadedVideos = useRef<Map<string, HTMLVideoElement>>(new Map())
-  const [videosReady, setVideosReady] = useState(false)
 
   // Check if mobile
   useEffect(() => {
@@ -67,16 +66,13 @@ export function RandomVideoPopup() {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // Preload videos for faster rendering
-  // Videos are now only 2 seconds each (~200KB avg) so they load quickly
-  // Enable immediately since videos are small enough to load on-demand
+  // Preload videos in background for smoother playback
+  // Videos are small (~200KB) so they can load on-demand if needed
   useEffect(() => {
-    if (isMobile) return
+    // Skip on mobile
+    if (window.innerWidth <= 768) return
 
-    // Enable immediately - videos are small enough to load quickly on-demand
-    setVideosReady(true)
-
-    // Still preload videos in background for smoother playback
+    // Preload videos in background
     videoFiles.forEach((videoFile) => {
       const videoUrl = `${VIDEO_BASE_PATH}/${videoFile}`
       if (preloadedVideos.current.has(videoUrl)) return
@@ -104,7 +100,7 @@ export function RandomVideoPopup() {
       })
       preloadedVideos.current.clear()
     }
-  }, [isMobile])
+  }, []) // Run immediately on mount, no dependencies
 
   // Track text selection
   useEffect(() => {
@@ -190,7 +186,7 @@ export function RandomVideoPopup() {
 
   // Spawn video at current mouse position with overlap effect
   const spawnVideo = useCallback(() => {
-    if (!digitalDroplets || isOverInteractive || isMobile || !isMouseOnScreen || !isMouseMoving || isSelectingText || !videosReady) return
+    if (!digitalDroplets || isOverInteractive || isMobile || !isMouseOnScreen || !isMouseMoving || isSelectingText) return
     
     setPopups(prev => {
       if (prev.length >= 15) return prev
@@ -260,7 +256,7 @@ export function RandomVideoPopup() {
         zIndex,
       }]
     })
-  }, [digitalDroplets, isOverInteractive, isMobile, isMouseOnScreen, isMouseMoving, isSelectingText, videosReady])
+  }, [digitalDroplets, isOverInteractive, isMobile, isMouseOnScreen, isMouseMoving, isSelectingText])
 
   // Spawn videos more frequently for trail effect
   useEffect(() => {
