@@ -3,6 +3,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import styles from './RandomVideoPopup.module.css'
 
+// Using trimmed 2-second videos for faster loading (4.7MB total vs 302MB original)
+const VIDEO_BASE_PATH = '/assets/videos-short'
+
 const videoFiles = [
   'Screen Recording 2024-06-22 at 10.53.30 AM.mp4',
   'Screen Recording 2024-06-22 at 10.56.15 AM.mp4',
@@ -62,98 +65,49 @@ export function RandomVideoPopup() {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // Preload videos for faster rendering - Safari compatible approach
+  // Preload videos for faster rendering
+  // Videos are now only 2 seconds each (~200KB avg) so they load quickly
   useEffect(() => {
     if (isMobile) return
 
     let loadedCount = 0
-    const totalVideos = videoFiles.length
-    const minReadyCount = Math.min(3, totalVideos)
-    let hasSetReady = false
+    const minReadyCount = 3
 
-    const markReady = () => {
-      if (!hasSetReady) {
-        hasSetReady = true
-        setVideosReady(true)
-      }
-    }
+    // Preload all videos by creating hidden video elements
+    videoFiles.forEach((videoFile) => {
+      const videoUrl = `${VIDEO_BASE_PATH}/${videoFile}`
+      if (preloadedVideos.current.has(videoUrl)) return
 
-    // Preload videos using fetch API (works in Safari)
-    // This caches the video data so subsequent video elements load instantly
-    const preloadWithFetch = async (videoFile: string) => {
-      const videoUrl = `/assets/videos/${videoFile}`
-      try {
-        // Fetch the video to cache it
-        const response = await fetch(videoUrl, { method: 'GET', cache: 'force-cache' })
-        if (response.ok) {
-          // Read a small chunk to ensure caching starts
-          const reader = response.body?.getReader()
-          if (reader) {
-            // Read first chunk then cancel (we just want to trigger caching)
-            await reader.read()
-            reader.releaseLock()
-          }
-          loadedCount++
-          if (loadedCount >= minReadyCount) {
-            markReady()
-          }
-        }
-      } catch {
-        // Fetch failed, still count it to avoid blocking forever
+      const video = document.createElement('video')
+      video.src = videoUrl
+      video.preload = 'auto'
+      video.muted = true
+      video.playsInline = true
+      video.setAttribute('webkit-playsinline', 'true')
+      video.style.cssText = 'position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;z-index:-9999;'
+      
+      video.addEventListener('canplay', () => {
         loadedCount++
         if (loadedCount >= minReadyCount) {
-          markReady()
+          setVideosReady(true)
         }
-      }
+      }, { once: true })
       
-      // Also create a video element for additional browser caching
-      if (!preloadedVideos.current.has(videoUrl)) {
-        const video = document.createElement('video')
-        video.src = videoUrl
-        video.preload = 'auto'
-        video.muted = true
-        video.playsInline = true
-        video.setAttribute('webkit-playsinline', 'true') // Safari iOS
-        video.style.cssText = 'position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;z-index:-9999;'
-        
-        // Listen for any loading event as a signal
-        const onLoaded = () => {
-          loadedCount++
-          if (loadedCount >= minReadyCount) {
-            markReady()
-          }
-        }
-        video.addEventListener('loadeddata', onLoaded, { once: true })
-        video.addEventListener('canplay', onLoaded, { once: true })
-        
-        video.load()
-        preloadedVideos.current.set(videoUrl, video)
-        document.body.appendChild(video)
-      }
-    }
+      video.load()
+      preloadedVideos.current.set(videoUrl, video)
+      document.body.appendChild(video)
+    })
 
-    // Preload first batch immediately
-    videoFiles.slice(0, 6).forEach((file) => preloadWithFetch(file))
-    
-    // Preload rest after a short delay
-    const timer = setTimeout(() => {
-      videoFiles.slice(6).forEach((file) => preloadWithFetch(file))
+    // Fallback: enable after 1 second even if preloading isn't complete
+    const fallbackTimer = setTimeout(() => {
+      setVideosReady(true)
     }, 1000)
 
-    // Fallback: enable after timeout even if preloading didn't complete
-    // This ensures Safari users can still use the feature
-    const fallbackTimer = setTimeout(() => {
-      markReady()
-    }, 2000)
-
-    // Cleanup on unmount
     return () => {
-      clearTimeout(timer)
       clearTimeout(fallbackTimer)
       preloadedVideos.current.forEach((video) => {
         video.pause()
         video.removeAttribute('src')
-        video.load() // Reset
         if (video.parentNode) {
           video.parentNode.removeChild(video)
         }
@@ -255,7 +209,7 @@ export function RandomVideoPopup() {
       const preloadedUrls = Array.from(preloadedVideos.current.keys())
       const randomUrl = preloadedUrls.length > 0 
         ? preloadedUrls[Math.floor(Math.random() * preloadedUrls.length)]
-        : `/assets/videos/${videoFiles[Math.floor(Math.random() * videoFiles.length)]}`
+        : `${VIDEO_BASE_PATH}/${videoFiles[Math.floor(Math.random() * videoFiles.length)]}`
       const videoUrl = randomUrl
       
       // Small random distortion

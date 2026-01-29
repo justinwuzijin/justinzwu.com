@@ -58,7 +58,9 @@ function LazyVideo({ videoUrl, aspectRatio, className }: { videoUrl: string; asp
   )
 }
 
-// List of all videos in public/assets/videos/ (MP4 format for browser compatibility)
+// List of all videos in public/assets/videos-short/ (2-second trimmed versions for fast loading)
+const VIDEO_BASE_PATH = '/assets/videos-short'
+
 const videoFiles = [
   'Screen Recording 2024-06-22 at 10.53.30 AM.mp4',
   'Screen Recording 2024-06-22 at 10.56.15 AM.mp4',
@@ -101,7 +103,7 @@ function getRandomVideoConfig(index: number) {
   const rowSpan = Math.random() > 0.7 ? 2 : 1
   
   return {
-    videoUrl: `/assets/videos/${videoFiles[index]}`,
+    videoUrl: `${VIDEO_BASE_PATH}/${videoFiles[index]}`,
     aspectRatio: distortedAspectRatio,
     widthDistortion,
     heightDistortion,
