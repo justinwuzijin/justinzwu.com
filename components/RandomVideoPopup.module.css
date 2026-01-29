@@ -5,7 +5,7 @@
   width: 100vw;
   height: 100vh;
   pointer-events: none;
-  z-index: 100;
+  z-index: 15; /* Above sidebar background (10) but below sidebar text (20) and main content (30) */
   overflow: visible;
   transition: opacity 0.15s ease;
 }
@@ -14,11 +14,35 @@
   position: fixed;
   pointer-events: none;
   transform: translate(-50%, -50%);
+  animation: fadeInOut 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0.8;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 .video {
   object-fit: fill;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  background-color: transparent;
+  display: block;
+}
+
+/* Hide video until it has loaded data to prevent white flash */
+.video:not([data-ready]) {
+  opacity: 0;
+  visibility: hidden;
 }
 
 /* Hide on mobile for performance */
