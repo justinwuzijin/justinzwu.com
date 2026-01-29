@@ -102,14 +102,14 @@ export function LinkPreview({
               zIndex: 9999,
               pointerEvents: 'none',
             }}
-            className="flex flex-col items-center justify-center rounded-lg shadow-xl"
+            className="flex flex-col items-center justify-center shadow-xl"
           >
             <img
               src={imageUrl}
               alt="Link preview"
               width={width}
               height={height}
-              className="rounded-lg object-cover"
+              className="object-cover"
               onError={() => {
                 setIsOpen(false)
               }}

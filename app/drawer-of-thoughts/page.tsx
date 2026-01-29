@@ -76,10 +76,18 @@ const thoughts = [
 
 const gradeColors: Record<string, string> = {
   'grade 9': '#dc2626',
-  'grade 10': '#eab308',
+  'grade 10': '#8b5cf6',
   'grade 11': '#16a34a',
   'grade 12': '#3b82f6',
-  '1a & 1st co-op': '#8b5cf6',
+  '1a & 1st co-op': '#eab308',
+}
+
+const gradeDisplayText: Record<string, string> = {
+  'grade 9': '9',
+  'grade 10': '10',
+  'grade 11': '11',
+  'grade 12': '12',
+  '1a & 1st co-op': '1a',
 }
 
 export default function DrawerOfThoughtsPage() {
@@ -98,12 +106,13 @@ export default function DrawerOfThoughtsPage() {
         <span className={styles.orangeDot} />
         drawer of thoughts
       </h1>
-      <p className={styles.description}>an assortment of ideas documented since age 13.</p>
+      <p className={styles.description}>an assortment of ideas documented since grade 9.</p>
 
       {/* Grade filter tabs */}
       <div className={styles.tabs}>
         {thoughts.map((section) => {
           const color = gradeColors[section.grade] || '#000000'
+          const displayText = gradeDisplayText[section.grade] || section.grade
           
           return (
             <button
@@ -115,7 +124,7 @@ export default function DrawerOfThoughtsPage() {
                 className={styles.tabDot} 
                 style={{ backgroundColor: color }}
               />
-              {section.grade}
+              {displayText}
             </button>
           )
         })}

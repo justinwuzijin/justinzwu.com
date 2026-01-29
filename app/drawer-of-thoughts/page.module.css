@@ -1,7 +1,7 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-2xl);
+  gap: var(--spacing-3xl);
   max-width: 600px;
 }
 
@@ -27,11 +27,11 @@
 
 .description {
   font-size: 1rem;
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif;
+  font-family: var(--font-sans);
   font-weight: 400;
   color: var(--color-foreground);
   margin-top: calc(-1 * var(--spacing-lg));
-  margin-bottom: 0;
+  margin-bottom: calc(-1 * var(--spacing-lg));
   line-height: 1.6;
 }
 

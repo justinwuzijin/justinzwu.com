@@ -31,6 +31,7 @@ const projects = [
     image: '/assets/svg/recollect.svg',
     url: 'https://devpost.com/software/recollect-t5okgv?ref_content=user-portfolio&ref_feature=in_progress',
     dark: false,
+    zoom:1.01
   },
   {
     id: 'performeter',
@@ -40,6 +41,7 @@ const projects = [
     image: '/assets/svg/performeter.svg',
     url: 'https://github.com/justinwuzijin/performeter67',
     dark: false,
+    zoom: 1.01,
   },
   {
     id: '4sight',
@@ -49,7 +51,7 @@ const projects = [
     image: '/assets/svg/Copy of Untitled Design copy.png',
     url: 'https://github.com/justinwuzijin/eye-tester-app',
     dark: false,
-    zoom: 1.25,
+    zoom: 1.045,
   },
   {
     id: '3d-gallery',
@@ -66,7 +68,7 @@ const projects = [
     date: 'Ongoing',
     description: 'A creative network platform that matches indie filmmakers in Toronto with industry professionals.',
     image: '/assets/svg/takeonenoee.png',
-    url: 'https://github.com/justinwuzijin/takeone',
+    url: 'https://www.figma.com/design/VPNthnTDvDgzUz8DNFteew/takeone-beta?node-id=0-1&t=pSdgZlzq8D3XCA8F-1',
     dark: false,
   },
 ]
