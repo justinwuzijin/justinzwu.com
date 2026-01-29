@@ -16,6 +16,8 @@ const navItems = [
 
 export function MobileNav() {
   const [isOpen, setIsOpen] = useState(false)
+  const [isVisible, setIsVisible] = useState(true)
+  const [lastScrollY, setLastScrollY] = useState(0)
   const pathname = usePathname()
   const { theme, setTheme } = useTheme()
 
@@ -23,6 +25,32 @@ export function MobileNav() {
   useEffect(() => {
     setIsOpen(false)
   }, [pathname])
+
+  // Hide header on scroll down, show on scroll up
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+      
+      // Don't hide if menu is open
+      if (isOpen) {
+        setIsVisible(true)
+        return
+      }
+      
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        // Scrolling down and past 100px - hide
+        setIsVisible(false)
+      } else {
+        // Scrolling up - show
+        setIsVisible(true)
+      }
+      
+      setLastScrollY(currentScrollY)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [lastScrollY, isOpen])
 
   // Prevent body scroll when menu is open
   useEffect(() => {
@@ -43,7 +71,7 @@ export function MobileNav() {
   return (
     <>
       {/* Mobile Header Bar with Hamburger only */}
-      <div className={styles.mobileHeader}>
+      <div className={`${styles.mobileHeader} ${isVisible ? styles.visible : styles.hidden}`}>
         <button
           onClick={() => setIsOpen(!isOpen)}
           className={`${styles.hamburger} ${isOpen ? styles.hamburgerOpen : ''}`}

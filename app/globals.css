@@ -25,6 +25,7 @@
   --color-highlight-brown: #8b4513;
   --color-footer-bg: #000000;
   --color-footer-text: #ffffff;
+  --droplet-text-highlight: var(--color-accent);
   
   /* Typography */
   --font-sans: var(--font-inter), 'Inter', sans-serif;
@@ -94,6 +95,7 @@
   --color-foreground: #f5f5f5;
   --color-muted: #888888;
   --color-accent: #d4742f;
+  --droplet-text-highlight: var(--color-accent);
 }
 
 /* Shadcn UI dark variables */
@@ -148,7 +150,9 @@
   --color-highlight-brown: #ffffff;
   --color-footer-bg: #CB5500;
   --color-footer-text: #ffffff;
+  --droplet-text-highlight: var(--color-highlight-blue);
 }
+
 
 @theme inline {
   /* optional: --font-sans, --font-serif, --font-mono if they are applied in the layout.tsx */
@@ -221,7 +225,6 @@ body {
   line-height: 1.6;
   min-height: 100vh;
   overscroll-behavior-y: none;
-  overflow-x: hidden;
 }
 
 /* Typography */
@@ -360,4 +363,12 @@ button {
   font-family: inherit;
   font-size: inherit;
   color: inherit;
+}
+
+/* Force fixed positioning for top right controls - bulletproof override */
+[data-fixed-controls="true"] {
+  position: fixed !important;
+  top: 1.5rem !important;
+  right: 1.5rem !important;
+  z-index: 9999 !important;
 }

@@ -1,12 +1,19 @@
 'use client'
 
 import Link from 'next/link'
-import { TopRightControls } from './TopRightControls'
 import { useTheme } from './ThemeProvider'
 import styles from './HeroHeader.module.css'
 
+/**
+ * HeroHeader Component
+ * 
+ * Simple header with just the Zijin logo.
+ * The header controls (hamburger, shift+o, light/dark) are in TopRightControls
+ * which is rendered in layout.tsx for all pages.
+ */
 export function HeroHeader() {
   const { theme } = useTheme()
+  
   const logoSrc = theme === 'orange' 
     ? '/assets/svg/zijin(orange).svg' 
     : theme === 'dark' 
@@ -22,7 +29,6 @@ export function HeroHeader() {
           className={styles.logoImage}
         />
       </Link>
-      <TopRightControls />
     </div>
   )
 }
