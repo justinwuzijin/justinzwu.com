@@ -1,7 +1,33 @@
 .topRightControls {
-  position: fixed;
-  top: var(--spacing-xl);
-  right: var(--spacing-2xl);
+  position: fixed !important;
+  top: 1.75rem !important;
+  right: 1.5rem !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  z-index: 9999 !important;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+/* Visible state */
+.visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Hidden state (on scroll down) */
+.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Desktop only elements - hidden on mobile */
+.desktopOnly {
+  display: flex;
+}
+
+.socialControls {
   display: flex;
   align-items: center;
   height: 42px;
@@ -146,7 +172,7 @@
 
 .shiftOKey {
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: 400;
   line-height: 1;
 }
 
@@ -154,12 +180,12 @@
 @media (max-width: 1024px) {
   .topRightControls {
     top: var(--spacing-md);
-    right: var(--spacing-xl);
+    right: var(--spacing-lg);
     gap: var(--spacing-sm);
   }
 }
 
-/* Mobile responsive */
+/* Mobile responsive - show only social hamburger, positioned left of MobileNav hamburger */
 @media (max-width: 768px) {
   .topRightControls {
     display: flex !important;
@@ -168,19 +194,22 @@
     right: calc(var(--spacing-lg) + 40px) !important;
   }
   
+  /* Remove margin-right on mobile */
+  .socialControls {
+    margin-right: 0;
+  }
+  
+  /* Hide shift+o and light/dark buttons on mobile */
+  .shiftOButton,
   .controlButton {
-    padding: var(--spacing-xs);
+    display: none !important;
   }
 }
 
 /* Small phones */
 @media (max-width: 480px) {
   .topRightControls {
-    gap: var(--spacing-xs);
-  }
-  
-  .controlButton svg {
-    width: 16px;
-    height: 16px;
+    top: calc(var(--spacing-md) - 2px) !important;
+    right: calc(var(--spacing-sm) + 36px) !important;
   }
 }
