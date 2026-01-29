@@ -181,41 +181,31 @@ interface AnimatedBookGridProps {
 
 function AnimatedBookGrid({ books, showRating, expandedBookId, onBookClick }: AnimatedBookGridProps) {
   const containerVariants = {
-    stacked: {
-      transition: {
-        staggerChildren: 0.05,
-      },
+    hidden: {
+      opacity: 1,
     },
-    expanded: {
+    visible: {
+      opacity: 1,
       transition: {
-        staggerChildren: 0.08,
-        delayChildren: 0.1,
+        staggerChildren: 0.03,
+        delayChildren: 0.05,
       },
     },
   }
 
   const bookVariants = {
-    stacked: (index: number) => ({
-      x: index * 20,
-      y: index * 15,
-      scale: 1 - index * 0.05,
-      rotate: index * 2,
-      zIndex: books.length - index,
-      transition: {
-        type: 'spring' as const,
-        stiffness: 300,
-        damping: 25,
-      },
-    }),
-    expanded: {
-      x: 0,
-      y: 0,
+    hidden: {
+      opacity: 0,
+      scale: 0.8,
+      y: 20,
+    },
+    visible: {
+      opacity: 1,
       scale: 1,
-      rotate: 0,
-      zIndex: 1,
+      y: 0,
       transition: {
         type: 'spring' as const,
-        stiffness: 300,
+        stiffness: 400,
         damping: 25,
       },
     },
@@ -225,21 +215,14 @@ function AnimatedBookGrid({ books, showRating, expandedBookId, onBookClick }: An
     <motion.div
       className={styles.booksGrid}
       variants={containerVariants}
-      initial="stacked"
-      animate="expanded"
-      layout
+      initial="hidden"
+      animate="visible"
     >
-      {books.map((book, index) => (
+      {books.map((book) => (
         <motion.div
           key={book.id}
-          custom={index}
           variants={bookVariants}
-          layout
-          style={
-            {
-              position: 'relative',
-            }
-          }
+          style={{ position: 'relative' }}
         >
           <BookCard 
             {...book} 

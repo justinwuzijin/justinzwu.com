@@ -49,6 +49,8 @@ export function RandomVideoPopup() {
   const lastMousePos = useRef({ x: 0, y: 0 })
   const lastPopupPos = useRef({ x: 0, y: 0, width: 0, height: 0 })
   const mouseStopTimer = useRef<NodeJS.Timeout | null>(null)
+  const preloadedVideos = useRef<Map<string, HTMLVideoElement>>(new Map())
+  const [videosReady, setVideosReady] = useState(false)
 
   // Check if mobile
   useEffect(() => {
@@ -59,6 +61,106 @@ export function RandomVideoPopup() {
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
+
+  // Preload videos for faster rendering - Safari compatible approach
+  useEffect(() => {
+    if (isMobile) return
+
+    let loadedCount = 0
+    const totalVideos = videoFiles.length
+    const minReadyCount = Math.min(3, totalVideos)
+    let hasSetReady = false
+
+    const markReady = () => {
+      if (!hasSetReady) {
+        hasSetReady = true
+        setVideosReady(true)
+      }
+    }
+
+    // Preload videos using fetch API (works in Safari)
+    // This caches the video data so subsequent video elements load instantly
+    const preloadWithFetch = async (videoFile: string) => {
+      const videoUrl = `/assets/videos/${videoFile}`
+      try {
+        // Fetch the video to cache it
+        const response = await fetch(videoUrl, { method: 'GET', cache: 'force-cache' })
+        if (response.ok) {
+          // Read a small chunk to ensure caching starts
+          const reader = response.body?.getReader()
+          if (reader) {
+            // Read first chunk then cancel (we just want to trigger caching)
+            await reader.read()
+            reader.releaseLock()
+          }
+          loadedCount++
+          if (loadedCount >= minReadyCount) {
+            markReady()
+          }
+        }
+      } catch {
+        // Fetch failed, still count it to avoid blocking forever
+        loadedCount++
+        if (loadedCount >= minReadyCount) {
+          markReady()
+        }
+      }
+      
+      // Also create a video element for additional browser caching
+      if (!preloadedVideos.current.has(videoUrl)) {
+        const video = document.createElement('video')
+        video.src = videoUrl
+        video.preload = 'auto'
+        video.muted = true
+        video.playsInline = true
+        video.setAttribute('webkit-playsinline', 'true') // Safari iOS
+        video.style.cssText = 'position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;z-index:-9999;'
+        
+        // Listen for any loading event as a signal
+        const onLoaded = () => {
+          loadedCount++
+          if (loadedCount >= minReadyCount) {
+            markReady()
+          }
+        }
+        video.addEventListener('loadeddata', onLoaded, { once: true })
+        video.addEventListener('canplay', onLoaded, { once: true })
+        
+        video.load()
+        preloadedVideos.current.set(videoUrl, video)
+        document.body.appendChild(video)
+      }
+    }
+
+    // Preload first batch immediately
+    videoFiles.slice(0, 6).forEach((file) => preloadWithFetch(file))
+    
+    // Preload rest after a short delay
+    const timer = setTimeout(() => {
+      videoFiles.slice(6).forEach((file) => preloadWithFetch(file))
+    }, 1000)
+
+    // Fallback: enable after timeout even if preloading didn't complete
+    // This ensures Safari users can still use the feature
+    const fallbackTimer = setTimeout(() => {
+      markReady()
+    }, 2000)
+
+    // Cleanup on unmount
+    return () => {
+      clearTimeout(timer)
+      clearTimeout(fallbackTimer)
+      preloadedVideos.current.forEach((video) => {
+        video.pause()
+        video.removeAttribute('src')
+        video.load() // Reset
+        if (video.parentNode) {
+          video.parentNode.removeChild(video)
+        }
+      })
+      preloadedVideos.current.clear()
+    }
+  }, [isMobile])
 
   // Track text selection
   useEffect(() => {
@@ -144,13 +246,17 @@ export function RandomVideoPopup() {
 
   // Spawn video at current mouse position with overlap effect
   const spawnVideo = useCallback(() => {
-    if (isOverInteractive || isMobile || !isMouseOnScreen || !isMouseMoving || isSelectingText) return
+    if (isOverInteractive || isMobile || !isMouseOnScreen || !isMouseMoving || isSelectingText || !videosReady) return
     
     setPopups(prev => {
       if (prev.length >= 15) return prev
       
-      const randomVideo = videoFiles[Math.floor(Math.random() * videoFiles.length)]
-      const videoUrl = `/assets/videos/${randomVideo}`
+      // Prefer videos that are already preloaded and ready
+      const preloadedUrls = Array.from(preloadedVideos.current.keys())
+      const randomUrl = preloadedUrls.length > 0 
+        ? preloadedUrls[Math.floor(Math.random() * preloadedUrls.length)]
+        : `/assets/videos/${videoFiles[Math.floor(Math.random() * videoFiles.length)]}`
+      const videoUrl = randomUrl
       
       // Small random distortion
       const distortionType = Math.random()
@@ -210,7 +316,7 @@ export function RandomVideoPopup() {
         zIndex,
       }]
     })
-  }, [isOverInteractive, isMobile, isMouseOnScreen, isMouseMoving, isSelectingText])
+  }, [isOverInteractive, isMobile, isMouseOnScreen, isMouseMoving, isSelectingText, videosReady])
 
   // Spawn videos more frequently for trail effect
   useEffect(() => {
@@ -241,10 +347,21 @@ export function RandomVideoPopup() {
             muted
             loop
             playsInline
+            webkit-playsinline="true"
+            preload="auto"
             className={styles.video}
             style={{
               width: popup.width,
               height: popup.height,
+            }}
+            // Force play on Safari which may block autoplay
+            ref={(el) => {
+              if (el) {
+                el.play().catch(() => {
+                  // Retry once after a short delay
+                  setTimeout(() => el.play().catch(() => {}), 50)
+                })
+              }
             }}
           />
         </div>
