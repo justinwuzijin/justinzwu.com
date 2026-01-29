@@ -8,6 +8,8 @@ import { SidebarNav } from '@/components/SidebarNav'
 import { MobileNav } from '@/components/MobileNav'
 import { Footer } from '@/components/Footer'
 import { ThemeProvider } from '@/components/ThemeProvider'
+import { RandomVideoPopup } from '@/components/RandomVideoPopup'
+import { TopRightControls } from '@/components/TopRightControls'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -39,6 +41,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${notoSerifSC.variable}`}>
         <ThemeProvider>
+          {/* Random video popups near mouse */}
+          <RandomVideoPopup />
+          
+          {/* Top right controls (theme toggle, orange mode, digital droplets) */}
+          <TopRightControls />
+          
           {/* Mobile Navigation - Always visible on mobile */}
           <MobileNav />
           

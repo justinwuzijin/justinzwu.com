@@ -1,0 +1,29 @@
+.container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 100;
+  overflow: visible;
+  transition: opacity 0.15s ease;
+}
+
+.popup {
+  position: fixed;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.video {
+  object-fit: fill;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Hide on mobile for performance */
+@media (max-width: 768px) {
+  .container {
+    display: none;
+  }
+}
