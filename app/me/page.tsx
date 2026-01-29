@@ -9,7 +9,7 @@ const projects = [
     id: 'skema',
     title: 'Skema',
     date: "Jan '26",
-    description: 'an npm package that transforms your localhost into an interactive whiteboard where you can draw new components, edit directly on your live website.',
+    description: 'An npm package that transforms your localhost into an interactive whiteboard where you can draw new components, edit directly on your live website.',
     image: '/assets/svg/skeeeemaar.png',
     url: 'https://devpost.com/software/skema-wta8kn?ref_content=user-portfolio&ref_feature=in_progress',
     dark: false,
