@@ -71,7 +71,7 @@
 }
 
 .orangeModeHint {
-  font-size: 0.45rem;
+  font-size: 0.65rem;
   color: var(--color-muted);
   margin: 0;
   text-align: right;
@@ -85,7 +85,7 @@
   }
   
   .orangeModeHint {
-    font-size: 0.4rem;
+    font-size: 0.55rem;
   }
 }
 
