@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useRef, useCallback } from 'react'
+import { useTheme } from './ThemeProvider'
 import styles from './RandomVideoPopup.module.css'
 
 // Using trimmed 2-second videos for faster loading (4.7MB total vs 302MB original)
@@ -42,6 +43,7 @@ interface VideoPopup {
 }
 
 export function RandomVideoPopup() {
+  const { digitalDroplets } = useTheme()
   const [popups, setPopups] = useState<VideoPopup[]>([])
   const [isOverInteractive, setIsOverInteractive] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
@@ -200,7 +202,7 @@ export function RandomVideoPopup() {
 
   // Spawn video at current mouse position with overlap effect
   const spawnVideo = useCallback(() => {
-    if (isOverInteractive || isMobile || !isMouseOnScreen || !isMouseMoving || isSelectingText || !videosReady) return
+    if (!digitalDroplets || isOverInteractive || isMobile || !isMouseOnScreen || !isMouseMoving || isSelectingText || !videosReady) return
     
     setPopups(prev => {
       if (prev.length >= 15) return prev
@@ -270,7 +272,7 @@ export function RandomVideoPopup() {
         zIndex,
       }]
     })
-  }, [isOverInteractive, isMobile, isMouseOnScreen, isMouseMoving, isSelectingText, videosReady])
+  }, [digitalDroplets, isOverInteractive, isMobile, isMouseOnScreen, isMouseMoving, isSelectingText, videosReady])
 
   // Spawn videos more frequently for trail effect
   useEffect(() => {
@@ -280,8 +282,8 @@ export function RandomVideoPopup() {
     return () => clearInterval(interval)
   }, [spawnVideo, isMobile])
 
-  // Don't render on mobile
-  if (isMobile) return null
+  // Don't render on mobile or when disabled
+  if (isMobile || !digitalDroplets) return null
 
   return (
     <div className={styles.container} style={{ opacity: isOverInteractive ? 0 : 1 }}>
