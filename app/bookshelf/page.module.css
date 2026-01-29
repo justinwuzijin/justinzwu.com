@@ -74,6 +74,14 @@
   width: 10px;
   height: 10px;
   border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.attributionNote {
+  font-size: 0.7rem;
+  color: var(--color-muted);
+  margin-top: var(--spacing-xs);
+  margin-bottom: 0;
 }
 
 .shelfSection {
