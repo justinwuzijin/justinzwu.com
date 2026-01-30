@@ -1,5 +1,8 @@
 .nav {
   /* Sidebar is already fixed in layout */
+  /* Ensure sidebar content appears above liquid droplets (z-index: 15) */
+  position: relative;
+  z-index: 20;
 }
 
 .navList {
@@ -7,6 +10,8 @@
   flex-direction: column;
   gap: var(--spacing-md);
   align-items: flex-end;
+  position: relative;
+  z-index: 20;
 }
 
 .navLink {
@@ -19,6 +24,8 @@
   text-align: right;
   outline: none;
   border: none;
+  position: relative;
+  z-index: 20;
 }
 
 .navLink:hover {
@@ -48,6 +55,8 @@
   align-items: flex-end;
   gap: var(--spacing-xs);
   width: 100%;
+  position: relative;
+  z-index: 20;
 }
 
 .dropletsButton {
@@ -93,11 +102,13 @@
 }
 
 .vinylContainer {
-  margin-top: var(--spacing-xl);
+  margin-top: calc(var(--spacing-xl) + var(--spacing-lg));
   display: flex;
   justify-content: flex-end;
   align-items: center;
   width: 100%;
+  position: relative;
+  z-index: 20;
 }
 
 /* Hide vinyl player on mobile */
@@ -114,6 +125,8 @@
   align-items: flex-end;
   gap: var(--spacing-xs);
   width: 100%;
+  position: relative;
+  z-index: 20;
 }
 
 .toggleRow {

@@ -37,19 +37,7 @@ export function SidebarNav() {
         })}
       </ul>
       
-      {/* Vinyl Record Player */}
-      <div className={styles.vinylContainer}>
-        <VinylRecordPlayer 
-          track={{
-            title: 'WILSHIRE',
-            artist: 'Tyler, The Creator',
-            src: '/music/wilshire.mp3',
-            cover: '/music/estate-sale-cover.png',
-          }}
-        />
-      </div>
-      
-      {/* Digital droplets toggle */}
+      {/* Digital droplets toggle - commented out
       <div className={styles.dropletsContainer}>
         <button
           onClick={() => setDigitalDroplets(!digitalDroplets)}
@@ -57,7 +45,6 @@ export function SidebarNav() {
           aria-label={`${digitalDroplets ? 'Disable' : 'Enable'} digital droplets`}
           title={`${digitalDroplets ? 'Disable' : 'Enable'} digital droplets`}
         >
-          {/* Droplet icon */}
           <svg
             width="18"
             height="18"
@@ -72,6 +59,63 @@ export function SidebarNav() {
           </svg>
         </button>
         <span className={styles.dropletsLabel}>(activate digital stream)</span>
+      </div>
+      */}
+      
+      {/* Vinyl Record Player */}
+      <div className={styles.vinylContainer}>
+        <VinylRecordPlayer 
+          tracks={[
+            {
+              title: 'WILSHIRE',
+              artist: 'Tyler, The Creator',
+              src: '/music/wilshire.mp3',
+              cover: '/music/estate-sale-cover.png',
+            },
+            {
+              title: 'Enjoy Right Now, Today',
+              artist: 'Tyler, The Creator',
+              src: '/music/enjoy-right-now.mp3',
+              cover: '/music/flower-boy-cover.png',
+            },
+            {
+              title: 'Stop Playing With Me',
+              artist: 'Tyler, The Creator',
+              src: '/music/stop-playing-with-me.mp3',
+              cover: '/music/chromakopia-cover.webp',
+            },
+            {
+              title: 'Baby Blues',
+              artist: 'AUDREY NUNA',
+              src: '/music/baby-blues.mp3',
+              cover: '/music/audrey-nuna-cover.jpg',
+            },
+            {
+              title: 'No Merci',
+              artist: 'Little Simz',
+              src: '/music/no-merci.mp3',
+              cover: '/music/little-simz-cover.jpg',
+            },
+            {
+              title: '關於小熊',
+              artist: 'Soft Lipa',
+              src: '/music/guan-yu-xiao-xiong.mp3',
+              cover: '/music/soft-lipa-cover.jpg',
+            },
+            {
+              title: '姐姐',
+              artist: '夏之禹',
+              src: '/music/jiejie.mp3',
+              cover: '/music/xiazhiyu-cover.jpg',
+            },
+            {
+              title: 'Stateside',
+              artist: 'PinkPantheress',
+              src: '/music/Stateside - PinkPantheress (youtube).mp3',
+              cover: '/music/pinkpantheress-cover.jpg',
+            },
+          ]}
+        />
       </div>
     </nav>
   )

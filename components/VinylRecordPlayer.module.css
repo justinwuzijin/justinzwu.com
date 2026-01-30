@@ -1,8 +1,19 @@
 .vinylPlayer {
-  /* No positioning - will be positioned by parent */
+  /* Fixed width so track name doesn't affect vinyl/button positions */
+  width: 120px;
   display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.playerRow {
+  display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
+  gap: 8px;
+  width: 100%;
 }
 
 .container {
@@ -67,11 +78,11 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 12px;
-  height: 12px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: white;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
   z-index: 2;
 }
 
@@ -80,36 +91,95 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 32px;
-  height: 32px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.95);
-  border: 2px solid rgba(0, 0, 0, 0.1);
+  background: transparent;
+  border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #000;
-  box-shadow: 
-    0 2px 8px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(255, 255, 255, 0.5);
+  color: white;
   transition: all 0.2s ease;
   outline: none;
   z-index: 10;
-  opacity: 1;
   pointer-events: auto;
 }
 
 .playButton:hover {
-  background: rgba(255, 255, 255, 1);
-  transform: translate(-50%, -50%) scale(1.1);
-  box-shadow: 
-    0 4px 12px rgba(0, 0, 0, 0.3),
-    0 0 0 3px rgba(255, 255, 255, 0.4);
+  transform: translate(-50%, -50%) scale(1.2);
 }
 
 .playButton:active {
   transform: translate(-50%, -50%) scale(0.95);
+}
+
+/* Playback controls - buttons beside vinyl */
+.controlButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-foreground);
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  outline: none;
+  flex-shrink: 0;
+}
+
+.controlButton:hover {
+  opacity: 0.7;
+  transform: scale(1.15);
+}
+
+.controlButton:active {
+  transform: scale(0.95);
+}
+
+/* Track info */
+.trackInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin-top: 4px;
+  width: 100%;
+}
+
+.trackTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  max-width: 100%;
+}
+
+.musicIcon {
+  color: var(--color-foreground);
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+}
+
+.trackTitle {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--color-foreground);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+  text-align: center;
+}
+
+.trackSubtitle {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  font-style: italic;
 }
 
 /* Theme-specific adjustments */
@@ -131,13 +201,7 @@
   );
 }
 
-[data-theme='dark'] .playButton {
-  background: rgba(255, 255, 255, 0.9);
-}
-
-[data-theme='orange'] .playButton {
-  background: rgba(255, 255, 255, 0.95);
-}
+/* Play button is always white/transparent across all themes */
 
 /* Keep center hole white in light mode, use foreground color in other themes */
 [data-theme='dark'] .recordCenter,
