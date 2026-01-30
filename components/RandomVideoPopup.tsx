@@ -45,12 +45,15 @@ interface VideoPopup {
 export function RandomVideoPopup() {
   const { digitalDroplets } = useTheme()
   const [popups, setPopups] = useState<VideoPopup[]>([])
-  const [readyPopups, setReadyPopups] = useState<Set<number>>(new Set())
-  const [isOverInteractive, setIsOverInteractive] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
-  const [isMouseOnScreen, setIsMouseOnScreen] = useState(false)
-  const [isMouseMoving, setIsMouseMoving] = useState(false)
-  const [isSelectingText, setIsSelectingText] = useState(false)
+  
+  // Use refs for rapidly-changing values to avoid re-renders
+  const isOverInteractiveRef = useRef(false)
+  const isMouseOnScreenRef = useRef(true)
+  const isMouseMovingRef = useRef(false)
+  const isSelectingTextRef = useRef(false)
+  const hasInitialMousePosRef = useRef(false)
+  
   const idCounter = useRef(0)
   const lastMousePos = useRef({ x: 0, y: 0 })
   const lastPopupPos = useRef({ x: 0, y: 0, width: 0, height: 0 })
@@ -72,14 +75,22 @@ export function RandomVideoPopup() {
     document.documentElement.setAttribute('data-droplets-active', isActive ? 'true' : 'false')
   }, [digitalDroplets, popups.length])
 
+  // For rendering state (isOverInteractive affects opacity)
+  const [isOverInteractive, setIsOverInteractive] = useState(false)
+
   // Preload videos in background for smoother playback
-  // Videos are small (~200KB) so they can load on-demand if needed
+  // Prioritize first few videos for immediate availability
   useEffect(() => {
     // Skip on mobile
     if (window.innerWidth <= 768) return
 
-    // Preload videos in background
-    videoFiles.forEach((videoFile) => {
+    // Shuffle array and preload first 5 immediately for fast startup
+    const shuffled = [...videoFiles].sort(() => Math.random() - 0.5)
+    const priorityVideos = shuffled.slice(0, 5)
+    const remainingVideos = shuffled.slice(5)
+    
+    // Preload priority videos immediately
+    priorityVideos.forEach((videoFile) => {
       const videoUrl = `${VIDEO_BASE_PATH}/${videoFile}`
       if (preloadedVideos.current.has(videoUrl)) return
 
@@ -95,8 +106,29 @@ export function RandomVideoPopup() {
       preloadedVideos.current.set(videoUrl, video)
       document.body.appendChild(video)
     })
+    
+    // Preload remaining videos after a short delay to not block initial render
+    const timeoutId = setTimeout(() => {
+      remainingVideos.forEach((videoFile) => {
+        const videoUrl = `${VIDEO_BASE_PATH}/${videoFile}`
+        if (preloadedVideos.current.has(videoUrl)) return
+
+        const video = document.createElement('video')
+        video.src = videoUrl
+        video.preload = 'auto'
+        video.muted = true
+        video.playsInline = true
+        video.setAttribute('webkit-playsinline', 'true')
+        video.style.cssText = 'position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;z-index:-9999;'
+        
+        video.load()
+        preloadedVideos.current.set(videoUrl, video)
+        document.body.appendChild(video)
+      })
+    }, 500)
 
     return () => {
+      clearTimeout(timeoutId)
       preloadedVideos.current.forEach((video) => {
         video.pause()
         video.removeAttribute('src')
@@ -108,34 +140,17 @@ export function RandomVideoPopup() {
     }
   }, []) // Run immediately on mount, no dependencies
 
-  // Track text selection
+  // Track text selection - only block when actually selecting text
   useEffect(() => {
     const handleSelectionChange = () => {
       const selection = window.getSelection()
-      setIsSelectingText(selection !== null && selection.toString().length > 0)
-    }
-    
-    const handleMouseDown = () => {
-      // User might be starting to select text
-      setIsSelectingText(true)
-    }
-    
-    const handleMouseUp = () => {
-      // Check if there's actual selection after mouse up
-      setTimeout(() => {
-        const selection = window.getSelection()
-        setIsSelectingText(selection !== null && selection.toString().length > 0)
-      }, 10)
+      isSelectingTextRef.current = selection !== null && selection.toString().length > 0
     }
     
     document.addEventListener('selectionchange', handleSelectionChange)
-    document.addEventListener('mousedown', handleMouseDown)
-    document.addEventListener('mouseup', handleMouseUp)
     
     return () => {
       document.removeEventListener('selectionchange', handleSelectionChange)
-      document.removeEventListener('mousedown', handleMouseDown)
-      document.removeEventListener('mouseup', handleMouseUp)
     }
   }, [])
 
@@ -144,20 +159,24 @@ export function RandomVideoPopup() {
     const handleMouseMove = (e: MouseEvent) => {
       const newPos = { x: e.clientX, y: e.clientY }
       
+      // Mark that we now have a valid mouse position
+      hasInitialMousePosRef.current = true
+      
       // Check if mouse actually moved
       if (newPos.x !== lastMousePos.current.x || newPos.y !== lastMousePos.current.y) {
         lastMousePos.current = newPos
-        setIsMouseMoving(true)
+        isMouseMovingRef.current = true
+        isMouseOnScreenRef.current = true
         
         // Clear existing timer
         if (mouseStopTimer.current) {
           clearTimeout(mouseStopTimer.current)
         }
         
-        // Set timer to detect when mouse stops
+        // Set timer to detect when mouse stops (longer delay for smoother trail)
         mouseStopTimer.current = setTimeout(() => {
-          setIsMouseMoving(false)
-        }, 100)
+          isMouseMovingRef.current = false
+        }, 150)
       }
       
       // Only stop on: links with images, link previews, images that are clickable
@@ -169,13 +188,17 @@ export function RandomVideoPopup() {
       const isClickableImage = target.closest('a img, a [class*="image"], a [class*="Image"], a [class*="cover"], a [class*="Cover"]')
       const isImageLink = target.tagName === 'IMG' && target.closest('a')
       
-      setIsOverInteractive(!!(linkWithImage || isLinkPreview || isClickableImage || isImageLink))
+      const overInteractive = !!(linkWithImage || isLinkPreview || isClickableImage || isImageLink)
+      isOverInteractiveRef.current = overInteractive
+      setIsOverInteractive(overInteractive) // For rendering opacity
     }
     
-    const handleMouseEnter = () => setIsMouseOnScreen(true)
+    const handleMouseEnter = () => {
+      isMouseOnScreenRef.current = true
+    }
     const handleMouseLeave = () => {
-      setIsMouseOnScreen(false)
-      setIsMouseMoving(false)
+      isMouseOnScreenRef.current = false
+      isMouseMovingRef.current = false
     }
     
     document.addEventListener('mousemove', handleMouseMove)
@@ -191,11 +214,19 @@ export function RandomVideoPopup() {
   }, [])
 
   // Spawn video at current mouse position with overlap effect
+  // Using refs for conditions so this callback stays stable
   const spawnVideo = useCallback(() => {
-    if (!digitalDroplets || isOverInteractive || isMobile || !isMouseOnScreen || !isMouseMoving || isSelectingText) return
+    // Check all conditions using refs (no state dependency = stable callback)
+    if (!digitalDroplets) return
+    if (isOverInteractiveRef.current) return
+    if (isMobile) return
+    if (!isMouseOnScreenRef.current) return
+    if (!isMouseMovingRef.current) return
+    if (isSelectingTextRef.current) return
+    if (!hasInitialMousePosRef.current) return
     
     setPopups(prev => {
-      if (prev.length >= 15) return prev
+      if (prev.length >= 7) return prev
       
       // Prefer videos that are already preloaded and ready
       const preloadedUrls = Array.from(preloadedVideos.current.keys())
@@ -250,12 +281,7 @@ export function RandomVideoPopup() {
       // All videos disappear after 0.5 seconds
       setTimeout(() => {
         setPopups(p => p.filter(popup => popup.id !== newId))
-        setReadyPopups(prev => {
-          const next = new Set(prev)
-          next.delete(newId)
-          return next
-        })
-      }, 500)
+      }, 300)
       
       return [...prev, {
         id: newId,
@@ -267,13 +293,13 @@ export function RandomVideoPopup() {
         zIndex,
       }]
     })
-  }, [digitalDroplets, isOverInteractive, isMobile, isMouseOnScreen, isMouseMoving, isSelectingText])
+  }, [digitalDroplets, isMobile]) // Only re-create when these change (rarely)
 
   // Spawn videos more frequently for trail effect
   useEffect(() => {
     if (isMobile) return
     
-    const interval = setInterval(spawnVideo, 100)
+    const interval = setInterval(spawnVideo, 150)
     return () => clearInterval(interval)
   }, [spawnVideo, isMobile])
 
@@ -282,53 +308,32 @@ export function RandomVideoPopup() {
 
   return (
     <div className={styles.container} style={{ opacity: isOverInteractive ? 0 : 1 }}>
-      {popups.map(popup => {
-        const isReady = readyPopups.has(popup.id)
-        return (
-          <div
-            key={popup.id}
-            className={styles.popup}
+      {popups.map(popup => (
+        <div
+          key={popup.id}
+          className={styles.popup}
+          style={{
+            left: popup.x,
+            top: popup.y,
+            zIndex: popup.zIndex,
+          }}
+        >
+          <video
+            src={popup.videoUrl}
+            autoPlay
+            muted
+            loop
+            playsInline
+            webkit-playsinline="true"
+            preload="auto"
+            className={styles.video}
             style={{
-              left: popup.x,
-              top: popup.y,
-              zIndex: popup.zIndex,
-              display: isReady ? 'block' : 'none',
+              width: popup.width,
+              height: popup.height,
             }}
-          >
-            <video
-              src={popup.videoUrl}
-              autoPlay
-              muted
-              loop
-              playsInline
-              webkit-playsinline="true"
-              preload="metadata"
-              className={styles.video}
-              data-ready={isReady ? 'true' : undefined}
-              style={{
-                width: popup.width,
-                height: popup.height,
-              }}
-              onLoadedData={(e) => {
-                const video = e.currentTarget
-                setReadyPopups(prev => new Set(prev).add(popup.id))
-                video.play().catch(() => {
-                  setTimeout(() => video.play().catch(() => {}), 50)
-                })
-              }}
-              onCanPlay={(e) => {
-                const video = e.currentTarget
-                if (!readyPopups.has(popup.id)) {
-                  setReadyPopups(prev => new Set(prev).add(popup.id))
-                  video.play().catch(() => {
-                    setTimeout(() => video.play().catch(() => {}), 50)
-                  })
-                }
-              }}
-            />
-          </div>
-        )
-      })}
+          />
+        </div>
+      ))}
     </div>
   )
 }

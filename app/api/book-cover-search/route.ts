@@ -102,9 +102,24 @@ async function searchGoogleBooks(title: string, author: string): Promise<SearchR
 
 export async function GET(request: Request) {
   try {
-    const { searchParams } = new URL(request.url)
-    const title = searchParams.get('title')
-    const author = searchParams.get('author')
+    // Safely parse URL - handle non-ASCII characters
+    let searchParams: URLSearchParams
+    try {
+      // request.url should be a complete URL in Next.js App Router
+      const url = new URL(request.url)
+      searchParams = url.searchParams
+    } catch (error: any) {
+      // If URL parsing fails due to non-ASCII characters, manually extract search params
+      console.warn('URL parsing failed, using fallback method:', error.message)
+      const urlString = request.url.toString()
+      // Extract query string (everything after ?)
+      const queryString = urlString.includes('?') ? urlString.split('?')[1].split('#')[0] : ''
+      searchParams = new URLSearchParams(queryString)
+    }
+    
+    // Decode parameters safely (URLSearchParams.get() already decodes)
+    const title = searchParams.get('title') || ''
+    const author = searchParams.get('author') || ''
     const isbn = searchParams.get('isbn')
     const isbn13 = searchParams.get('isbn13')
 
