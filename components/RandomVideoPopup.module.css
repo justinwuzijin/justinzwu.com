@@ -39,12 +39,6 @@
   display: block;
 }
 
-/* Hide video until it has loaded data to prevent white flash */
-.video:not([data-ready]) {
-  opacity: 0;
-  visibility: hidden;
-}
-
 /* Hide on mobile for performance */
 @media (max-width: 768px) {
   .container {

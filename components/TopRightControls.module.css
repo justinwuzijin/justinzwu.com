@@ -31,6 +31,8 @@
   display: flex;
   align-items: center;
   height: 42px;
+  /* Align hamburger with page content boundary */
+  margin-right: calc((107.5vw - var(--content-max-width)) / 2 - 1.5rem);
 }
 
 .fluidContainer {

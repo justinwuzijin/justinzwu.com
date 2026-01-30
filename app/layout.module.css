@@ -16,13 +16,26 @@
   width: var(--sidebar-width);
   height: fit-content;
   flex-shrink: 0;
-  background-color: var(--color-background);
-  z-index: 10;
+  /* Background handled by ::before pseudo-element for z-index layering */
   margin-left: var(--spacing-xl);
   margin-top: var(--spacing-xl);
 }
 
-.sidebar * {
+/* Sidebar background - appears UNDER droplets (z-index: 15) */
+.sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--color-background);
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Sidebar content - appears ABOVE droplets (z-index: 15) */
+.sidebar > * {
   position: relative;
   z-index: 20;
 }
