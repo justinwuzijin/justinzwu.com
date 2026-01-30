@@ -3,10 +3,17 @@
   top: 1.75rem !important;
   right: 1.5rem !important;
   display: flex !important;
-  align-items: center !important;
-  gap: 1rem !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+  gap: 0.5rem !important;
   z-index: 9999 !important;
   transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.topRow {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
 }
 
 /* Visible state */
