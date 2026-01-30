@@ -45,14 +45,15 @@ interface VideoPopup {
 export function RandomVideoPopup() {
   const { digitalDroplets } = useTheme()
   const [popups, setPopups] = useState<VideoPopup[]>([])
-  const [isOverInteractive, setIsOverInteractive] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
-  // Start with mouse assumed on screen - we'll detect if it leaves
-  const [isMouseOnScreen, setIsMouseOnScreen] = useState(true)
-  // Start with mouse assumed moving - we'll stop when it stops
-  const [isMouseMoving, setIsMouseMoving] = useState(true)
-  const [isSelectingText, setIsSelectingText] = useState(false)
-  const [hasInitialMousePos, setHasInitialMousePos] = useState(false)
+  
+  // Use refs for rapidly-changing values to avoid re-renders
+  const isOverInteractiveRef = useRef(false)
+  const isMouseOnScreenRef = useRef(true)
+  const isMouseMovingRef = useRef(false)
+  const isSelectingTextRef = useRef(false)
+  const hasInitialMousePosRef = useRef(false)
+  
   const idCounter = useRef(0)
   const lastMousePos = useRef({ x: 0, y: 0 })
   const lastPopupPos = useRef({ x: 0, y: 0, width: 0, height: 0 })
@@ -73,6 +74,9 @@ export function RandomVideoPopup() {
     const isActive = digitalDroplets && popups.length > 0
     document.documentElement.setAttribute('data-droplets-active', isActive ? 'true' : 'false')
   }, [digitalDroplets, popups.length])
+
+  // For rendering state (isOverInteractive affects opacity)
+  const [isOverInteractive, setIsOverInteractive] = useState(false)
 
   // Preload videos in background for smoother playback
   // Prioritize first few videos for immediate availability
@@ -136,34 +140,17 @@ export function RandomVideoPopup() {
     }
   }, []) // Run immediately on mount, no dependencies
 
-  // Track text selection
+  // Track text selection - only block when actually selecting text
   useEffect(() => {
     const handleSelectionChange = () => {
       const selection = window.getSelection()
-      setIsSelectingText(selection !== null && selection.toString().length > 0)
-    }
-    
-    const handleMouseDown = () => {
-      // User might be starting to select text
-      setIsSelectingText(true)
-    }
-    
-    const handleMouseUp = () => {
-      // Check if there's actual selection after mouse up
-      setTimeout(() => {
-        const selection = window.getSelection()
-        setIsSelectingText(selection !== null && selection.toString().length > 0)
-      }, 10)
+      isSelectingTextRef.current = selection !== null && selection.toString().length > 0
     }
     
     document.addEventListener('selectionchange', handleSelectionChange)
-    document.addEventListener('mousedown', handleMouseDown)
-    document.addEventListener('mouseup', handleMouseUp)
     
     return () => {
       document.removeEventListener('selectionchange', handleSelectionChange)
-      document.removeEventListener('mousedown', handleMouseDown)
-      document.removeEventListener('mouseup', handleMouseUp)
     }
   }, [])
 
@@ -173,25 +160,23 @@ export function RandomVideoPopup() {
       const newPos = { x: e.clientX, y: e.clientY }
       
       // Mark that we now have a valid mouse position
-      if (!hasInitialMousePos) {
-        setHasInitialMousePos(true)
-      }
+      hasInitialMousePosRef.current = true
       
       // Check if mouse actually moved
       if (newPos.x !== lastMousePos.current.x || newPos.y !== lastMousePos.current.y) {
         lastMousePos.current = newPos
-        setIsMouseMoving(true)
-        setIsMouseOnScreen(true)
+        isMouseMovingRef.current = true
+        isMouseOnScreenRef.current = true
         
         // Clear existing timer
         if (mouseStopTimer.current) {
           clearTimeout(mouseStopTimer.current)
         }
         
-        // Set timer to detect when mouse stops
+        // Set timer to detect when mouse stops (longer delay for smoother trail)
         mouseStopTimer.current = setTimeout(() => {
-          setIsMouseMoving(false)
-        }, 100)
+          isMouseMovingRef.current = false
+        }, 150)
       }
       
       // Only stop on: links with images, link previews, images that are clickable
@@ -203,13 +188,17 @@ export function RandomVideoPopup() {
       const isClickableImage = target.closest('a img, a [class*="image"], a [class*="Image"], a [class*="cover"], a [class*="Cover"]')
       const isImageLink = target.tagName === 'IMG' && target.closest('a')
       
-      setIsOverInteractive(!!(linkWithImage || isLinkPreview || isClickableImage || isImageLink))
+      const overInteractive = !!(linkWithImage || isLinkPreview || isClickableImage || isImageLink)
+      isOverInteractiveRef.current = overInteractive
+      setIsOverInteractive(overInteractive) // For rendering opacity
     }
     
-    const handleMouseEnter = () => setIsMouseOnScreen(true)
+    const handleMouseEnter = () => {
+      isMouseOnScreenRef.current = true
+    }
     const handleMouseLeave = () => {
-      setIsMouseOnScreen(false)
-      setIsMouseMoving(false)
+      isMouseOnScreenRef.current = false
+      isMouseMovingRef.current = false
     }
     
     document.addEventListener('mousemove', handleMouseMove)
@@ -222,12 +211,19 @@ export function RandomVideoPopup() {
       document.removeEventListener('mouseleave', handleMouseLeave)
       if (mouseStopTimer.current) clearTimeout(mouseStopTimer.current)
     }
-  }, [hasInitialMousePos])
+  }, [])
 
   // Spawn video at current mouse position with overlap effect
+  // Using refs for conditions so this callback stays stable
   const spawnVideo = useCallback(() => {
-    // Require valid mouse position before spawning
-    if (!digitalDroplets || isOverInteractive || isMobile || !isMouseOnScreen || !isMouseMoving || isSelectingText || !hasInitialMousePos) return
+    // Check all conditions using refs (no state dependency = stable callback)
+    if (!digitalDroplets) return
+    if (isOverInteractiveRef.current) return
+    if (isMobile) return
+    if (!isMouseOnScreenRef.current) return
+    if (!isMouseMovingRef.current) return
+    if (isSelectingTextRef.current) return
+    if (!hasInitialMousePosRef.current) return
     
     setPopups(prev => {
       if (prev.length >= 15) return prev
@@ -297,7 +293,7 @@ export function RandomVideoPopup() {
         zIndex,
       }]
     })
-  }, [digitalDroplets, isOverInteractive, isMobile, isMouseOnScreen, isMouseMoving, isSelectingText, hasInitialMousePos])
+  }, [digitalDroplets, isMobile]) // Only re-create when these change (rarely)
 
   // Spawn videos more frequently for trail effect
   useEffect(() => {
