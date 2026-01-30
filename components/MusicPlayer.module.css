@@ -86,7 +86,7 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: var(--color-foreground);
+  background: white;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
 }
 
@@ -293,4 +293,10 @@
     #1a1a1a 50%,
     #0a0a0a 100%
   );
+}
+
+/* Keep center hole white in light mode, use foreground color in other themes */
+[data-theme='dark'] .vinylCenter,
+[data-theme='orange'] .vinylCenter {
+  background: var(--color-foreground);
 }
