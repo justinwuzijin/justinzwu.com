@@ -45,12 +45,14 @@ interface VideoPopup {
 export function RandomVideoPopup() {
   const { digitalDroplets } = useTheme()
   const [popups, setPopups] = useState<VideoPopup[]>([])
-  const [readyPopups, setReadyPopups] = useState<Set<number>>(new Set())
   const [isOverInteractive, setIsOverInteractive] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
-  const [isMouseOnScreen, setIsMouseOnScreen] = useState(false)
-  const [isMouseMoving, setIsMouseMoving] = useState(false)
+  // Start with mouse assumed on screen - we'll detect if it leaves
+  const [isMouseOnScreen, setIsMouseOnScreen] = useState(true)
+  // Start with mouse assumed moving - we'll stop when it stops
+  const [isMouseMoving, setIsMouseMoving] = useState(true)
   const [isSelectingText, setIsSelectingText] = useState(false)
+  const [hasInitialMousePos, setHasInitialMousePos] = useState(false)
   const idCounter = useRef(0)
   const lastMousePos = useRef({ x: 0, y: 0 })
   const lastPopupPos = useRef({ x: 0, y: 0, width: 0, height: 0 })
@@ -73,13 +75,18 @@ export function RandomVideoPopup() {
   }, [digitalDroplets, popups.length])
 
   // Preload videos in background for smoother playback
-  // Videos are small (~200KB) so they can load on-demand if needed
+  // Prioritize first few videos for immediate availability
   useEffect(() => {
     // Skip on mobile
     if (window.innerWidth <= 768) return
 
-    // Preload videos in background
-    videoFiles.forEach((videoFile) => {
+    // Shuffle array and preload first 5 immediately for fast startup
+    const shuffled = [...videoFiles].sort(() => Math.random() - 0.5)
+    const priorityVideos = shuffled.slice(0, 5)
+    const remainingVideos = shuffled.slice(5)
+    
+    // Preload priority videos immediately
+    priorityVideos.forEach((videoFile) => {
       const videoUrl = `${VIDEO_BASE_PATH}/${videoFile}`
       if (preloadedVideos.current.has(videoUrl)) return
 
@@ -95,8 +102,29 @@ export function RandomVideoPopup() {
       preloadedVideos.current.set(videoUrl, video)
       document.body.appendChild(video)
     })
+    
+    // Preload remaining videos after a short delay to not block initial render
+    const timeoutId = setTimeout(() => {
+      remainingVideos.forEach((videoFile) => {
+        const videoUrl = `${VIDEO_BASE_PATH}/${videoFile}`
+        if (preloadedVideos.current.has(videoUrl)) return
+
+        const video = document.createElement('video')
+        video.src = videoUrl
+        video.preload = 'auto'
+        video.muted = true
+        video.playsInline = true
+        video.setAttribute('webkit-playsinline', 'true')
+        video.style.cssText = 'position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;z-index:-9999;'
+        
+        video.load()
+        preloadedVideos.current.set(videoUrl, video)
+        document.body.appendChild(video)
+      })
+    }, 500)
 
     return () => {
+      clearTimeout(timeoutId)
       preloadedVideos.current.forEach((video) => {
         video.pause()
         video.removeAttribute('src')
@@ -144,10 +172,16 @@ export function RandomVideoPopup() {
     const handleMouseMove = (e: MouseEvent) => {
       const newPos = { x: e.clientX, y: e.clientY }
       
+      // Mark that we now have a valid mouse position
+      if (!hasInitialMousePos) {
+        setHasInitialMousePos(true)
+      }
+      
       // Check if mouse actually moved
       if (newPos.x !== lastMousePos.current.x || newPos.y !== lastMousePos.current.y) {
         lastMousePos.current = newPos
         setIsMouseMoving(true)
+        setIsMouseOnScreen(true)
         
         // Clear existing timer
         if (mouseStopTimer.current) {
@@ -188,11 +222,12 @@ export function RandomVideoPopup() {
       document.removeEventListener('mouseleave', handleMouseLeave)
       if (mouseStopTimer.current) clearTimeout(mouseStopTimer.current)
     }
-  }, [])
+  }, [hasInitialMousePos])
 
   // Spawn video at current mouse position with overlap effect
   const spawnVideo = useCallback(() => {
-    if (!digitalDroplets || isOverInteractive || isMobile || !isMouseOnScreen || !isMouseMoving || isSelectingText) return
+    // Require valid mouse position before spawning
+    if (!digitalDroplets || isOverInteractive || isMobile || !isMouseOnScreen || !isMouseMoving || isSelectingText || !hasInitialMousePos) return
     
     setPopups(prev => {
       if (prev.length >= 15) return prev
@@ -250,11 +285,6 @@ export function RandomVideoPopup() {
       // All videos disappear after 0.5 seconds
       setTimeout(() => {
         setPopups(p => p.filter(popup => popup.id !== newId))
-        setReadyPopups(prev => {
-          const next = new Set(prev)
-          next.delete(newId)
-          return next
-        })
       }, 500)
       
       return [...prev, {
@@ -267,7 +297,7 @@ export function RandomVideoPopup() {
         zIndex,
       }]
     })
-  }, [digitalDroplets, isOverInteractive, isMobile, isMouseOnScreen, isMouseMoving, isSelectingText])
+  }, [digitalDroplets, isOverInteractive, isMobile, isMouseOnScreen, isMouseMoving, isSelectingText, hasInitialMousePos])
 
   // Spawn videos more frequently for trail effect
   useEffect(() => {
@@ -282,53 +312,32 @@ export function RandomVideoPopup() {
 
   return (
     <div className={styles.container} style={{ opacity: isOverInteractive ? 0 : 1 }}>
-      {popups.map(popup => {
-        const isReady = readyPopups.has(popup.id)
-        return (
-          <div
-            key={popup.id}
-            className={styles.popup}
+      {popups.map(popup => (
+        <div
+          key={popup.id}
+          className={styles.popup}
+          style={{
+            left: popup.x,
+            top: popup.y,
+            zIndex: popup.zIndex,
+          }}
+        >
+          <video
+            src={popup.videoUrl}
+            autoPlay
+            muted
+            loop
+            playsInline
+            webkit-playsinline="true"
+            preload="auto"
+            className={styles.video}
             style={{
-              left: popup.x,
-              top: popup.y,
-              zIndex: popup.zIndex,
-              display: isReady ? 'block' : 'none',
+              width: popup.width,
+              height: popup.height,
             }}
-          >
-            <video
-              src={popup.videoUrl}
-              autoPlay
-              muted
-              loop
-              playsInline
-              webkit-playsinline="true"
-              preload="metadata"
-              className={styles.video}
-              data-ready={isReady ? 'true' : undefined}
-              style={{
-                width: popup.width,
-                height: popup.height,
-              }}
-              onLoadedData={(e) => {
-                const video = e.currentTarget
-                setReadyPopups(prev => new Set(prev).add(popup.id))
-                video.play().catch(() => {
-                  setTimeout(() => video.play().catch(() => {}), 50)
-                })
-              }}
-              onCanPlay={(e) => {
-                const video = e.currentTarget
-                if (!readyPopups.has(popup.id)) {
-                  setReadyPopups(prev => new Set(prev).add(popup.id))
-                  video.play().catch(() => {
-                    setTimeout(() => video.play().catch(() => {}), 50)
-                  })
-                }
-              }}
-            />
-          </div>
-        )
-      })}
+          />
+        </div>
+      ))}
     </div>
   )
 }
