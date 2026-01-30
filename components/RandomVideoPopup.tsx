@@ -226,7 +226,7 @@ export function RandomVideoPopup() {
     if (!hasInitialMousePosRef.current) return
     
     setPopups(prev => {
-      if (prev.length >= 15) return prev
+      if (prev.length >= 7) return prev
       
       // Prefer videos that are already preloaded and ready
       const preloadedUrls = Array.from(preloadedVideos.current.keys())
@@ -281,7 +281,7 @@ export function RandomVideoPopup() {
       // All videos disappear after 0.5 seconds
       setTimeout(() => {
         setPopups(p => p.filter(popup => popup.id !== newId))
-      }, 500)
+      }, 300)
       
       return [...prev, {
         id: newId,
@@ -299,7 +299,7 @@ export function RandomVideoPopup() {
   useEffect(() => {
     if (isMobile) return
     
-    const interval = setInterval(spawnVideo, 100)
+    const interval = setInterval(spawnVideo, 150)
     return () => clearInterval(interval)
   }, [spawnVideo, isMobile])
 
