@@ -31,7 +31,6 @@
   display: flex;
   align-items: center;
   height: 42px;
-  margin-right: calc((54vw - var(--content-max-width)) / 2);
 }
 
 .fluidContainer {
