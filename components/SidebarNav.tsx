@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTheme } from './ThemeProvider'
+import { VinylRecordPlayer } from './VinylRecordPlayer'
 import styles from './SidebarNav.module.css'
 
 const navItems = [
@@ -35,6 +36,18 @@ export function SidebarNav() {
           )
         })}
       </ul>
+      
+      {/* Vinyl Record Player */}
+      <div className={styles.vinylContainer}>
+        <VinylRecordPlayer 
+          track={{
+            title: 'WILSHIRE',
+            artist: 'Tyler, The Creator',
+            src: '/music/wilshire.mp3',
+            cover: '/music/estate-sale-cover.png',
+          }}
+        />
+      </div>
       
       {/* Digital droplets toggle */}
       <div className={styles.dropletsContainer}>

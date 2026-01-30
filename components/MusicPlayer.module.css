@@ -1,0 +1,296 @@
+.musicPlayer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--color-background);
+  border-top: 1px solid var(--color-border);
+  z-index: 1000;
+  transition: transform 0.3s ease;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.compactView {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  min-height: 70px;
+}
+
+.vinylButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  outline: none;
+}
+
+.vinyl {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(
+    to bottom,
+    #1a1a1a 0%,
+    #2a2a2a 50%,
+    #1a1a1a 100%
+  );
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.1s ease;
+}
+
+.vinyl:hover {
+  transform: scale(1.05);
+}
+
+.vinyl.spinning {
+  animation: spin 3s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.vinylCover {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.vinylGrooves {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: 
+    repeating-conic-gradient(
+      from 0deg,
+      transparent 0deg 2deg,
+      rgba(255, 255, 255, 0.05) 2deg 4deg
+    );
+}
+
+.vinylCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-foreground);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.trackInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.trackTitle {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-foreground);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trackArtist {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.expandButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-muted);
+  font-size: 0.75rem;
+  padding: 0.5rem;
+  transition: color 0.2s ease;
+  outline: none;
+}
+
+.expandButton:hover {
+  color: var(--color-foreground);
+}
+
+.expandedView {
+  padding: 1rem;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.controlButton,
+.playButton {
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--color-foreground);
+  transition: all 0.2s ease;
+  outline: none;
+  font-size: 1rem;
+}
+
+.playButton {
+  width: 50px;
+  height: 50px;
+  font-size: 1.25rem;
+}
+
+.controlButton:hover,
+.playButton:hover {
+  background: var(--color-muted);
+  border-color: var(--color-foreground);
+}
+
+.progressContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.time {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  min-width: 40px;
+  text-align: center;
+}
+
+.progressBar {
+  flex: 1;
+  height: 4px;
+  background: var(--color-border);
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--color-foreground);
+  border-radius: 2px;
+  transition: width 0.1s linear;
+}
+
+.trackList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.trackItem {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  text-align: left;
+  cursor: pointer;
+  color: var(--color-muted);
+  font-size: 0.875rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.trackItem:hover {
+  background: var(--color-muted);
+  color: var(--color-foreground);
+}
+
+.trackItem.active {
+  color: var(--color-foreground);
+  font-weight: 500;
+}
+
+.spotifyLink {
+  text-align: center;
+  color: var(--color-muted);
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: color 0.2s ease;
+}
+
+.spotifyLink:hover {
+  color: var(--color-foreground);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .compactView {
+    padding: 0.5rem;
+    gap: 0.75rem;
+  }
+
+  .vinyl {
+    width: 40px;
+    height: 40px;
+  }
+
+  .vinylCenter {
+    width: 10px;
+    height: 10px;
+  }
+
+  .trackTitle {
+    font-size: 0.8125rem;
+  }
+
+  .trackArtist {
+    font-size: 0.6875rem;
+  }
+
+  .expandedView {
+    padding: 0.75rem;
+  }
+}
+
+/* Theme-specific adjustments */
+[data-theme='orange'] .vinyl {
+  background: linear-gradient(
+    to bottom,
+    #8b3d00 0%,
+    #cb5500 50%,
+    #8b3d00 100%
+  );
+}
+
+[data-theme='dark'] .vinyl {
+  background: linear-gradient(
+    to bottom,
+    #0a0a0a 0%,
+    #1a1a1a 50%,
+    #0a0a0a 100%
+  );
+}

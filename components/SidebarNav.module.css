@@ -92,6 +92,21 @@
   max-width: 120px;
 }
 
+.vinylContainer {
+  margin-top: var(--spacing-xl);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+}
+
+/* Hide vinyl player on mobile */
+@media (max-width: 768px) {
+  .vinylContainer {
+    display: none;
+  }
+}
+
 .themeToggleContainer {
   margin-top: var(--spacing-lg);
   display: flex;
