@@ -10,6 +10,11 @@
   transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
+/* Hide top right controls when side panel is open */
+body[data-side-panel-open="true"] .topRightControls {
+  display: none !important;
+}
+
 .topRow {
   display: flex !important;
   align-items: center !important;
