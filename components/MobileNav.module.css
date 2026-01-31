@@ -1,26 +1,12 @@
 /* Mobile Header Bar */
 .mobileHeader {
   display: none;
-  position: fixed !important;
+  position: absolute !important;
   top: var(--spacing-lg);
   right: var(--spacing-lg);
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  transition: transform 0.15s ease, opacity 0.15s ease;
-}
-
-/* Visible state */
-.visible {
-  transform: translateY(0);
-  opacity: 1;
-}
-
-/* Hidden state (on scroll down) */
-.hidden {
-  transform: translateY(-100%);
-  opacity: 0;
-  pointer-events: none;
 }
 
 /* Hamburger Menu Button */

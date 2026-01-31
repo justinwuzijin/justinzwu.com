@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { motion } from 'framer-motion'
 import { useTheme } from './ThemeProvider'
 import styles from './MobileNav.module.css'
 
@@ -16,41 +17,19 @@ const navItems = [
 
 export function MobileNav() {
   const [isOpen, setIsOpen] = useState(false)
-  const [isVisible, setIsVisible] = useState(true)
-  const [lastScrollY, setLastScrollY] = useState(0)
+  const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
   const { theme, setTheme } = useTheme()
+
+  // Track mount state for initial animation
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Close menu when route changes
   useEffect(() => {
     setIsOpen(false)
   }, [pathname])
-
-  // Hide header on scroll down, show on scroll up
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY
-      
-      // Don't hide if menu is open
-      if (isOpen) {
-        setIsVisible(true)
-        return
-      }
-      
-      if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        // Scrolling down and past 100px - hide
-        setIsVisible(false)
-      } else {
-        // Scrolling up - show
-        setIsVisible(true)
-      }
-      
-      setLastScrollY(currentScrollY)
-    }
-
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [lastScrollY, isOpen])
 
   // Prevent body scroll when menu is open
   useEffect(() => {
@@ -71,7 +50,12 @@ export function MobileNav() {
   return (
     <>
       {/* Mobile Header Bar with Hamburger only */}
-      <div className={`${styles.mobileHeader} ${isVisible ? styles.visible : styles.hidden}`}>
+      <motion.div 
+        className={styles.mobileHeader}
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: mounted ? 1 : 0, y: mounted ? 0 : -20 }}
+        transition={{ duration: 0.5, delay: 0.3, ease: 'easeOut' }}
+      >
         <button
           onClick={() => setIsOpen(!isOpen)}
           className={`${styles.hamburger} ${isOpen ? styles.hamburgerOpen : ''}`}
@@ -82,7 +66,7 @@ export function MobileNav() {
           <span className={styles.hamburgerLine}></span>
           <span className={styles.hamburgerLine}></span>
         </button>
-      </div>
+      </motion.div>
 
       {/* Transparent Overlay Sidebar */}
       {isOpen && (

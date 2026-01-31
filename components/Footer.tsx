@@ -2,8 +2,30 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 import { useTheme } from './ThemeProvider'
 import styles from './Footer.module.css'
+
+// Animation variants
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.6, ease: 'easeOut' }
+  }
+}
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.1,
+    }
+  }
+}
 
 interface WebringMember {
   website: string
@@ -86,44 +108,58 @@ export function Footer() {
   return (
     <footer className={styles.footer}>
       {/* Pre-Footer collage banner */}
-      <div className={styles.preFooter}>
+      <motion.div 
+        className={styles.preFooter}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={fadeInUp}
+      >
         <img 
           src={preFooterSrc} 
           alt="Pre-footer collage" 
           className={styles.preFooterImage}
         />
-      </div>
+      </motion.div>
           
       {/* Footer bar */}
-      <div className={styles.footerBar}>
-        <div className={styles.footerContent}>
+      <motion.div 
+        className={styles.footerBar}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-50px" }}
+        variants={staggerContainer}
+      >
+        <motion.div className={styles.footerContent} variants={staggerContainer}>
           {/* Left: Zijin logo */}
-          <Link href="/" className={styles.logoSection}>
-            <img 
-              src={logoSrc} 
-              alt="Zijin" 
-              className={styles.logoImage}
-            />
-          </Link>
+          <motion.div variants={fadeInUp}>
+            <Link href="/" className={styles.logoSection}>
+              <img 
+                src={logoSrc} 
+                alt="Zijin" 
+                className={styles.logoImage}
+              />
+            </Link>
+          </motion.div>
           
           {/* Center: Copyright text */}
-          <div className={styles.copyrightSection}>
+          <motion.div className={styles.copyrightSection} variants={fadeInUp}>
             <p className={styles.copyright}>@2026 justinzwu.com</p>
-          </div>
+          </motion.div>
           
           {/* Right: Waterloo Network webring */}
-          <div className={styles.webringContainer}>
+          <motion.div className={styles.webringContainer} variants={fadeInUp}>
             <Webring />
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
         
         {/* Attribution text */}
-        <div className={styles.attribution}>
+        <motion.div className={styles.attribution} variants={fadeInUp}>
           <p className={styles.attributionText}>
             designed on Figma. built with Next.js. deployed on Vercel. made with help from V0 and Cursor.
           </p>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </footer>
   )
 }
