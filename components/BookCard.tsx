@@ -177,7 +177,7 @@ export function BookCard({ title, author, cover, isbn, isbn13, rating, showRatin
           transition={{ 
             delay: 0.8, 
             duration: 0.4, 
-            ease: 'easeOut'
+            ease: [0.25, 0.1, 0.25, 1]
           }}
         >
           {Array.from({ length: rating }).map((_, i) => {
