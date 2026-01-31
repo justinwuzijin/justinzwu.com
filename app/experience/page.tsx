@@ -1,5 +1,38 @@
+'use client'
+
+import { motion } from 'framer-motion'
 import styles from './page.module.css'
 import { ExperienceCard } from '@/components/ExperienceCard'
+
+// Animation variants
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.5, ease: 'easeOut' }
+  }
+}
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    }
+  }
+}
+
+const cardVariant = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.5, ease: 'easeOut' }
+  }
+}
 
 const experiences = [
   {
@@ -55,16 +88,28 @@ const experiences = [
 export default function ExperiencePage() {
   return (
     <div className={styles.container}>
-      <h1 className={styles.pageTitle}>
+      <motion.h1 
+        className={styles.pageTitle}
+        initial="hidden"
+        animate="visible"
+        variants={fadeInUp}
+      >
         <span className={styles.orangeDot} />
         experience
-      </h1>
+      </motion.h1>
 
-      <div className={styles.experienceGrid}>
+      <motion.div 
+        className={styles.experienceGrid}
+        initial="hidden"
+        animate="visible"
+        variants={staggerContainer}
+      >
         {experiences.map((exp) => (
-          <ExperienceCard key={exp.id} {...exp} />
+          <motion.div key={exp.id} variants={cardVariant}>
+            <ExperienceCard {...exp} />
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </div>
   )
 }

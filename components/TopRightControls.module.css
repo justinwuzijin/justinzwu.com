@@ -1,13 +1,12 @@
 .topRightControls {
-  position: fixed !important;
+  position: absolute !important;
   top: 1.75rem !important;
   right: 1.5rem !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-end !important;
   gap: 0.5rem !important;
-  z-index: 9999 !important;
-  transition: transform 0.15s ease, opacity 0.15s ease;
+  z-index: 100 !important;
 }
 
 /* Hide top right controls when side panel is open */

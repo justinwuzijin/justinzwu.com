@@ -1,7 +1,47 @@
 'use client'
 
 import { useRef } from 'react'
+import { motion } from 'framer-motion'
 import styles from './page.module.css'
+
+// Animation variants
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.5, ease: 'easeOut' }
+  }
+}
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.2,
+    }
+  }
+}
+
+const sectionVariant = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.5, ease: 'easeOut' }
+  }
+}
+
+const itemVariant = {
+  hidden: { opacity: 0, x: -10 },
+  visible: { 
+    opacity: 1, 
+    x: 0,
+    transition: { duration: 0.3, ease: 'easeOut' }
+  }
+}
 
 const thoughts = [
   {
@@ -102,42 +142,66 @@ export default function DrawerOfThoughtsPage() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.pageTitle}>
+      <motion.h1 
+        className={styles.pageTitle}
+        initial="hidden"
+        animate="visible"
+        variants={fadeInUp}
+      >
         <span className={styles.orangeDot} />
         drawer of thoughts
-      </h1>
-      <p className={styles.description}>an assortment of ideas documented since grade 9.</p>
+      </motion.h1>
+      <motion.p 
+        className={styles.description}
+        initial="hidden"
+        animate="visible"
+        variants={fadeInUp}
+      >
+        an assortment of ideas documented since grade 9.
+      </motion.p>
 
       {/* Grade filter tabs */}
-      <div className={styles.tabs}>
+      <motion.div 
+        className={styles.tabs}
+        initial="hidden"
+        animate="visible"
+        variants={staggerContainer}
+      >
         {thoughts.map((section) => {
           const color = gradeColors[section.grade] || '#000000'
           const displayText = gradeDisplayText[section.grade] || section.grade
           
           return (
-            <button
+            <motion.button
               key={section.grade}
               onClick={() => scrollToGrade(section.grade)}
               className={styles.tab}
+              variants={fadeInUp}
             >
               <span 
                 className={styles.tabDot} 
                 style={{ backgroundColor: color }}
               />
               {displayText}
-            </button>
+            </motion.button>
           )
         })}
-      </div>
+      </motion.div>
 
-      <div className={styles.thoughtsList}>
+      <motion.div 
+        className={styles.thoughtsList}
+        initial="hidden"
+        animate="visible"
+        variants={staggerContainer}
+      >
         {thoughts.map((section) => (
-          <section 
+          <motion.section 
             key={section.grade} 
             className={styles.section}
             ref={(el) => {
               sectionRefs.current[section.grade] = el
             }}
+            variants={sectionVariant}
           >
             <h2 className={styles.gradeTitle}>
               <span 
@@ -146,16 +210,26 @@ export default function DrawerOfThoughtsPage() {
               />
               {section.grade}
             </h2>
-            <ul className={styles.itemsList}>
+            <motion.ul 
+              className={styles.itemsList}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              variants={staggerContainer}
+            >
               {section.items.map((item, index) => (
-                <li key={index} className={styles.thoughtItem}>
+                <motion.li 
+                  key={index} 
+                  className={styles.thoughtItem}
+                  variants={itemVariant}
+                >
                   {item}
-                </li>
+                </motion.li>
               ))}
-            </ul>
-          </section>
+            </motion.ul>
+          </motion.section>
         ))}
-      </div>
+      </motion.div>
     </div>
   )
 }

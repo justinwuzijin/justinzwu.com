@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { motion } from 'framer-motion'
 import { useTheme } from './ThemeProvider'
 import { VinylRecordPlayer } from './VinylRecordPlayer'
 import styles from './SidebarNav.module.css'
@@ -14,17 +15,44 @@ const navItems = [
   { href: '/art-gallery', label: 'art gallery' },
 ]
 
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
+    },
+  },
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, x: 20 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.4, ease: 'easeOut' },
+  },
+}
+
 export function SidebarNav() {
   const pathname = usePathname()
   const { digitalDroplets, setDigitalDroplets } = useTheme()
 
   return (
-    <nav className={styles.nav} aria-label="Main navigation">
-      <ul className={styles.navList}>
-        {navItems.map((item) => {
+    <motion.nav 
+      className={styles.nav} 
+      aria-label="Main navigation"
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+    >
+      <motion.ul className={styles.navList} variants={containerVariants}>
+        {navItems.map((item, index) => {
           const isActive = pathname === item.href || (pathname === '/' && item.href === '/me')
           return (
-            <li key={item.href}>
+            <motion.li key={item.href} variants={itemVariants}>
               <Link
                 href={item.href}
                 className={`${styles.navLink} ${isActive ? styles.active : ''}`}
@@ -32,10 +60,10 @@ export function SidebarNav() {
               >
                 {item.label}
               </Link>
-            </li>
+            </motion.li>
           )
         })}
-      </ul>
+      </motion.ul>
       
       {/* Digital droplets toggle - commented out
       <div className={styles.dropletsContainer}>
@@ -63,7 +91,10 @@ export function SidebarNav() {
       */}
       
       {/* Vinyl Record Player */}
-      <div className={styles.vinylContainer}>
+      <motion.div 
+        className={styles.vinylContainer}
+        variants={itemVariants}
+      >
         <VinylRecordPlayer 
           tracks={[
             {
@@ -116,7 +147,7 @@ export function SidebarNav() {
             },
           ]}
         />
-      </div>
-    </nav>
+      </motion.div>
+    </motion.nav>
   )
 }
