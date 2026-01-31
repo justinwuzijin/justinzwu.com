@@ -64,6 +64,18 @@ export function BookSidePanel({ book, shelf, isOpen, onClose }: BookSidePanelPro
       setSynopsisLoading(false)
     }
   }, [isOpen])
+
+  // Hide top right controls when side panel is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.setAttribute('data-side-panel-open', 'true')
+    } else {
+      document.body.removeAttribute('data-side-panel-open')
+    }
+    return () => {
+      document.body.removeAttribute('data-side-panel-open')
+    }
+  }, [isOpen])
   
   return (
     <AnimatePresence>
