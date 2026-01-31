@@ -28,6 +28,27 @@ const shelfColors: Record<ShelfType, string> = {
   'read': '#16a34a',
 }
 
+// Animation variants
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.5, ease: 'easeOut' }
+  }
+}
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    }
+  }
+}
+
 export default function BookshelfPage() {
   const { theme } = useTheme()
   const [activeShelf, setActiveShelf] = useState<ShelfType>('read')
@@ -95,43 +116,63 @@ export default function BookshelfPage() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.pageTitle}>
+      <motion.h1 
+        className={styles.pageTitle}
+        initial="hidden"
+        animate="visible"
+        variants={fadeInUp}
+      >
         <span className={styles.orangeDot} />
         bookshelf
-      </h1>
+      </motion.h1>
 
-      <p>
+      <motion.p
+        initial="hidden"
+        animate="visible"
+        variants={fadeInUp}
+      >
         think before you speak. read before you think.
-      </p>
+      </motion.p>
 
       {/* Filter tabs */}
-      <div className={styles.tabs}>
+      <motion.div 
+        className={styles.tabs}
+        initial="hidden"
+        animate="visible"
+        variants={staggerContainer}
+      >
         {shelves.map((shelf) => {
           const color = shelfColors[shelf]
           
           return (
-            <button
+            <motion.button
               key={shelf}
               onClick={() => handleShelfClick(shelf)}
               className={`${styles.tab} ${activeShelf === shelf ? styles.activeTab : ''}`}
               style={{ 
                 '--tab-color': color 
               } as React.CSSProperties}
+              variants={fadeInUp}
             >
               <span 
                 className={styles.tabDot} 
                 style={{ backgroundColor: color }}
               />
               {shelf}
-            </button>
+            </motion.button>
           )
         })}
-      </div>
+      </motion.div>
       
       {/* Attribution note */}
-      <p className={styles.attributionNote}>
+      <motion.p 
+        className={styles.attributionNote}
+        initial="hidden"
+        animate="visible"
+        variants={fadeInUp}
+      >
         Goodreads data stored in PostgreSQL. Book synopses generated with Gemini. Images fetched from Google Books API.
-      </p>
+      </motion.p>
 
       {/* Show books for active shelf */}
       <AnimatePresence mode="wait">

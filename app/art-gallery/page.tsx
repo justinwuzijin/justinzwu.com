@@ -1,8 +1,39 @@
 'use client'
 
 import { useMemo, useRef, useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
 import styles from './page.module.css'
 import { AutoPlayVideo } from '@/components/AutoPlayVideo'
+
+// Animation variants
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.5, ease: 'easeOut' }
+  }
+}
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.3,
+    }
+  }
+}
+
+const galleryItemVariant = {
+  hidden: { opacity: 0, scale: 0.9 },
+  visible: { 
+    opacity: 1, 
+    scale: 1,
+    transition: { duration: 0.4, ease: 'easeOut' }
+  }
+}
 
 // Lazy-loaded video wrapper component
 function LazyVideo({ videoUrl, aspectRatio, className }: { videoUrl: string; aspectRatio: number; className?: string }) {
@@ -120,33 +151,51 @@ export default function ArtGalleryPage() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.pageTitle}>
+      <motion.h1 
+        className={styles.pageTitle}
+        initial="hidden"
+        animate="visible"
+        variants={fadeInUp}
+      >
         <span className={styles.orangeDot} />
         art gallery
-      </h1>
-      <p className={styles.workInProgress}>work in progress;</p>
+      </motion.h1>
+      <motion.p 
+        className={styles.workInProgress}
+        initial="hidden"
+        animate="visible"
+        variants={fadeInUp}
+      >
+        work in progress;
+      </motion.p>
 
       {/* Masonry gallery section */}
-      <section className={styles.gallery}>
-        <div className={styles.masonryGrid}>
+      <motion.section 
+        className={styles.gallery}
+        initial="hidden"
+        animate="visible"
+        variants={staggerContainer}
+      >
+        <motion.div className={styles.masonryGrid} variants={staggerContainer}>
           {videoConfigs.map((config, index) => (
-            <div
+            <motion.div
               key={index}
               className={`${styles.galleryItem} ${styles.artItem} ${styles.videoItem}`}
               style={{
                 gridColumn: `span ${config.colSpan}`,
                 gridRow: `span ${config.rowSpan}`,
               }}
+              variants={galleryItemVariant}
             >
               <LazyVideo
                 videoUrl={config.videoUrl}
                 aspectRatio={config.aspectRatio}
                 className={styles.distortedVideo}
               />
-            </div>
+            </motion.div>
           ))}
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
     </div>
   )
 }

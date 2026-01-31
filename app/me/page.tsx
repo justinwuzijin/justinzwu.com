@@ -1,8 +1,41 @@
+'use client'
+
+import { motion } from 'framer-motion'
 import styles from './page.module.css'
 import { ProjectCard } from '@/components/ProjectCard'
 import { TitleHover } from '@/components/TitleHover'
 import { HeroHeader } from '@/components/HeroHeader'
 import { LinkPreview } from '@/components/ui/link-preview'
+
+// Animation variants
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.5, ease: 'easeOut' }
+  }
+}
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    }
+  }
+}
+
+const projectCardVariant = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.5, ease: 'easeOut' }
+  }
+}
 
 const projects = [
   {
@@ -77,20 +110,35 @@ export default function MePage() {
   return (
     <div className={styles.container}>
       {/* Hero section with header and hover title */}
-      <section className={styles.hero}>
-        <HeroHeader />
-        <TitleHover />
-        <div className={styles.subtitle}>
+      <motion.section 
+        className={styles.hero}
+        initial="hidden"
+        animate="visible"
+        variants={staggerContainer}
+      >
+        <motion.div variants={fadeInUp}>
+          <HeroHeader />
+        </motion.div>
+        <motion.div variants={fadeInUp}>
+          <TitleHover />
+        </motion.div>
+        <motion.div className={styles.subtitle} variants={fadeInUp}>
           <LinkPreview url="https://uwaterloo.ca/future-students/programs/systems-design-engineering" className={styles.highlightYellow}>Systems Design Engineering</LinkPreview>{' '}
             @UWaterloo
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
 
       {/* About section */}
-      <section className={styles.about}>
-        <h2 className={styles.sectionTitle}>i like creating and building cool stuff:</h2>
-        <ul className={styles.bulletList}>
-          <li>
+      <motion.section 
+        className={styles.about}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={staggerContainer}
+      >
+        <motion.h2 className={styles.sectionTitle} variants={fadeInUp}>i like creating and building cool stuff:</motion.h2>
+        <motion.ul className={styles.bulletList} variants={staggerContainer}>
+          <motion.li variants={fadeInUp}>
             {'>'} developing enterprise government systems{' '}
             <LinkPreview 
               url="https://www.ontario.ca/page/ministry-public-and-business-service-delivery-and-procurement" 
@@ -98,8 +146,8 @@ export default function MePage() {
             >
               @ONgov
             </LinkPreview>
-          </li>
-          <li>
+          </motion.li>
+          <motion.li variants={fadeInUp}>
             {'>'} building ClipABit, a semantic search DaVinci Resolve plug-in{' '}
             <LinkPreview 
               url="https://clipabit.web.app/" 
@@ -107,8 +155,8 @@ export default function MePage() {
             >
               @WAT.ai
             </LinkPreview>
-          </li>
-          <li>
+          </motion.li>
+          <motion.li variants={fadeInUp}>
             {'>'} starting a{' '}
             <LinkPreview 
               url="https://cursor.com/home?from=agents" 
@@ -117,9 +165,9 @@ export default function MePage() {
               Cursor
             </LinkPreview>{' '}
             campus community @Waterloo
-          </li>
+          </motion.li>
       
-          <li>
+          <motion.li variants={fadeInUp}>
             {'>'} produced videos for{' '}
             <LinkPreview 
               url="https://www.bridginggens.com/" 
@@ -149,8 +197,8 @@ export default function MePage() {
               Cursor
             </LinkPreview>{' '}
             in 1A
-          </li>
-          <li>
+          </motion.li>
+          <motion.li variants={fadeInUp}>
             {'>'} lead{' '}
             <LinkPreview 
               url="https://www.tsac.ca/" 
@@ -159,8 +207,8 @@ export default function MePage() {
              TrudeauSAC
             </LinkPreview>
               as president in gr11 & 12 
-          </li>
-          <li>
+          </motion.li>
+          <motion.li variants={fadeInUp}>
             {'>'} made films with{' '}
             <LinkPreview 
               url="https://www.instagram.com/five24.film/" 
@@ -178,25 +226,36 @@ export default function MePage() {
               @byjustinwu
             </LinkPreview>{' '}
             in hs
-          </li>
-          <li>
+          </motion.li>
+          <motion.li variants={fadeInUp}>
             {'>'} seeking <b>fall 2026</b> internship opportunities!
-          </li>
-        </ul>
-      </section>
+          </motion.li>
+        </motion.ul>
+      </motion.section>
 
       {/* Projects section */}
-      <section className={styles.projects}>
-        <h2 className={styles.projectsTitle}>
+      <motion.section 
+        className={styles.projects}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-50px" }}
+        variants={staggerContainer}
+      >
+        <motion.h2 className={styles.projectsTitle} variants={fadeInUp}>
           <span className={styles.orangeDot} />
           projects
-        </h2>
-        <div className={styles.projectsGrid}>
-          {projects.map((project) => (
-            <ProjectCard key={project.id} {...project} />
+        </motion.h2>
+        <motion.div 
+          className={styles.projectsGrid}
+          variants={staggerContainer}
+        >
+          {projects.map((project, index) => (
+            <motion.div key={project.id} variants={projectCardVariant}>
+              <ProjectCard {...project} />
+            </motion.div>
           ))}
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
     </div>
   )
 }

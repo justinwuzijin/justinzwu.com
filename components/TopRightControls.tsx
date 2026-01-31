@@ -1,34 +1,19 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
 import { useTheme } from './ThemeProvider'
 import styles from './TopRightControls.module.css'
 
 export function TopRightControls() {
   const { theme, setTheme } = useTheme()
   const [isExpanded, setIsExpanded] = useState(false)
-  const [isVisible, setIsVisible] = useState(true)
-  const [lastScrollY, setLastScrollY] = useState(0)
+  const [mounted, setMounted] = useState(false)
 
-  // Hide controls on scroll down, show on scroll up
+  // Track mount state for initial animation
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY
-      
-      if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        // Scrolling down and past 100px - hide
-        setIsVisible(false)
-      } else {
-        // Scrolling up - show
-        setIsVisible(true)
-      }
-      
-      setLastScrollY(currentScrollY)
-    }
-
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [lastScrollY])
+    setMounted(true)
+  }, [])
 
   const socialLinks = [
     { 
@@ -92,9 +77,12 @@ export function TopRightControls() {
   }
 
   return (
-    <div 
-      className={`${styles.topRightControls} ${isVisible ? styles.visible : styles.hidden}`}
+    <motion.div 
+      className={styles.topRightControls}
       data-fixed-controls="true"
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: mounted ? 1 : 0, y: mounted ? 0 : -20 }}
+      transition={{ duration: 0.5, delay: 0.3, ease: 'easeOut' }}
     >
       {/* Top row: Hamburger, Shift+o, and Light/Dark mode */}
       <div className={styles.topRow}>
@@ -211,6 +199,6 @@ export function TopRightControls() {
           )}
         </button>
       </div>
-    </div>
+    </motion.div>
   )
 }
