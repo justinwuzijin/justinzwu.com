@@ -54,7 +54,7 @@ export function MobileNav() {
         className={styles.mobileHeader}
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: mounted ? 1 : 0, y: mounted ? 0 : -20 }}
-        transition={{ duration: 0.5, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+        transition={{ duration: 0.5, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] as const }}
       >
         <button
           onClick={() => setIsOpen(!isOpen)}

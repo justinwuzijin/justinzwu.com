@@ -26,7 +26,7 @@ export function TitleHover() {
       clipPath: 'inset(0 0% 0 0)',
       transition: { 
         duration: 1,
-        ease: [0.22, 1, 0.36, 1],
+        ease: [0.22, 1, 0.36, 1] as const,
         delay: 0.3
       }
     }
