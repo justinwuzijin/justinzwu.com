@@ -116,7 +116,7 @@ export function VinylRecordPlayer({ tracks, onTogglePlay }: VinylRecordPlayerPro
 
   return (
     <div className={styles.vinylPlayer}>
-      <audio ref={audioRef} preload="metadata" />
+      <audio ref={audioRef} preload="none" />
       
       <div className={styles.playerRow}>
         {/* Previous track button */}

@@ -1,6 +1,6 @@
 import React from "react"
 import type { Metadata, Viewport } from 'next'
-import { Inter, Noto_Serif_SC } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import styles from './layout.module.css'
@@ -14,12 +14,6 @@ import { TopRightControls } from '@/components/TopRightControls'
 const inter = Inter({ 
   subsets: ['latin'],
   variable: '--font-inter'
-})
-
-const notoSerifSC = Noto_Serif_SC({
-  weight: ['400', '700'],
-  subsets: ['latin'],
-  variable: '--font-noto-serif-sc'
 })
 
 export const metadata: Metadata = {
@@ -39,7 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${notoSerifSC.variable}`}>
+      <body className={inter.variable}>
         <ThemeProvider>
           {/* Random video popups near mouse */}
           <RandomVideoPopup />

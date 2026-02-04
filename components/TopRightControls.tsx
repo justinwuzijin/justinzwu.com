@@ -82,7 +82,7 @@ export function TopRightControls() {
       data-fixed-controls="true"
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: mounted ? 1 : 0, y: mounted ? 0 : -20 }}
-      transition={{ duration: 0.5, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] as const }}
+      transition={{ duration: 0.3, delay: 0.1, ease: [0.25, 0.1, 0.25, 1] as const }}
     >
       {/* Top row: Hamburger, Shift+o, and Light/Dark mode */}
       <div className={styles.topRow}>

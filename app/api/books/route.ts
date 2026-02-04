@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import pool from "@/lib/db";
 
+// Cache API responses for 1 hour (3600 seconds)
+export const revalidate = 3600;
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)

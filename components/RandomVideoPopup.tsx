@@ -78,18 +78,17 @@ export function RandomVideoPopup() {
   // For rendering state (isOverInteractive affects opacity)
   const [isOverInteractive, setIsOverInteractive] = useState(false)
 
-  // Preload videos in background for smoother playback
-  // Prioritize first few videos for immediate availability
+  // Preload videos ONLY when digital droplets is enabled - saves 4.7MB on initial load
   useEffect(() => {
-    // Skip on mobile
-    if (window.innerWidth <= 768) return
+    // Skip on mobile or if digital droplets is disabled
+    if (window.innerWidth <= 768 || !digitalDroplets) return
 
-    // Shuffle array and preload first 5 immediately for fast startup
+    // Shuffle array and preload first 5 videos when user enables the feature
     const shuffled = [...videoFiles].sort(() => Math.random() - 0.5)
     const priorityVideos = shuffled.slice(0, 5)
     const remainingVideos = shuffled.slice(5)
     
-    // Preload priority videos immediately
+    // Preload priority videos when feature is enabled
     priorityVideos.forEach((videoFile) => {
       const videoUrl = `${VIDEO_BASE_PATH}/${videoFile}`
       if (preloadedVideos.current.has(videoUrl)) return
@@ -107,8 +106,10 @@ export function RandomVideoPopup() {
       document.body.appendChild(video)
     })
     
-    // Preload remaining videos after a short delay to not block initial render
+    // Preload remaining videos after mouse movement is detected
     const timeoutId = setTimeout(() => {
+      if (!digitalDroplets) return // Double-check still enabled
+      
       remainingVideos.forEach((videoFile) => {
         const videoUrl = `${VIDEO_BASE_PATH}/${videoFile}`
         if (preloadedVideos.current.has(videoUrl)) return
@@ -125,7 +126,7 @@ export function RandomVideoPopup() {
         preloadedVideos.current.set(videoUrl, video)
         document.body.appendChild(video)
       })
-    }, 500)
+    }, 2000) // Delay until user is actually interacting
 
     return () => {
       clearTimeout(timeoutId)
@@ -138,7 +139,7 @@ export function RandomVideoPopup() {
       })
       preloadedVideos.current.clear()
     }
-  }, []) // Run immediately on mount, no dependencies
+  }, [digitalDroplets]) // Run immediately on mount, no dependencies
 
   // Track text selection - only block when actually selecting text
   useEffect(() => {

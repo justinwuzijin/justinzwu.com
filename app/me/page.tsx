@@ -71,7 +71,7 @@ const projects = [
     title: 'Performeter',
     date: "Oct '25",
     description: 'A Chrome extension for Tinder.com. It scrapes bio text and calls an LLM with a structured prompt to output a score of how "performative" someones profile is. (Toronto Stupid Hackathon project)',
-    image: '/assets/svg/performeter.svg',
+    image: '/assets/svg/performeter.png',
     url: 'https://github.com/justinwuzijin/performeter67',
     dark: false,
     zoom: 1.01,
