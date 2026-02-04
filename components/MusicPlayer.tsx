@@ -128,7 +128,7 @@ export function MusicPlayer({
 
   return (
     <div className={`${styles.musicPlayer} ${isExpanded ? styles.expanded : ''}`}>
-      <audio ref={audioRef} preload="metadata" />
+      <audio ref={audioRef} preload="none" />
       
       {/* Compact view */}
       <div className={styles.compactView}>
