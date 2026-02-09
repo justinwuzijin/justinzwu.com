@@ -22,20 +22,26 @@ export function useTheme() {
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('light')
-  const [digitalDroplets, setDigitalDroplets] = useState(true)
+  // Initialize from localStorage synchronously to match the inline script in layout.tsx
+  // that already set data-theme before first paint
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('theme') as Theme | null
+      if (saved && ['light', 'dark', 'orange'].includes(saved)) return saved
+    }
+    return 'light'
+  })
+  const [digitalDroplets, setDigitalDroplets] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('digitalDroplets')
+      if (saved !== null) return saved === 'true'
+    }
+    return true
+  })
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
-    const savedTheme = localStorage.getItem('theme') as Theme | null
-    if (savedTheme && ['light', 'dark', 'orange'].includes(savedTheme)) {
-      setTheme(savedTheme)
-    }
-    const savedDigitalDroplets = localStorage.getItem('digitalDroplets')
-    if (savedDigitalDroplets !== null) {
-      setDigitalDroplets(savedDigitalDroplets === 'true')
-    }
   }, [])
 
   useEffect(() => {

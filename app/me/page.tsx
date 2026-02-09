@@ -39,6 +39,15 @@ const projectCardVariant = {
 
 const projects = [
   {
+    id: 'camcraft',
+    title: 'CamCraft',
+    date: "Feb '26",
+    description: 'A virtual playground for exploring cameras and locations. Step into a 360-degree panoramic view of anywhere in the world. Navigate a scene using trained hand gestures and take photos rendered with camera-specific settings.',
+    image: '/assets/svg/camcraft.png',
+    url: 'https://github.com/petersenmatthew/camcraft',
+    dark: true,
+  },
+  {
     id: 'skema',
     title: 'Skema',
     date: "Jan '26",
