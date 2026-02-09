@@ -8,8 +8,8 @@ import { SidebarNav } from '@/components/SidebarNav'
 import { MobileNav } from '@/components/MobileNav'
 import { Footer } from '@/components/Footer'
 import { ThemeProvider } from '@/components/ThemeProvider'
-import { RandomVideoPopup } from '@/components/RandomVideoPopup'
 import { TopRightControls } from '@/components/TopRightControls'
+import { LazyRandomVideoPopup } from '@/components/LazyRandomVideoPopup'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -33,10 +33,27 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Inline script to set theme before first paint — prevents flash of wrong theme */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('theme');
+                  if (theme && ['light', 'dark', 'orange'].includes(theme)) {
+                    document.documentElement.setAttribute('data-theme', theme);
+                  }
+                } catch(e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
       <body className={inter.variable}>
         <ThemeProvider>
-          {/* Random video popups near mouse */}
-          <RandomVideoPopup />
+          {/* Random video popups near mouse — dynamically loaded, not needed for initial render */}
+          <LazyRandomVideoPopup />
           
           {/* Top right controls - fixed position, hides on scroll */}
           <TopRightControls />

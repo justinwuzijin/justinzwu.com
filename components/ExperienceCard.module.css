@@ -25,10 +25,36 @@
 }
 
 .logoImage {
-  width: 100%;
-  height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.logoVisible {
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.logoHidden {
+  opacity: 0;
+}
+
+.logoPlaceholder {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+:global([data-theme="dark"]) .logoPlaceholder,
+:global([data-theme="orange"]) .logoPlaceholder {
+  background: linear-gradient(90deg, #2a2a2a 25%, #333 50%, #2a2a2a 75%);
+  background-size: 200% 100%;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 .content {

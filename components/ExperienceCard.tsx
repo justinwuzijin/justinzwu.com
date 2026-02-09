@@ -1,3 +1,6 @@
+'use client'
+
+import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import styles from './ExperienceCard.module.css'
@@ -14,6 +17,9 @@ interface ExperienceCardProps {
 }
 
 export function ExperienceCard({ company, logo, role, type, description, secondaryLogo, link, zoom }: ExperienceCardProps) {
+  const [imageLoaded, setImageLoaded] = useState(false)
+  const [imageError, setImageError] = useState(false)
+
   const getLogoPath = () => {
     switch (logo) {
       case 'ontario':
@@ -35,14 +41,21 @@ export function ExperienceCard({ company, logo, role, type, description, seconda
 
   const logoArea = (
     <div className={styles.logoArea}>
+      {!imageLoaded && !imageError && logoPath && (
+        <div className={styles.logoPlaceholder} />
+      )}
       {logoPath && (
         <Image
           src={logoPath}
           alt={`${company} logo`}
           fill
-          className={styles.logoImage}
+          className={`${styles.logoImage} ${imageLoaded ? styles.logoVisible : styles.logoHidden}`}
           sizes="(max-width: 768px) 100vw, 50vw"
           style={zoom ? { transform: `scale(${zoom})` } : undefined}
+          onLoad={() => setImageLoaded(true)}
+          onError={() => setImageError(true)}
+          loading="lazy"
+          quality={85}
         />
       )}
     </div>
