@@ -7,23 +7,6 @@
 
 (b) built using V0, Cursor. next.js, tailwindcss, postgreSQL, gemini, google books api, goodreads CSV file.
 
-## Setup
-
-1. Clone the repo and install dependencies:
-   ```bash
-   npm install
-   ```
-
-2. Copy `.env.example` to `.env.local` and fill in your API keys:
-   ```bash
-   cp .env.example .env.local
-   ```
-
-3. Run the development server:
-   ```bash
-   npm run dev
-   ```
-
 next steps:
 - take snippets from youtube vids + add them to art gallery like (https://www.ryanngfilms.com/)
 - take pics of polaroids + receipts + objects in my bedroom  -> build out art gallery
