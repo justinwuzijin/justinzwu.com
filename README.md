@@ -3,7 +3,7 @@
 > designed on Thursday, January 15th 8:13AM until 6:56PM.
 
 > v1.0 built between January 18th 2:03PM and January 22nd 12:51PM.
-> v1.1 in progress January 26th 8:34AM and ...
+> v1.1 in progress January 26th 8:34AM and now
 
 (a) design: https://www.figma.com/design/owcszrqmF8xIcbiN717V1k/justinzwu.com-V1.0?node-id=0-1&t=QislyHLAtevJ6twV-1
 
@@ -17,7 +17,6 @@ next steps:
 
         
 would be cool:
+- make the liquid digi art the screenshots of my youtube channel art
 - add some cool stop motion effects as user traverses site.
-- add subtle sound effects + music
-- add some easter eggs in homepage 
-- add framer motion for transitions
+- add subtle sound effects
