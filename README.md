@@ -5,9 +5,24 @@
 > v1.0 built between January 18th 2:03PM and January 22nd 12:51PM.
 > v1.1 in progress January 26th 8:34AM and now
 
-(a) design: https://www.figma.com/design/owcszrqmF8xIcbiN717V1k/justinzwu.com-V1.0?node-id=0-1&t=QislyHLAtevJ6twV-1
-
 (b) built using V0, Cursor. next.js, tailwindcss, postgreSQL, gemini, google books api, goodreads CSV file.
+
+## Setup
+
+1. Clone the repo and install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Copy `.env.example` to `.env.local` and fill in your API keys:
+   ```bash
+   cp .env.example .env.local
+   ```
+
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
 next steps:
 - take snippets from youtube vids + add them to art gallery like (https://www.ryanngfilms.com/)
