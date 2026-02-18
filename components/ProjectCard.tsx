@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import styles from './ProjectCard.module.css'
+import { UnderlineHighlight, CircleHighlight } from '@/components/Highlights'
 
 interface ProjectCardProps {
   id: string
@@ -14,9 +15,10 @@ interface ProjectCardProps {
   url?: string
   dark?: boolean
   zoom?: number
+  highlightDelay?: number
 }
 
-export function ProjectCard({ title, date, description, image, url, dark, zoom }: ProjectCardProps) {
+export function ProjectCard({ title, date, description, image, url, dark, zoom, highlightDelay = 0 }: ProjectCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
 
@@ -51,8 +53,8 @@ export function ProjectCard({ title, date, description, image, url, dark, zoom }
       )}
       <div className={styles.content}>
         <div className={styles.header}>
-          <h3 className={styles.title}>{title}</h3>
-          <span className={styles.date}>{date}</span>
+          <h3 className={styles.title}><UnderlineHighlight delay={highlightDelay}>{title}</UnderlineHighlight></h3>
+          <span className={styles.date}><CircleHighlight delay={highlightDelay + 0.2}>{date}</CircleHighlight></span>
         </div>
         <p className={styles.description}>{description}</p>
       </div>

@@ -104,11 +104,14 @@ export default function ExperiencePage() {
         animate="visible"
         variants={staggerContainer}
       >
-        {experiences.map((exp) => (
-          <motion.div key={exp.id} variants={cardVariant}>
-            <ExperienceCard {...exp} />
-          </motion.div>
-        ))}
+        {experiences.map((exp, index) => {
+          const delays = [0.3, 0.3, 0.9, 0.9, 1.5]
+          return (
+            <motion.div key={exp.id} variants={cardVariant}>
+              <ExperienceCard {...exp} highlightDelay={delays[index] || 0.3} />
+            </motion.div>
+          )
+        })}
       </motion.div>
     </div>
   )

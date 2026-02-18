@@ -7,6 +7,7 @@ import styles from './page.module.css'
 import { BookCard } from '@/components/BookCard'
 import { BookSidePanel } from '@/components/BookSidePanel'
 import { useTheme } from '@/components/ThemeProvider'
+import { UnderlineHighlight, CircleHighlight } from '@/components/Highlights'
 
 type ShelfType = 'to read' | 'reading' | 'read'
 
@@ -130,8 +131,9 @@ export default function BookshelfPage() {
         initial="hidden"
         animate="visible"
         variants={fadeInUp}
+        className={styles.quote}
       >
-        think before you speak. read before you think.
+        <UnderlineHighlight delay={0.5}>think before you <CircleHighlight delay={1.2}>speak</CircleHighlight></UnderlineHighlight>. <UnderlineHighlight delay={1.8}><CircleHighlight delay={2.5}>read</CircleHighlight> before you <CircleHighlight delay={3.2}>think</CircleHighlight></UnderlineHighlight>.
       </motion.p>
 
       {/* Filter tabs */}
