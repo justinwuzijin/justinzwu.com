@@ -44,15 +44,15 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: calc(100% + 24px);
-  height: calc(100% + 20px);
+  width: calc(100% + 10px);
+  height: calc(100% + 16px);
   pointer-events: none;
   overflow: visible;
 }
 
 .circleHighlight path {
   stroke: #f97316;
-  stroke-width: 4;
+  stroke-width: 3;
   fill: none;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -60,6 +60,11 @@
 
 :global([data-theme="orange"]) .circleHighlight path {
   stroke: #ffffff;
+}
+
+.circleWide svg {
+  width: calc(100% + 8px);
+  height: calc(100% + 16px);
 }
 
 .underlineHighlight {
