@@ -1,0 +1,13 @@
+.container {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.marquee {
+  position: absolute;
+  background-color: rgba(13, 153, 255, 0.1);
+  border: 1px solid rgba(13, 153, 255, 0.8);
+  pointer-events: none;
+  z-index: 9999;
+}

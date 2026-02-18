@@ -194,9 +194,17 @@
   }
   
   .preFooter {
-    height: 400px;
+    height: auto;
   }
   
+  .preFooterImage {
+    width: 100%;
+    height: auto;
+    display: block;
+    max-height: 425px;
+    object-fit: cover;
+    object-position: center;
+  }
   
   .copyright {
     font-size: 0.65rem;
@@ -235,13 +243,12 @@
   }
   
   .preFooter {
-    height: 320px;
+    height: auto;
   }
   
   .preFooterImage {
     max-height: 250px;
   }
-  
   
   .copyright {
     font-size: 0.6rem;

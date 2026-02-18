@@ -1,20 +1,33 @@
 'use client'
 
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useRef, useCallback, MouseEvent as ReactMouseEvent } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useTheme } from './ThemeProvider'
-import { DraggableCollageItem } from './DraggableCollageItem'
+import { SelectableCollageItem } from './SelectableCollageItem'
+import { CollageContextMenu } from './CollageContextMenu'
+import { MarqueeSelect } from './MarqueeSelect'
+import { useCollageSelection } from '@/hooks/useCollageSelection'
 import { 
-  collageItems, 
-  loadPositions, 
-  savePositions,
-  type ItemPosition 
+  collageItems,
+  getItemConfig,
+  loadTransforms, 
+  saveTransforms,
+  type ItemTransform 
 } from '@/lib/collageItems'
 import styles from './Footer.module.css'
+
+const MOBILE_BREAKPOINT = 768
 
 interface WebringMember {
   website: string
   name: string
+}
+
+interface ContextMenuState {
+  isOpen: boolean
+  x: number
+  y: number
 }
 
 function Webring() {
@@ -25,9 +38,8 @@ function Webring() {
   const [hasError, setHasError] = useState(false)
 
   useEffect(() => {
-    // Add timeout to prevent slow API from blocking
     const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
+    const timeoutId = setTimeout(() => controller.abort(), 5000)
 
     setIsLoading(true)
     fetch('https://www.uwaterloo.network/api/webring?user=justin-wu', {
@@ -76,7 +88,6 @@ function Webring() {
     ? 'https://www.uwaterloo.network/iconwhite.svg'
     : 'https://www.uwaterloo.network/icon.svg'
 
-  // Show minimal loading or error state - don't block page render
   if (hasError || members.length === 0) {
     return (
       <div className={styles.webring}>
@@ -127,39 +138,225 @@ function Webring() {
 export function Footer() {
   const { theme } = useTheme()
   const preFooterRef = useRef<HTMLDivElement>(null)
-  const [positions, setPositions] = useState<ItemPosition[]>([])
+  const [transforms, setTransforms] = useState<ItemTransform[]>([])
   const [isClient, setIsClient] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+  const [contextMenu, setContextMenu] = useState<ContextMenuState>({ isOpen: false, x: 0, y: 0 })
+  
+  const {
+    selectedIds,
+    selectedCount,
+    hasSelection,
+    select,
+    selectMultiple,
+    selectAll,
+    deselectAll,
+    isSelected,
+  } = useCollageSelection()
 
-  // Load positions from localStorage on mount
   useEffect(() => {
     setIsClient(true)
-    setPositions(loadPositions())
-  }, [])
-
-  // Save positions when they change
-  useEffect(() => {
-    if (isClient && positions.length > 0) {
-      savePositions(positions)
+    setTransforms(loadTransforms())
+    
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= MOBILE_BREAKPOINT)
     }
-  }, [positions, isClient])
-
-  const handleDragStart = useCallback((id: string) => {
-    // Bring item to front by giving it the highest z-index
-    setPositions(prev => {
-      const maxZ = Math.max(...prev.map(p => p.zIndex))
-      return prev.map(p => 
-        p.id === id ? { ...p, zIndex: maxZ + 1 } : p
-      )
-    })
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  const handleDragEnd = useCallback((id: string, newX: number, newY: number) => {
-    setPositions(prev => 
-      prev.map(p => 
-        p.id === id ? { ...p, x: newX, y: newY } : p
-      )
+  useEffect(() => {
+    if (isClient && transforms.length > 0) {
+      saveTransforms(transforms)
+    }
+  }, [transforms, isClient])
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!hasSelection) return
+      
+      const target = e.target as HTMLElement
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return
+
+      if (e.key === 'Delete' || e.key === 'Backspace') {
+        e.preventDefault()
+        handleDelete()
+      }
+      
+      if (e.key === 'Escape') {
+        deselectAll()
+      }
+      
+      if ((e.metaKey || e.ctrlKey) && e.key === 'a') {
+        e.preventDefault()
+        selectAll(transforms.map(t => t.id))
+      }
+      
+      if ((e.metaKey || e.ctrlKey) && e.key === 'd') {
+        e.preventDefault()
+        handleDuplicate()
+      }
+      
+      if (e.key === ']') {
+        if (e.metaKey || e.ctrlKey) {
+          handleBringToFront()
+        } else {
+          handleBringForward()
+        }
+      }
+      
+      if (e.key === '[') {
+        if (e.metaKey || e.ctrlKey) {
+          handleSendToBack()
+        } else {
+          handleSendBackward()
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [hasSelection, selectedIds, transforms, deselectAll, selectAll])
+
+  const handleSelect = useCallback((id: string, addToSelection: boolean) => {
+    select(id, addToSelection)
+  }, [select])
+
+  const handleTransformChange = useCallback((id: string, updates: Partial<ItemTransform>) => {
+    setTransforms(prev => 
+      prev.map(t => t.id === id ? { ...t, ...updates } : t)
     )
   }, [])
+
+  const handleContextMenu = useCallback((e: ReactMouseEvent, id: string) => {
+    if (!isSelected(id)) {
+      select(id, false)
+    }
+    setContextMenu({ isOpen: true, x: e.clientX, y: e.clientY })
+  }, [isSelected, select])
+
+  const handleCloseContextMenu = useCallback(() => {
+    setContextMenu({ isOpen: false, x: 0, y: 0 })
+  }, [])
+
+  const handleBackgroundClick = useCallback((e: ReactMouseEvent) => {
+    if ((e.target as HTMLElement).closest('[data-collage-item]')) return
+    deselectAll()
+  }, [deselectAll])
+
+  const handleMarqueeSelect = useCallback((ids: string[], addToSelection: boolean) => {
+    selectMultiple(ids, addToSelection)
+  }, [selectMultiple])
+
+  const handleBringToFront = useCallback(() => {
+    if (!hasSelection) return
+    const maxZ = Math.max(...transforms.map(t => t.zIndex))
+    let nextZ = maxZ + 1
+    setTransforms(prev => 
+      prev.map(t => selectedIds.has(t.id) ? { ...t, zIndex: nextZ++ } : t)
+    )
+  }, [hasSelection, selectedIds, transforms])
+
+  const handleBringForward = useCallback(() => {
+    if (!hasSelection) return
+    setTransforms(prev => {
+      const sorted = [...prev].sort((a, b) => a.zIndex - b.zIndex)
+      const result = [...prev]
+      
+      for (const id of selectedIds) {
+        const currentIndex = sorted.findIndex(t => t.id === id)
+        if (currentIndex < sorted.length - 1) {
+          const current = result.find(t => t.id === id)!
+          const above = sorted[currentIndex + 1]
+          const aboveInResult = result.find(t => t.id === above.id)!
+          const tempZ = current.zIndex
+          current.zIndex = aboveInResult.zIndex
+          aboveInResult.zIndex = tempZ
+        }
+      }
+      return result
+    })
+  }, [hasSelection, selectedIds])
+
+  const handleSendBackward = useCallback(() => {
+    if (!hasSelection) return
+    setTransforms(prev => {
+      const sorted = [...prev].sort((a, b) => a.zIndex - b.zIndex)
+      const result = [...prev]
+      
+      for (const id of selectedIds) {
+        const currentIndex = sorted.findIndex(t => t.id === id)
+        if (currentIndex > 0) {
+          const current = result.find(t => t.id === id)!
+          const below = sorted[currentIndex - 1]
+          const belowInResult = result.find(t => t.id === below.id)!
+          const tempZ = current.zIndex
+          current.zIndex = belowInResult.zIndex
+          belowInResult.zIndex = tempZ
+        }
+      }
+      return result
+    })
+  }, [hasSelection, selectedIds])
+
+  const handleSendToBack = useCallback(() => {
+    if (!hasSelection) return
+    const minZ = Math.min(...transforms.map(t => t.zIndex))
+    let nextZ = minZ - selectedIds.size
+    setTransforms(prev => 
+      prev.map(t => selectedIds.has(t.id) ? { ...t, zIndex: nextZ++ } : t)
+    )
+  }, [hasSelection, selectedIds, transforms])
+
+  const handleDelete = useCallback(() => {
+    setTransforms(prev => prev.filter(t => !selectedIds.has(t.id)))
+    deselectAll()
+  }, [selectedIds, deselectAll])
+
+  const handleResetSize = useCallback(() => {
+    setTransforms(prev => 
+      prev.map(t => {
+        if (!selectedIds.has(t.id)) return t
+        const config = getItemConfig(t.id)
+        if (!config) return t
+        return { ...t, width: config.width, height: config.height }
+      })
+    )
+  }, [selectedIds])
+
+  const handleResetRotation = useCallback(() => {
+    setTransforms(prev => 
+      prev.map(t => {
+        if (!selectedIds.has(t.id)) return t
+        const config = getItemConfig(t.id)
+        if (!config) return t
+        return { ...t, rotation: config.rotation }
+      })
+    )
+  }, [selectedIds])
+
+  const handleDuplicate = useCallback(() => {
+    const newItems: ItemTransform[] = []
+    const maxZ = Math.max(...transforms.map(t => t.zIndex))
+    let nextZ = maxZ + 1
+    
+    for (const id of selectedIds) {
+      const original = transforms.find(t => t.id === id)
+      if (original) {
+        newItems.push({
+          ...original,
+          id: `${original.id}-copy-${Date.now()}`,
+          x: original.x + 2,
+          y: original.y + 2,
+          zIndex: nextZ++,
+        })
+      }
+    }
+    
+    setTransforms(prev => [...prev, ...newItems])
+    selectMultiple(newItems.map(i => i.id), false)
+  }, [selectedIds, transforms, selectMultiple])
 
   const logoSrc = theme === 'orange' 
     ? '/assets/svg/zijin(orange).svg' 
@@ -167,48 +364,86 @@ export function Footer() {
     ? '/assets/svg/zijin(dm).svg' 
     : '/assets/svg/zijin.svg'
   
-  // Always use white text since the pre-footer background is always black
   const justinwuTextSrc = '/assets/collection/justinwu-text-white.png'
+  
+  const preFooterStaticSrc = theme === 'orange' || theme === 'dark'
+    ? '/assets/svg/Pre-Footer(dm).png' 
+    : '/assets/svg/Pre-Footer.png'
 
   return (
     <footer className={styles.footer}>
-      {/* Pre-Footer draggable collage */}
-      <div 
-        ref={preFooterRef}
-        className={styles.preFooter}
-      >
-        {/* Static @JUSTINWU text background */}
-        <img 
-          src={justinwuTextSrc}
-          alt="@JUSTINWU"
-          className={styles.preFooterBackground}
-          draggable={false}
-        />
-        
-        {/* Draggable items layer */}
-        {isClient && positions.map(pos => {
-          const item = collageItems.find(i => i.id === pos.id)
-          if (!item) return null
+      {isMobile ? (
+        <div className={styles.preFooter}>
+          <Image 
+            src={preFooterStaticSrc} 
+            alt="Pre-footer collage" 
+            className={styles.preFooterImage}
+            width={1200}
+            height={400}
+            loading="lazy"
+            quality={85}
+          />
+        </div>
+      ) : (
+        <div 
+          ref={preFooterRef}
+          className={styles.preFooter}
+          onClick={handleBackgroundClick}
+        >
+          <img 
+            src={justinwuTextSrc}
+            alt="@JUSTINWU"
+            className={styles.preFooterBackground}
+            draggable={false}
+          />
           
-          return (
-            <DraggableCollageItem
-              key={item.id}
-              item={item}
-              x={pos.x}
-              y={pos.y}
-              zIndex={pos.zIndex}
+          {isClient && (
+            <MarqueeSelect
               containerRef={preFooterRef}
-              onDragStart={handleDragStart}
-              onDragEnd={handleDragEnd}
+              transforms={transforms}
+              onSelectionChange={handleMarqueeSelect}
             />
-          )
-        })}
-      </div>
+          )}
           
-      {/* Footer bar */}
+          {isClient && transforms.map(transform => {
+            const item = collageItems.find(i => i.id === transform.id)
+            if (!item) return null
+            
+            return (
+              <div key={transform.id} data-collage-item>
+                <SelectableCollageItem
+                  item={item}
+                  transform={transform}
+                  containerRef={preFooterRef}
+                  isSelected={isSelected(transform.id)}
+                  onSelect={handleSelect}
+                  onTransformChange={handleTransformChange}
+                  onContextMenu={handleContextMenu}
+                />
+              </div>
+            )
+          })}
+        </div>
+      )}
+      
+      {contextMenu.isOpen && (
+        <CollageContextMenu
+          position={{ x: contextMenu.x, y: contextMenu.y }}
+          selectedCount={selectedCount}
+          onClose={handleCloseContextMenu}
+          onBringToFront={handleBringToFront}
+          onBringForward={handleBringForward}
+          onSendBackward={handleSendBackward}
+          onSendToBack={handleSendToBack}
+          onDelete={handleDelete}
+          onResetSize={handleResetSize}
+          onResetRotation={handleResetRotation}
+          onDuplicate={handleDuplicate}
+        />
+      )}
+          
       <div className={styles.footerBar}>
         <div className={styles.footerContent}>
-          {/* Left: Zijin logo */}
           <div>
             <Link href="/" className={styles.logoSection}>
               <img 
@@ -219,18 +454,15 @@ export function Footer() {
             </Link>
           </div>
           
-          {/* Center: Copyright text */}
           <div className={styles.copyrightSection}>
             <p className={styles.copyright}>@2026 justinzwu.com</p>
           </div>
           
-          {/* Right: Waterloo Network webring */}
           <div className={styles.webringContainer}>
             <Webring />
           </div>
         </div>
         
-        {/* Attribution text */}
         <div className={styles.attribution}>
           <p className={styles.attributionText}>
             designed on Figma. built with Next.js. deployed on Vercel. made with help from V0 and Cursor.
