@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import styles from './ExperienceCard.module.css'
+import { UnderlineHighlight, CircleHighlight } from '@/components/Highlights'
 
 interface ExperienceCardProps {
   company: string
@@ -14,9 +15,10 @@ interface ExperienceCardProps {
   secondaryLogo?: string
   link?: string
   zoom?: number
+  highlightDelay?: number
 }
 
-export function ExperienceCard({ company, logo, role, type, description, secondaryLogo, link, zoom }: ExperienceCardProps) {
+export function ExperienceCard({ company, logo, role, type, description, secondaryLogo, link, zoom, highlightDelay = 0 }: ExperienceCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
 
@@ -72,8 +74,8 @@ export function ExperienceCard({ company, logo, role, type, description, seconda
       )}
       <div className={styles.content}>
         <div className={styles.header}>
-          <h3 className={styles.role}>{role}</h3>
-          <span className={styles.type}>{type}</span>
+          <h3 className={styles.role}><UnderlineHighlight delay={highlightDelay}>{role}</UnderlineHighlight></h3>
+          <span className={styles.type}><CircleHighlight delay={highlightDelay + 0.15}>{type}</CircleHighlight></span>
         </div>
         <p className={styles.description}>{description}</p>
       </div>

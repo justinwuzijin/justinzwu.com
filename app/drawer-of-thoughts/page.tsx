@@ -3,6 +3,7 @@
 import { useRef } from 'react'
 import { motion } from 'framer-motion'
 import styles from './page.module.css'
+import { CircleHighlight } from '@/components/Highlights'
 
 // Animation variants
 const fadeInUp = {
@@ -208,7 +209,7 @@ export default function DrawerOfThoughtsPage() {
                 className={styles.smallOrangeDot}
                 style={{ backgroundColor: gradeColors[section.grade] }}
               />
-              {section.grade}
+              <CircleHighlight delay={0.3} wide={section.grade === '1a & 1st co-op'}>{section.grade}</CircleHighlight>
             </h2>
             <motion.ul 
               className={styles.itemsList}

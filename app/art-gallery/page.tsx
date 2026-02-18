@@ -4,6 +4,7 @@ import { useMemo, useRef, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import styles from './page.module.css'
 import { AutoPlayVideo } from '@/components/AutoPlayVideo'
+import { ScribbleHighlight } from '@/components/Highlights'
 
 // Animation variants
 const fadeInUp = {
@@ -166,7 +167,7 @@ export default function ArtGalleryPage() {
         animate="visible"
         variants={fadeInUp}
       >
-        work in progress;
+        <ScribbleHighlight delay={0.5}>work in progress</ScribbleHighlight>;
       </motion.p>
 
       {/* Masonry gallery section */}

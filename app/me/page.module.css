@@ -33,6 +33,72 @@
   text-decoration: none;
 }
 
+.circleHighlight {
+  position: relative;
+  display: inline;
+  white-space: nowrap;
+}
+
+.circleHighlight svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100% + 24px);
+  height: calc(100% + 20px);
+  pointer-events: none;
+  overflow: visible;
+}
+
+.circleHighlight path {
+  stroke: #f97316;
+  stroke-width: 4;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+:global([data-theme="orange"]) .circleHighlight path {
+  stroke: #ffffff;
+}
+
+.underlineHighlight {
+  position: relative;
+  display: inline;
+}
+
+.underlineHighlight svg {
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.underlineHighlight path {
+  stroke: #f97316;
+  stroke-width: 4;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+:global([data-theme="orange"]) .underlineHighlight path {
+  stroke: #ffffff;
+}
+
+.circleLarge svg {
+  width: calc(100% + 30px);
+  height: calc(100% + 24px);
+}
+
+.circleSmall svg {
+  width: calc(100% + 16px);
+  height: calc(100% + 14px);
+}
+
 .highlightYellow {
   background-color: var(--color-yellow-200);
   color: #000000;
