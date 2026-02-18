@@ -1,32 +1,16 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
-import { motion } from 'framer-motion'
 import { useTheme } from './ThemeProvider'
+import { DraggableCollageItem } from './DraggableCollageItem'
+import { 
+  collageItems, 
+  loadPositions, 
+  savePositions,
+  type ItemPosition 
+} from '@/lib/collageItems'
 import styles from './Footer.module.css'
-
-// Animation variants
-const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] as const }
-  }
-}
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.15,
-      delayChildren: 0.1,
-    }
-  }
-}
 
 interface WebringMember {
   website: string
@@ -142,47 +126,90 @@ function Webring() {
 
 export function Footer() {
   const { theme } = useTheme()
+  const preFooterRef = useRef<HTMLDivElement>(null)
+  const [positions, setPositions] = useState<ItemPosition[]>([])
+  const [isClient, setIsClient] = useState(false)
+
+  // Load positions from localStorage on mount
+  useEffect(() => {
+    setIsClient(true)
+    setPositions(loadPositions())
+  }, [])
+
+  // Save positions when they change
+  useEffect(() => {
+    if (isClient && positions.length > 0) {
+      savePositions(positions)
+    }
+  }, [positions, isClient])
+
+  const handleDragStart = useCallback((id: string) => {
+    // Bring item to front by giving it the highest z-index
+    setPositions(prev => {
+      const maxZ = Math.max(...prev.map(p => p.zIndex))
+      return prev.map(p => 
+        p.id === id ? { ...p, zIndex: maxZ + 1 } : p
+      )
+    })
+  }, [])
+
+  const handleDragEnd = useCallback((id: string, newX: number, newY: number) => {
+    setPositions(prev => 
+      prev.map(p => 
+        p.id === id ? { ...p, x: newX, y: newY } : p
+      )
+    )
+  }, [])
+
   const logoSrc = theme === 'orange' 
     ? '/assets/svg/zijin(orange).svg' 
     : theme === 'dark' 
     ? '/assets/svg/zijin(dm).svg' 
     : '/assets/svg/zijin.svg'
-  const preFooterSrc = theme === 'orange' || theme === 'dark'
-    ? '/assets/svg/Pre-Footer(dm).png' 
-    : '/assets/svg/Pre-Footer.png'
+  
+  // Always use white text since the pre-footer background is always black
+  const justinwuTextSrc = '/assets/collection/justinwu-text-white.png'
 
   return (
     <footer className={styles.footer}>
-      {/* Pre-Footer collage banner */}
-      <motion.div 
+      {/* Pre-Footer draggable collage */}
+      <div 
+        ref={preFooterRef}
         className={styles.preFooter}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-        variants={fadeInUp}
       >
-        <Image 
-          src={preFooterSrc} 
-          alt="Pre-footer collage" 
-          className={styles.preFooterImage}
-          width={1200}
-          height={400}
-          loading="lazy"
-          quality={85}
+        {/* Static @JUSTINWU text background */}
+        <img 
+          src={justinwuTextSrc}
+          alt="@JUSTINWU"
+          className={styles.preFooterBackground}
+          draggable={false}
         />
-      </motion.div>
+        
+        {/* Draggable items layer */}
+        {isClient && positions.map(pos => {
+          const item = collageItems.find(i => i.id === pos.id)
+          if (!item) return null
+          
+          return (
+            <DraggableCollageItem
+              key={item.id}
+              item={item}
+              x={pos.x}
+              y={pos.y}
+              zIndex={pos.zIndex}
+              containerRef={preFooterRef}
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+            />
+          )
+        })}
+      </div>
           
       {/* Footer bar */}
-      <motion.div 
-        className={styles.footerBar}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-50px" }}
-        variants={staggerContainer}
-      >
-        <motion.div className={styles.footerContent} variants={staggerContainer}>
+      <div className={styles.footerBar}>
+        <div className={styles.footerContent}>
           {/* Left: Zijin logo */}
-          <motion.div variants={fadeInUp}>
+          <div>
             <Link href="/" className={styles.logoSection}>
               <img 
                 src={logoSrc} 
@@ -190,26 +217,26 @@ export function Footer() {
                 className={styles.logoImage}
               />
             </Link>
-          </motion.div>
+          </div>
           
           {/* Center: Copyright text */}
-          <motion.div className={styles.copyrightSection} variants={fadeInUp}>
+          <div className={styles.copyrightSection}>
             <p className={styles.copyright}>@2026 justinzwu.com</p>
-          </motion.div>
+          </div>
           
           {/* Right: Waterloo Network webring */}
-          <motion.div className={styles.webringContainer} variants={fadeInUp}>
+          <div className={styles.webringContainer}>
             <Webring />
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
         
         {/* Attribution text */}
-        <motion.div className={styles.attribution} variants={fadeInUp}>
+        <div className={styles.attribution}>
           <p className={styles.attributionText}>
             designed on Figma. built with Next.js. deployed on Vercel. made with help from V0 and Cursor.
           </p>
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
     </footer>
   )
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTheme } from './ThemeProvider'
 import styles from './MusicPlayer.module.css'
 
@@ -22,8 +22,8 @@ const defaultTracks: MusicTrack[] = [
   {
     title: 'Example Track',
     artist: 'Artist Name',
-    src: '/music/example.mp3', // You'll need to add your MP3 file
-    cover: '/music/cover.jpg', // Optional album cover
+    src: '/music/example.mp3',
+    cover: '/music/cover.jpg',
   },
 ]
 
@@ -39,11 +39,32 @@ export function MusicPlayer({
   const [duration, setDuration] = useState(0)
   const [isExpanded, setIsExpanded] = useState(false)
   const [hasUserInteracted, setHasUserInteracted] = useState(false)
+  const [preloadedCovers, setPreloadedCovers] = useState<Set<string>>(new Set())
   const audioRef = useRef<HTMLAudioElement>(null)
+  const wasPlayingRef = useRef(false)
+  const prevTrackIndexRef = useRef(currentTrackIndex)
 
   const currentTrack = defaultTrack || tracks[currentTrackIndex]
 
-  // Initialize audio
+  // Preload adjacent track covers for instant switching
+  useEffect(() => {
+    const indicesToPreload = [
+      currentTrackIndex,
+      (currentTrackIndex + 1) % tracks.length,
+      (currentTrackIndex - 1 + tracks.length) % tracks.length,
+    ]
+    
+    indicesToPreload.forEach(index => {
+      const cover = tracks[index]?.cover
+      if (cover && !preloadedCovers.has(cover)) {
+        const img = new Image()
+        img.src = cover
+        setPreloadedCovers(prev => new Set(prev).add(cover))
+      }
+    })
+  }, [currentTrackIndex, tracks, preloadedCovers])
+
+  // Initialize audio event listeners
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
@@ -51,35 +72,56 @@ export function MusicPlayer({
     const updateTime = () => setCurrentTime(audio.currentTime)
     const updateDuration = () => setDuration(audio.duration)
     const handleEnded = () => {
-      // Auto-play next track
+      wasPlayingRef.current = true
       if (currentTrackIndex < tracks.length - 1) {
         setCurrentTrackIndex(currentTrackIndex + 1)
       } else {
         setIsPlaying(false)
+        wasPlayingRef.current = false
       }
+    }
+    const handlePlay = () => {
+      setIsPlaying(true)
+      wasPlayingRef.current = true
+    }
+    const handlePause = () => {
+      setIsPlaying(false)
+      wasPlayingRef.current = false
     }
 
     audio.addEventListener('timeupdate', updateTime)
     audio.addEventListener('loadedmetadata', updateDuration)
     audio.addEventListener('ended', handleEnded)
+    audio.addEventListener('play', handlePlay)
+    audio.addEventListener('pause', handlePause)
 
     return () => {
       audio.removeEventListener('timeupdate', updateTime)
       audio.removeEventListener('loadedmetadata', updateDuration)
       audio.removeEventListener('ended', handleEnded)
+      audio.removeEventListener('play', handlePlay)
+      audio.removeEventListener('pause', handlePause)
     }
   }, [currentTrackIndex, tracks.length])
 
-  // Update audio source when track changes
+  // Update audio source only when track index actually changes
   useEffect(() => {
     const audio = audioRef.current
     if (!audio || !currentTrack) return
 
-    audio.src = currentTrack.src
-    if (isPlaying && hasUserInteracted) {
-      audio.play().catch(console.error)
+    if (prevTrackIndexRef.current !== currentTrackIndex) {
+      const shouldAutoPlay = wasPlayingRef.current && hasUserInteracted
+      
+      audio.src = currentTrack.src
+      audio.load()
+      
+      if (shouldAutoPlay) {
+        audio.play().catch(console.error)
+      }
+      
+      prevTrackIndexRef.current = currentTrackIndex
     }
-  }, [currentTrack, isPlaying, hasUserInteracted])
+  }, [currentTrackIndex, currentTrack, hasUserInteracted])
 
   // Handle autoplay (browsers block autoplay without user interaction)
   useEffect(() => {
@@ -126,9 +168,32 @@ export function MusicPlayer({
 
   const progressPercentage = duration > 0 ? (currentTime / duration) * 100 : 0
 
+  const skipPrev = useCallback(() => {
+    wasPlayingRef.current = isPlaying
+    if (currentTrackIndex > 0) {
+      setCurrentTrackIndex(currentTrackIndex - 1)
+    } else {
+      setCurrentTrackIndex(tracks.length - 1)
+    }
+  }, [currentTrackIndex, tracks.length, isPlaying])
+
+  const skipNext = useCallback(() => {
+    wasPlayingRef.current = isPlaying
+    if (currentTrackIndex < tracks.length - 1) {
+      setCurrentTrackIndex(currentTrackIndex + 1)
+    } else {
+      setCurrentTrackIndex(0)
+    }
+  }, [currentTrackIndex, tracks.length, isPlaying])
+
+  const selectTrack = useCallback((index: number) => {
+    wasPlayingRef.current = isPlaying
+    setCurrentTrackIndex(index)
+  }, [isPlaying])
+
   return (
     <div className={`${styles.musicPlayer} ${isExpanded ? styles.expanded : ''}`}>
-      <audio ref={audioRef} preload="none" />
+      <audio ref={audioRef} preload="metadata" />
       
       {/* Compact view */}
       <div className={styles.compactView}>
@@ -140,9 +205,12 @@ export function MusicPlayer({
           <div className={`${styles.vinyl} ${isPlaying ? styles.spinning : ''}`}>
             {currentTrack.cover ? (
               <img 
+                key={currentTrack.cover}
                 src={currentTrack.cover} 
                 alt={`${currentTrack.title} cover`}
                 className={styles.vinylCover}
+                loading="eager"
+                decoding="async"
               />
             ) : (
               <div className={styles.vinylGrooves} />
@@ -170,13 +238,7 @@ export function MusicPlayer({
         <div className={styles.expandedView}>
           <div className={styles.controls}>
             <button
-              onClick={() => {
-                if (currentTrackIndex > 0) {
-                  setCurrentTrackIndex(currentTrackIndex - 1)
-                } else {
-                  setCurrentTrackIndex(tracks.length - 1)
-                }
-              }}
+              onClick={skipPrev}
               className={styles.controlButton}
               aria-label="Previous track"
             >
@@ -192,13 +254,7 @@ export function MusicPlayer({
             </button>
             
             <button
-              onClick={() => {
-                if (currentTrackIndex < tracks.length - 1) {
-                  setCurrentTrackIndex(currentTrackIndex + 1)
-                } else {
-                  setCurrentTrackIndex(0)
-                }
-              }}
+              onClick={skipNext}
               className={styles.controlButton}
               aria-label="Next track"
             >
@@ -225,7 +281,7 @@ export function MusicPlayer({
               {tracks.map((track, index) => (
                 <button
                   key={index}
-                  onClick={() => setCurrentTrackIndex(index)}
+                  onClick={() => selectTrack(index)}
                   className={`${styles.trackItem} ${index === currentTrackIndex ? styles.active : ''}`}
                 >
                   {track.title} - {track.artist}
