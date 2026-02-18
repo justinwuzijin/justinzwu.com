@@ -82,6 +82,22 @@ body[data-side-panel-open="true"] .topRightControls {
   height: 42px;
   width: auto;
   pointer-events: none;
+}
+
+/* CSS-based theme switching to avoid hydration mismatch */
+.hamburgerLight {
+  display: block;
+}
+
+.hamburgerOrange {
+  display: none;
+}
+
+:global([data-theme="orange"]) .hamburgerLight {
+  display: none;
+}
+
+:global([data-theme="orange"]) .hamburgerOrange {
   display: block;
 }
 
@@ -111,12 +127,33 @@ body[data-side-panel-open="true"] .topRightControls {
   pointer-events: none;
 }
 
+/* CSS-based theme switching for menu items */
+.menuItemLight {
+  display: block;
+}
+
+.menuItemOrange {
+  display: none;
+}
+
+:global([data-theme="orange"]) .menuItemLight {
+  display: none;
+}
+
+:global([data-theme="orange"]) .menuItemOrange {
+  display: block;
+}
+
 .iconWrapper {
   position: relative;
   z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+:global([data-theme="orange"]) .iconWrapper {
+  color: #CB5500;
 }
 
 .controlButton {

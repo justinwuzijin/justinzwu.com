@@ -17,7 +17,6 @@
   height: 100%;
   object-fit: contain;
   transition: opacity 0.3s ease;
-  display: block;
 }
 
 .titleImage.visible {
@@ -27,4 +26,37 @@
 .titleImage.hidden {
   opacity: 0;
   pointer-events: none;
+}
+
+/* CSS-based theme switching to avoid hydration mismatch */
+.justinLight {
+  display: block;
+}
+
+.justinOrange {
+  display: none;
+}
+
+.zijinLight {
+  display: block;
+}
+
+.zijinOrange {
+  display: none;
+}
+
+:global([data-theme="orange"]) .justinLight {
+  display: none;
+}
+
+:global([data-theme="orange"]) .justinOrange {
+  display: block;
+}
+
+:global([data-theme="orange"]) .zijinLight {
+  display: none;
+}
+
+:global([data-theme="orange"]) .zijinOrange {
+  display: block;
 }

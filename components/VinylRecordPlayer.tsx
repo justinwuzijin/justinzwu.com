@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTheme } from './ThemeProvider'
 import styles from './VinylRecordPlayer.module.css'
 
@@ -21,32 +21,57 @@ export function VinylRecordPlayer({ tracks, onTogglePlay }: VinylRecordPlayerPro
   const [isPlaying, setIsPlaying] = useState(false)
   const [hasUserInteracted, setHasUserInteracted] = useState(false)
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0)
+  const [preloadedCovers, setPreloadedCovers] = useState<Set<string>>(new Set())
   const audioRef = useRef<HTMLAudioElement>(null)
+  const wasPlayingRef = useRef(false)
+  const prevTrackIndexRef = useRef(currentTrackIndex)
 
   const currentTrack = tracks[currentTrackIndex]
 
-  // Initialize audio source
+  // Preload adjacent track covers for instant switching
+  useEffect(() => {
+    const indicesToPreload = [
+      currentTrackIndex,
+      (currentTrackIndex + 1) % tracks.length,
+      (currentTrackIndex - 1 + tracks.length) % tracks.length,
+    ]
+    
+    indicesToPreload.forEach(index => {
+      const cover = tracks[index]?.cover
+      if (cover && !preloadedCovers.has(cover)) {
+        const img = new Image()
+        img.src = cover
+        setPreloadedCovers(prev => new Set(prev).add(cover))
+      }
+    })
+  }, [currentTrackIndex, tracks, preloadedCovers])
+
+  // Handle track changes - only runs when track index actually changes
   useEffect(() => {
     const audio = audioRef.current
     if (!audio || !currentTrack) return
 
-    // Set src if not already set or if track changed
-    const currentSrc = audio.src
-    
-    if (!currentSrc || !currentSrc.includes(currentTrack.src)) {
+    // Only update if track actually changed
+    if (prevTrackIndexRef.current !== currentTrackIndex) {
+      const shouldAutoPlay = wasPlayingRef.current && hasUserInteracted
+      
       audio.src = currentTrack.src
-      // If was playing, continue playing new track
-      if (isPlaying && hasUserInteracted) {
+      audio.load()
+      
+      if (shouldAutoPlay) {
         audio.play().catch(console.error)
       }
+      
+      prevTrackIndexRef.current = currentTrackIndex
     }
-  }, [currentTrack, isPlaying, hasUserInteracted])
+  }, [currentTrackIndex, currentTrack, hasUserInteracted])
 
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
 
     const handleEnded = () => {
+      wasPlayingRef.current = true
       // Auto-skip to next track
       if (currentTrackIndex < tracks.length - 1) {
         setCurrentTrackIndex(currentTrackIndex + 1)
@@ -58,10 +83,12 @@ export function VinylRecordPlayer({ tracks, onTogglePlay }: VinylRecordPlayerPro
 
     const handlePlay = () => {
       setIsPlaying(true)
+      wasPlayingRef.current = true
     }
 
     const handlePause = () => {
       setIsPlaying(false)
+      wasPlayingRef.current = false
     }
 
     audio.addEventListener('ended', handleEnded)
@@ -96,27 +123,31 @@ export function VinylRecordPlayer({ tracks, onTogglePlay }: VinylRecordPlayerPro
     }
   }
 
-  const skipNext = (e?: React.MouseEvent) => {
+  const skipNext = useCallback((e?: React.MouseEvent) => {
     if (e) e.stopPropagation()
+    // Preserve playing state before changing track
+    wasPlayingRef.current = isPlaying
     if (currentTrackIndex < tracks.length - 1) {
       setCurrentTrackIndex(currentTrackIndex + 1)
     } else {
       setCurrentTrackIndex(0) // Loop to first
     }
-  }
+  }, [currentTrackIndex, tracks.length, isPlaying])
 
-  const skipPrev = (e?: React.MouseEvent) => {
+  const skipPrev = useCallback((e?: React.MouseEvent) => {
     if (e) e.stopPropagation()
+    // Preserve playing state before changing track
+    wasPlayingRef.current = isPlaying
     if (currentTrackIndex > 0) {
       setCurrentTrackIndex(currentTrackIndex - 1)
     } else {
       setCurrentTrackIndex(tracks.length - 1) // Loop to last
     }
-  }
+  }, [currentTrackIndex, tracks.length, isPlaying])
 
   return (
     <div className={styles.vinylPlayer}>
-      <audio ref={audioRef} preload="none" />
+      <audio ref={audioRef} preload="metadata" />
       
       <div className={styles.playerRow}>
         {/* Previous track button */}
@@ -137,9 +168,12 @@ export function VinylRecordPlayer({ tracks, onTogglePlay }: VinylRecordPlayerPro
           <div className={`${styles.record} ${isPlaying ? styles.spinning : ''}`}>
             {currentTrack?.cover ? (
               <img 
+                key={currentTrack.cover}
                 src={currentTrack.cover} 
                 alt={`${currentTrack.title} cover`}
                 className={styles.recordCover}
+                loading="eager"
+                decoding="async"
               />
             ) : (
               <div className={styles.recordGrooves} />

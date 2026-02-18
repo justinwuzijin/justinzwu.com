@@ -24,9 +24,9 @@ interface Book {
 }
 
 const shelfColors: Record<ShelfType, string> = {
-  'to read': '#dc2626',
-  'reading': '#eab308',
-  'read': '#16a34a',
+  'to read': '#fca5a5',
+  'reading': '#fde047',
+  'read': '#86efac',
 }
 
 // Animation variants
@@ -133,7 +133,7 @@ export default function BookshelfPage() {
         variants={fadeInUp}
         className={styles.quote}
       >
-        <UnderlineHighlight delay={0.5}>think before you <CircleHighlight delay={1.2}>speak</CircleHighlight></UnderlineHighlight>. <UnderlineHighlight delay={1.8}><CircleHighlight delay={2.5}>read</CircleHighlight> before you <CircleHighlight delay={3.2}>think</CircleHighlight></UnderlineHighlight>.
+        <UnderlineHighlight delay={0.5}>think before you speak</UnderlineHighlight>. <UnderlineHighlight delay={1.8}> read before you think</UnderlineHighlight>.
       </motion.p>
 
       {/* Filter tabs */}
@@ -145,20 +145,21 @@ export default function BookshelfPage() {
       >
         {shelves.map((shelf) => {
           const color = shelfColors[shelf]
+          const isActive = activeShelf === shelf
           
           return (
             <motion.button
               key={shelf}
               onClick={() => handleShelfClick(shelf)}
-              className={`${styles.tab} ${activeShelf === shelf ? styles.activeTab : ''}`}
+              className={`${styles.tab} ${isActive ? styles.activeTab : ''}`}
               style={{ 
                 '--tab-color': color 
               } as React.CSSProperties}
               variants={fadeInUp}
             >
               <span 
-                className={styles.tabDot} 
-                style={{ backgroundColor: color }}
+                className={`${styles.tabDot} ${isActive ? '' : styles.inactiveDot}`}
+                style={isActive ? { backgroundColor: color } : undefined}
               />
               {shelf}
             </motion.button>

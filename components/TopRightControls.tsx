@@ -101,9 +101,14 @@ export function TopRightControls() {
               aria-expanded={isExpanded}
             >
               <img
-                src={theme === 'orange' ? '/assets/svg/hamburger(orange).svg' : '/assets/svg/hamburgericon.svg'}
+                src="/assets/svg/hamburgericon.svg"
                 alt="Social menu"
-                className={styles.hamburgerImage}
+                className={`${styles.hamburgerImage} ${styles.hamburgerLight}`}
+              />
+              <img
+                src="/assets/svg/hamburger(orange).svg"
+                alt="Social menu"
+                className={`${styles.hamburgerImage} ${styles.hamburgerOrange}`}
               />
             </button>
             
@@ -130,15 +135,18 @@ export function TopRightControls() {
                 }}
               >
                 <img
-                  src={theme === 'orange' ? '/assets/svg/menuitem(orange).svg' : '/assets/svg/menuitem.svg'}
+                  src="/assets/svg/menuitem.svg"
                   alt=""
-                  className={styles.menuItemBg}
+                  className={`${styles.menuItemBg} ${styles.menuItemLight}`}
                   aria-hidden="true"
                 />
-                <span 
-                  className={styles.iconWrapper}
-                  style={{ color: theme === 'orange' ? '#CB5500' : 'currentColor' }}
-                >
+                <img
+                  src="/assets/svg/menuitem(orange).svg"
+                  alt=""
+                  className={`${styles.menuItemBg} ${styles.menuItemOrange}`}
+                  aria-hidden="true"
+                />
+                <span className={styles.iconWrapper}>
                   {link.icon}
                 </span>
               </a>

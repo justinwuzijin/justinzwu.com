@@ -34,31 +34,54 @@ export function ExperienceCard({ company, logo, role, type, description, seconda
         return '/assets/svg/socratica.png'
       case 'bridging':
         return '/assets/svg/bgbggbbg.png'
+      case 'youtuber':
+        return '/assets/svg/youtuber.png'
+      case 'createmarkham':
+        return '/assets/svg/createmarkham.png'
+      case 'studentcouncil':
+        return '/assets/svg/studentcouncil.png'
+      case 'anniversary':
+        return '/assets/svg/anniversary.png'
+      case 'placeholder':
+        return null
       default:
         return null
     }
   }
 
+  const isPlaceholder = logo === 'placeholder'
+
   const logoPath = getLogoPath()
 
   const logoArea = (
     <div className={styles.logoArea}>
-      {!imageLoaded && !imageError && logoPath && (
-        <div className={styles.logoPlaceholder} />
-      )}
-      {logoPath && (
-        <Image
-          src={logoPath}
-          alt={`${company} logo`}
-          fill
-          className={`${styles.logoImage} ${imageLoaded ? styles.logoVisible : styles.logoHidden}`}
-          sizes="(max-width: 768px) 100vw, 50vw"
-          style={zoom ? { transform: `scale(${zoom})` } : undefined}
-          onLoad={() => setImageLoaded(true)}
-          onError={() => setImageError(true)}
-          loading="lazy"
-          quality={85}
-        />
+      {isPlaceholder ? (
+        <div className={styles.placeholderIcon}>
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 8v4M12 16h.01" />
+          </svg>
+        </div>
+      ) : (
+        <>
+          {!imageLoaded && !imageError && logoPath && (
+            <div className={styles.logoPlaceholder} />
+          )}
+          {logoPath && (
+            <Image
+              src={logoPath}
+              alt={`${company} logo`}
+              fill
+              className={`${styles.logoImage} ${imageLoaded ? styles.logoVisible : styles.logoHidden}`}
+              sizes="(max-width: 768px) 100vw, 50vw"
+              style={zoom ? { transform: `scale(${zoom})` } : undefined}
+              onLoad={() => setImageLoaded(true)}
+              onError={() => setImageError(true)}
+              loading="lazy"
+              quality={85}
+            />
+          )}
+        </>
       )}
     </div>
   )

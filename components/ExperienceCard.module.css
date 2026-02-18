@@ -57,6 +57,25 @@
   100% { background-position: 200% 0; }
 }
 
+.placeholderIcon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-muted);
+  background-color: #e8e8e8;
+}
+
+:global([data-theme="dark"]) .placeholderIcon {
+  background-color: #2a2a2a;
+}
+
+:global([data-theme="orange"]) .placeholderIcon {
+  background-color: #b34700;
+  color: rgba(255, 255, 255, 0.5);
+}
+
 .content {
   display: flex;
   flex-direction: column;
