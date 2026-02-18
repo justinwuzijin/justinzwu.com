@@ -116,11 +116,11 @@ const thoughts = [
 ]
 
 const gradeColors: Record<string, string> = {
-  'grade 9': '#dc2626',
-  'grade 10': '#8b5cf6',
-  'grade 11': '#16a34a',
-  'grade 12': '#3b82f6',
-  '1a & 1st co-op': '#eab308',
+  'grade 9': '#fca5a5',    // red-300
+  'grade 10': '#c4b5fd',   // violet-300
+  'grade 11': '#86efac',   // green-300
+  'grade 12': '#93c5fd',   // blue-300
+  '1a & 1st co-op': '#fde047', // yellow-300
 }
 
 const gradeDisplayText: Record<string, string> = {

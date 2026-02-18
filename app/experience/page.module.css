@@ -1,7 +1,7 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-2xl);
+  gap: var(--spacing-xl);
 }
 
 .pageTitle {
@@ -22,6 +22,82 @@
 :global([data-theme="dark"]) .orangeDot,
 :global([data-theme="orange"]) .orangeDot {
   background-color: #ffffff;
+}
+
+.tabs {
+  display: flex;
+  gap: var(--spacing-lg);
+  margin-top: calc(-1 * var(--spacing-sm));
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  padding: var(--spacing-xs) 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.tab:hover {
+  color: var(--color-foreground);
+}
+
+.tab.activeTab {
+  color: var(--color-foreground);
+  font-weight: 500;
+}
+
+.tabDot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+  transition: background-color 0.2s ease;
+}
+
+/* Inactive tabs - gray out the dot */
+.tab:not(.activeTab) .tabDot {
+  background-color: #d1d5db !important;
+}
+
+:global([data-theme="dark"]) .tab:not(.activeTab) .tabDot {
+  background-color: #4b5563 !important;
+}
+
+:global([data-theme="orange"]) .tab:not(.activeTab) .tabDot {
+  background-color: #9ca3af !important;
+}
+
+/* Light mode: orange and black */
+.activeTab .dotCurrent {
+  background-color: #fdba74;  /* orange-300 */
+}
+
+.activeTab .dotHighSchool {
+  background-color: #a3a3a3;  /* neutral-400 */
+}
+
+/* Dark mode: orange and white */
+:global([data-theme="dark"]) .activeTab .dotCurrent {
+  background-color: #fdba74;  /* orange-300 */
+}
+
+:global([data-theme="dark"]) .activeTab .dotHighSchool {
+  background-color: #d4d4d4;  /* neutral-300 */
+}
+
+/* Orange mode: black and white */
+:global([data-theme="orange"]) .activeTab .dotCurrent {
+  background-color: #525252;  /* neutral-600 */
+}
+
+:global([data-theme="orange"]) .activeTab .dotHighSchool {
+  background-color: #d4d4d4;  /* neutral-300 */
 }
 
 .experienceGrid {

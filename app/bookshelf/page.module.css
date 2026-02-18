@@ -75,6 +75,19 @@
   height: 10px;
   border-radius: var(--radius-full);
   flex-shrink: 0;
+  transition: background-color 0.2s ease;
+}
+
+.inactiveDot {
+  background-color: #d1d5db;
+}
+
+:global([data-theme="dark"]) .inactiveDot {
+  background-color: #4b5563;
+}
+
+:global([data-theme="orange"]) .inactiveDot {
+  background-color: #9ca3af;
 }
 
 .attributionNote {
