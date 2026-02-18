@@ -133,7 +133,7 @@ export default function BookshelfPage() {
         variants={fadeInUp}
         className={styles.quote}
       >
-        <UnderlineHighlight delay={0.5}>think before you <CircleHighlight delay={1.2}>speak</CircleHighlight></UnderlineHighlight>. <UnderlineHighlight delay={1.8}><CircleHighlight delay={2.5}>read</CircleHighlight> before you <CircleHighlight delay={3.2}>think</CircleHighlight></UnderlineHighlight>.
+        <UnderlineHighlight delay={0.5}>think before you speak</UnderlineHighlight>. <UnderlineHighlight delay={1.8}> read before you think</UnderlineHighlight>.
       </motion.p>
 
       {/* Filter tabs */}

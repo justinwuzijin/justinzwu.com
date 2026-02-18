@@ -50,27 +50,36 @@ const drawVariants = {
 }
 
 const circlePaths = [
-  "M 8 20 C 8 8, 20 4, 50 4 C 80 4, 94 10, 94 20 C 94 30, 80 36, 50 36 C 20 36, 8 32, 8 20",
-  "M 6 18 C 4 6, 25 2, 52 3 C 82 4, 96 12, 95 22 C 94 32, 75 38, 48 37 C 18 36, 8 30, 6 18",
-  "M 10 22 C 12 10, 28 5, 55 6 C 78 7, 92 14, 90 24 C 88 34, 70 37, 45 36 C 22 35, 8 28, 10 22",
-  "M 5 19 C 3 7, 22 3, 48 4 C 76 5, 95 11, 96 21 C 97 31, 78 37, 50 38 C 20 39, 7 31, 5 19",
+  "M 3 8 L 15 3 L 40 2 L 60 3 L 85 2 L 97 8 L 98 18 L 97 32 L 85 38 L 60 39 L 40 38 L 15 39 L 3 32 L 2 18 Z",
+  "M 4 10 L 20 4 L 50 3 L 80 4 L 96 10 L 97 20 L 96 30 L 80 37 L 50 38 L 20 37 L 4 30 L 3 20 Z",
+  "M 2 12 L 12 5 L 35 2 L 65 2 L 88 5 L 98 12 L 99 20 L 98 28 L 88 36 L 65 39 L 35 39 L 12 36 L 2 28 L 1 20 Z",
+  "M 5 9 L 18 2 L 45 1 L 55 1 L 82 2 L 95 9 L 96 20 L 95 31 L 82 38 L 55 40 L 45 40 L 18 38 L 5 31 L 4 20 Z",
+]
+
+const circlePathsWide = [
+  "M 3 8 L 20 3 L 60 2 L 100 1 L 140 2 L 180 3 L 197 8 L 198 18 L 197 32 L 180 38 L 140 39 L 100 40 L 60 39 L 20 38 L 3 32 L 2 18 Z",
+  "M 4 10 L 25 4 L 70 3 L 100 2 L 130 3 L 175 4 L 196 10 L 197 20 L 196 30 L 175 37 L 130 38 L 100 39 L 70 38 L 25 37 L 4 30 L 3 20 Z",
+  "M 2 12 L 15 5 L 55 2 L 100 1 L 145 2 L 185 5 L 198 12 L 199 20 L 198 28 L 185 36 L 145 39 L 100 40 L 55 39 L 15 36 L 2 28 L 1 20 Z",
+  "M 5 9 L 22 2 L 65 1 L 100 0 L 135 1 L 178 2 L 195 9 L 196 20 L 195 31 L 178 38 L 135 40 L 100 41 L 65 40 L 22 38 L 5 31 L 4 20 Z",
 ]
 
 let circleIndex = 0
 
-function CircleHighlight({ children, className = '', delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
-  const pathIndex = circleIndex++ % circlePaths.length
+function CircleHighlight({ children, className = '', delay = 0, wide = false }: { children: React.ReactNode; className?: string; delay?: number; wide?: boolean }) {
+  const paths = wide ? circlePathsWide : circlePaths
+  const pathIndex = circleIndex++ % paths.length
+  const viewBox = wide ? "0 0 200 40" : "0 0 100 40"
   
   return (
-    <span className={`${styles.circleHighlight} ${className}`}>
+    <span className={`${styles.circleHighlight} ${wide ? styles.circleWide : ''} ${className}`}>
       <motion.svg 
-        viewBox="0 0 100 40"
+        viewBox={viewBox}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
       >
         <motion.path
-          d={circlePaths[pathIndex]}
+          d={paths[pathIndex]}
           variants={drawVariants}
           custom={delay}
         />
@@ -312,7 +321,7 @@ export default function MePage() {
             </LinkPreview>{' '}
           </motion.li>
           <motion.li variants={fadeInUp}>
-            {'>'} seeking <CircleHighlight delay={2.5}><b>fall 2026</b></CircleHighlight>{' '}
+            {'>'} seeking <CircleHighlight delay={2.5}>fall 2026</CircleHighlight>{' '}
             <UnderlineHighlight delay={2.5}>internship opportunities!</UnderlineHighlight>
           </motion.li>
         </motion.ul>
