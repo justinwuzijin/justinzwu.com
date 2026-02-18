@@ -186,6 +186,85 @@ export interface ItemPosition {
   zIndex: number
 }
 
+export interface ItemTransform {
+  id: string
+  x: number           // position % from left
+  y: number           // position % from top
+  width: number       // current width in px
+  height: number      // current height in px
+  rotation: number    // rotation in degrees
+  zIndex: number
+}
+
+export function getDefaultTransforms(): ItemTransform[] {
+  return collageItems.map((item, index) => ({
+    id: item.id,
+    x: item.defaultX,
+    y: item.defaultY,
+    width: item.width,
+    height: item.height,
+    rotation: item.rotation,
+    zIndex: index + 1,
+  }))
+}
+
+export function loadTransforms(): ItemTransform[] {
+  if (typeof window === 'undefined') return getDefaultTransforms()
+  
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved) {
+      const parsed = JSON.parse(saved) as (ItemPosition | ItemTransform)[]
+      if (parsed.length === collageItems.length) {
+        // Check if it's already the new format (has width, height, rotation)
+        if (parsed.every(p => 'width' in p && 'height' in p && 'rotation' in p)) {
+          return parsed as ItemTransform[]
+        }
+        // Otherwise migrate from old ItemPosition format - preserve x, y, zIndex
+        const migratedTransforms = parsed.map(pos => {
+          const config = collageItems.find(i => i.id === pos.id)
+          return {
+            id: pos.id,
+            x: pos.x,
+            y: pos.y,
+            width: config?.width ?? 100,
+            height: config?.height ?? 100,
+            rotation: config?.rotation ?? 0,
+            zIndex: pos.zIndex,
+          }
+        })
+        // Save the migrated format back
+        saveTransforms(migratedTransforms)
+        return migratedTransforms
+      }
+    }
+  } catch (e) {
+    console.warn('Failed to load collage transforms:', e)
+  }
+  
+  return getDefaultTransforms()
+}
+
+export function saveTransforms(transforms: ItemTransform[]): void {
+  if (typeof window === 'undefined') return
+  
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(transforms))
+  } catch (e) {
+    console.warn('Failed to save collage transforms:', e)
+  }
+}
+
+export function resetTransforms(): void {
+  if (typeof window === 'undefined') return
+  localStorage.removeItem(STORAGE_KEY)
+}
+
+export function getItemConfig(id: string): CollageItemConfig | undefined {
+  return collageItems.find(item => item.id === id)
+}
+
+// Keep old functions for backward compatibility
 export function getDefaultPositions(): ItemPosition[] {
   return collageItems.map((item, index) => ({
     id: item.id,
@@ -196,30 +275,25 @@ export function getDefaultPositions(): ItemPosition[] {
 }
 
 export function loadPositions(): ItemPosition[] {
-  if (typeof window === 'undefined') return getDefaultPositions()
-  
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY)
-    if (saved) {
-      const parsed = JSON.parse(saved) as ItemPosition[]
-      // Validate that all items exist
-      if (parsed.length === collageItems.length) {
-        return parsed
-      }
-    }
-  } catch (e) {
-    console.warn('Failed to load collage positions:', e)
-  }
-  
-  return getDefaultPositions()
+  const transforms = loadTransforms()
+  return transforms.map(t => ({
+    id: t.id,
+    x: t.x,
+    y: t.y,
+    zIndex: t.zIndex,
+  }))
 }
 
 export function savePositions(positions: ItemPosition[]): void {
-  if (typeof window === 'undefined') return
-  
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(positions))
-  } catch (e) {
-    console.warn('Failed to save collage positions:', e)
-  }
+  const currentTransforms = loadTransforms()
+  const newTransforms = positions.map(pos => {
+    const existing = currentTransforms.find(t => t.id === pos.id)
+    return {
+      ...existing!,
+      x: pos.x,
+      y: pos.y,
+      zIndex: pos.zIndex,
+    }
+  })
+  saveTransforms(newTransforms)
 }
