@@ -79,6 +79,8 @@ const ITEM_BOUNDARIES = {
   maxY: 100,  // Bottom edge of collage container (pre-footer is below)
 }
 
+const MOBILE_BREAKPOINT = 768
+
 const myRoomVideos: VideoConfig[] = [
   { id: 'room-1', aspectRatio: 16/9, gridColumn: 'span 2' },
   { id: 'room-2', aspectRatio: 9/16 },
@@ -130,6 +132,7 @@ export default function ArtGalleryPage() {
   const collageRef = useRef<HTMLDivElement>(null)
   const [transforms, setTransforms] = useState<ItemTransform[]>([])
   const [isClient, setIsClient] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const [contextMenu, setContextMenu] = useState<ContextMenuState>({ isOpen: false, x: 0, y: 0 })
   const [infoPopup, setInfoPopup] = useState<InfoPopupState>({ isOpen: false, itemId: null })
   
@@ -147,6 +150,13 @@ export default function ArtGalleryPage() {
   useEffect(() => {
     setIsClient(true)
     setTransforms(loadArtGalleryTransforms())
+    
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= MOBILE_BREAKPOINT)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
   useEffect(() => {
@@ -430,77 +440,79 @@ export default function ArtGalleryPage() {
               />
             </motion.div>
             
-            {/* Interactive collage area */}
-            <motion.div 
-              ref={collageRef}
-              className={styles.collageContainer}
-              onClick={handleBackgroundClick}
-              variants={videoItemVariant}
-            >
-              {isClient && (
-                <MarqueeSelect
-                  containerRef={collageRef}
-                  transforms={transforms}
-                  onSelectionChange={handleMarqueeSelect}
-                />
-              )}
-              
-              {isClient && transforms.map(transform => {
-                const item = collageItems.find(i => i.id === transform.id)
-                if (!item) return null
+            {/* Interactive collage area - hidden on mobile */}
+            {!isMobile && (
+              <motion.div 
+                ref={collageRef}
+                className={styles.collageContainer}
+                onClick={handleBackgroundClick}
+                variants={videoItemVariant}
+              >
+                {isClient && (
+                  <MarqueeSelect
+                    containerRef={collageRef}
+                    transforms={transforms}
+                    onSelectionChange={handleMarqueeSelect}
+                  />
+                )}
                 
-                return (
-                  <div 
-                    key={transform.id} 
-                    data-collage-item
-                    onClick={(e) => {
-                      if (!e.shiftKey && !e.metaKey && !e.ctrlKey) {
-                        handleItemClick(transform.id)
-                      }
-                    }}
-                  >
-                    <SelectableCollageItem
-                      item={item}
-                      transform={transform}
-                      containerRef={collageRef}
-                      isSelected={isSelected(transform.id)}
-                      onSelect={handleSelect}
-                      onTransformChange={handleTransformChange}
-                      onContextMenu={handleContextMenu}
-                      boundaries={ITEM_BOUNDARIES}
-                    />
-                  </div>
-                )
-              })}
-              
-              {/* Info popups positioned using transform data */}
-              <AnimatePresence>
-                {infoPopup.isOpen && infoPopup.itemId && (() => {
-                  const transform = transforms.find(t => t.id === infoPopup.itemId)
-                  const item = collageItems.find(i => i.id === infoPopup.itemId)
-                  if (!transform || !item) return null
+                {isClient && transforms.map(transform => {
+                  const item = collageItems.find(i => i.id === transform.id)
+                  if (!item) return null
                   
                   return (
-                    <motion.div
-                      key="info-popup"
-                      className={styles.infoPopup}
-                      style={{
-                        left: `calc(${transform.x}% + ${transform.width / 2}px)`,
-                        top: `${transform.y}%`,
+                    <div 
+                      key={transform.id} 
+                      data-collage-item
+                      onClick={(e) => {
+                        if (!e.shiftKey && !e.metaKey && !e.ctrlKey) {
+                          handleItemClick(transform.id)
+                        }
                       }}
-                      initial={{ opacity: 0, scale: 0.9, y: 10 }}
-                      animate={{ opacity: 1, scale: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.9, y: 10 }}
-                      transition={{ duration: 0.2 }}
-                      onClick={(e) => e.stopPropagation()}
                     >
-                      <button className={styles.infoPopupClose} onClick={handleCloseInfoPopup}>×</button>
-                      <p className={styles.infoPopupText}>{item.alt}</p>
-                    </motion.div>
+                      <SelectableCollageItem
+                        item={item}
+                        transform={transform}
+                        containerRef={collageRef}
+                        isSelected={isSelected(transform.id)}
+                        onSelect={handleSelect}
+                        onTransformChange={handleTransformChange}
+                        onContextMenu={handleContextMenu}
+                        boundaries={ITEM_BOUNDARIES}
+                      />
+                    </div>
                   )
-                })()}
-              </AnimatePresence>
-            </motion.div>
+                })}
+                
+                {/* Info popups positioned using transform data */}
+                <AnimatePresence>
+                  {infoPopup.isOpen && infoPopup.itemId && (() => {
+                    const transform = transforms.find(t => t.id === infoPopup.itemId)
+                    const item = collageItems.find(i => i.id === infoPopup.itemId)
+                    if (!transform || !item) return null
+                    
+                    return (
+                      <motion.div
+                        key="info-popup"
+                        className={styles.infoPopup}
+                        style={{
+                          left: `calc(${transform.x}% + ${transform.width / 2}px)`,
+                          top: `${transform.y}%`,
+                        }}
+                        initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                        transition={{ duration: 0.2 }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <button className={styles.infoPopupClose} onClick={handleCloseInfoPopup}>×</button>
+                        <p className={styles.infoPopupText}>{item.alt}</p>
+                      </motion.div>
+                    )
+                  })()}
+                </AnimatePresence>
+              </motion.div>
+            )}
           </motion.section>
         ) : (
           <motion.section 
