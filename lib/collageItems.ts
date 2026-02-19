@@ -177,7 +177,7 @@ export const collageItems: CollageItemConfig[] = [
   },
 ]
 
-export const STORAGE_KEY = 'prefooter-collage-positions'
+export const STORAGE_KEY = 'prefooter-collage-positions-v3'
 
 export interface ItemPosition {
   id: string
