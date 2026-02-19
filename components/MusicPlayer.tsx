@@ -104,6 +104,15 @@ export function MusicPlayer({
     }
   }, [currentTrackIndex, tracks.length])
 
+  // Set initial audio source on mount
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio || !currentTrack) return
+    
+    audio.src = currentTrack.src
+    audio.load()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   // Update audio source only when track index actually changes
   useEffect(() => {
     const audio = audioRef.current

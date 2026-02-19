@@ -185,7 +185,7 @@ const projects = [
     title: '3D Interactive Stills Gallery',
     date: "Aug '25",
     description: 'An interactive sphere-based gallery that showcases stills from my youtube videos in a dynamic 3D environment.',
-    image: '/assets/svg/art2.png',
+    image: '/assets/svg/art.jpg',
     url: 'https://github.com/justinwuzijin/spinning-3d-gallery',
     dark: false,
   },
@@ -243,7 +243,7 @@ export default function MePage() {
             </LinkPreview>
           </motion.li>
           <motion.li variants={fadeInUp}>
-            {'>'} building ClipABit, a semantic search <UnderlineHighlight delay={2.0}>DaVinci Resolve plug-in</UnderlineHighlight>{' '}
+            {'>'} building ClipABit, a semantic search <UnderlineHighlight delay={2.0}>DaVinci Resolve</UnderlineHighlight> <UnderlineHighlight delay={2.0}>plug-in</UnderlineHighlight>{' '}
             <LinkPreview 
               url="https://clipabit.web.app/" 
               className={styles.highlightYellow}

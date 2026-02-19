@@ -46,6 +46,15 @@ export function VinylRecordPlayer({ tracks, onTogglePlay }: VinylRecordPlayerPro
     })
   }, [currentTrackIndex, tracks, preloadedCovers])
 
+  // Set initial audio source on mount
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio || !currentTrack) return
+    
+    audio.src = currentTrack.src
+    audio.load()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   // Handle track changes - only runs when track index actually changes
   useEffect(() => {
     const audio = audioRef.current
