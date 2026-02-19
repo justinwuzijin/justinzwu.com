@@ -52,7 +52,7 @@
   max-width: var(--content-max-width);
   padding: var(--spacing-xl) var(--spacing-2xl);
   margin-left: var(--spacing-lg); /* Reduced margin since sidebar is now in-flow */
-  overflow-x: clip;
+  overflow-x: visible;
   position: relative;
   z-index: 30;
 }

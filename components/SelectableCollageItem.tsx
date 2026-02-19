@@ -6,6 +6,13 @@ import styles from './SelectableCollageItem.module.css'
 
 type HandlePosition = 'nw' | 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w'
 
+interface Boundaries {
+  minX?: number  // minimum x percentage
+  maxX?: number  // maximum x percentage
+  minY?: number  // minimum y percentage
+  maxY?: number  // maximum y percentage
+}
+
 interface SelectableCollageItemProps {
   item: CollageItemConfig
   transform: ItemTransform
@@ -14,6 +21,7 @@ interface SelectableCollageItemProps {
   onSelect: (id: string, addToSelection: boolean) => void
   onTransformChange: (id: string, updates: Partial<ItemTransform>) => void
   onContextMenu: (e: ReactMouseEvent, id: string) => void
+  boundaries?: Boundaries
 }
 
 export function SelectableCollageItem({
@@ -24,6 +32,7 @@ export function SelectableCollageItem({
   onSelect,
   onTransformChange,
   onContextMenu,
+  boundaries,
 }: SelectableCollageItemProps) {
   const elementRef = useRef<HTMLDivElement>(null)
   const [isDragging, setIsDragging] = useState(false)
@@ -113,8 +122,30 @@ export function SelectableCollageItem({
       const newX = dragStartRef.current.startX + deltaX
       const newY = dragStartRef.current.startY + deltaY
       
-      const newXPercent = (newX / containerRect.width) * 100
-      const newYPercent = (newY / containerRect.height) * 100
+      let newXPercent = (newX / containerRect.width) * 100
+      let newYPercent = (newY / containerRect.height) * 100
+      
+      // Apply boundary constraints if provided
+      if (boundaries) {
+        // Calculate item size as percentage of container
+        const itemWidthPercent = (transform.width / containerRect.width) * 100
+        const itemHeightPercent = (transform.height / containerRect.height) * 100
+        
+        if (boundaries.minX !== undefined) {
+          newXPercent = Math.max(boundaries.minX, newXPercent)
+        }
+        if (boundaries.maxX !== undefined) {
+          // Ensure the right edge of the item doesn't exceed maxX
+          newXPercent = Math.min(boundaries.maxX - itemWidthPercent, newXPercent)
+        }
+        if (boundaries.minY !== undefined) {
+          newYPercent = Math.max(boundaries.minY, newYPercent)
+        }
+        if (boundaries.maxY !== undefined) {
+          // Ensure the bottom edge of the item doesn't exceed maxY
+          newYPercent = Math.min(boundaries.maxY - itemHeightPercent, newYPercent)
+        }
+      }
       
       onTransformChange(item.id, { x: newXPercent, y: newYPercent })
     }
@@ -130,7 +161,7 @@ export function SelectableCollageItem({
       window.removeEventListener('mousemove', handleMouseMove)
       window.removeEventListener('mouseup', handleMouseUp)
     }
-  }, [isDragging, item.id, containerRef, onTransformChange])
+  }, [isDragging, item.id, containerRef, onTransformChange, boundaries, transform.width, transform.height])
 
   useEffect(() => {
     if (!isResizing || !activeHandle) return
@@ -216,6 +247,25 @@ export function SelectableCollageItem({
           break
       }
       
+      // Apply boundary constraints to resize operations
+      if (boundaries) {
+        const newWidthPercent = (newWidth / containerRect.width) * 100
+        const newHeightPercent = (newHeight / containerRect.height) * 100
+        
+        if (boundaries.minX !== undefined && newX < boundaries.minX) {
+          newX = boundaries.minX
+        }
+        if (boundaries.minY !== undefined && newY < boundaries.minY) {
+          newY = boundaries.minY
+        }
+        if (boundaries.maxX !== undefined && newX + newWidthPercent > boundaries.maxX) {
+          newWidth = ((boundaries.maxX - newX) / 100) * containerRect.width
+        }
+        if (boundaries.maxY !== undefined && newY + newHeightPercent > boundaries.maxY) {
+          newHeight = ((boundaries.maxY - newY) / 100) * containerRect.height
+        }
+      }
+      
       onTransformChange(item.id, { 
         width: newWidth, 
         height: newHeight,
@@ -236,7 +286,7 @@ export function SelectableCollageItem({
       window.removeEventListener('mousemove', handleMouseMove)
       window.removeEventListener('mouseup', handleMouseUp)
     }
-  }, [isResizing, activeHandle, item.id, transform, containerRef, onTransformChange])
+  }, [isResizing, activeHandle, item.id, transform, containerRef, onTransformChange, boundaries])
 
   useEffect(() => {
     if (!isRotating) return
