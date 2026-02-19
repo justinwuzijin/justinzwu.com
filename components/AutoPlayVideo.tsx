@@ -49,29 +49,29 @@ export function AutoPlayVideo({
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const [isLoaded, setIsLoaded] = useState(false)
 
-  // Handle self-hosted video autoplay
   useEffect(() => {
     const video = videoRef.current
     if (!video || !videoUrl) return
 
-    const playVideo = () => {
+    const handleReady = () => {
+      setIsLoaded(true)
       video.play().catch((error) => {
         console.warn('Autoplay prevented:', error)
       })
     }
 
-    // Try to play when video data is loaded
-    video.addEventListener('loadeddata', playVideo)
-    video.addEventListener('canplay', playVideo)
+    video.addEventListener('loadeddata', handleReady)
+    video.addEventListener('canplay', handleReady)
     
-    // Also try immediately in case already loaded
+    // On reload the video may already be loaded from cache,
+    // meaning the loadeddata event fired before React hydrated.
     if (video.readyState >= 2) {
-      playVideo()
+      handleReady()
     }
 
     return () => {
-      video.removeEventListener('loadeddata', playVideo)
-      video.removeEventListener('canplay', playVideo)
+      video.removeEventListener('loadeddata', handleReady)
+      video.removeEventListener('canplay', handleReady)
     }
   }, [videoUrl])
 

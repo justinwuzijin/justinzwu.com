@@ -1,12 +1,29 @@
 'use client'
 
-import { useMemo, useRef, useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import React, { useState, useEffect, useRef, useCallback, MouseEvent as ReactMouseEvent } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import styles from './page.module.css'
 import { AutoPlayVideo } from '@/components/AutoPlayVideo'
 import { ScribbleHighlight } from '@/components/Highlights'
+import { SelectableCollageItem } from '@/components/SelectableCollageItem'
+import { CollageContextMenu } from '@/components/CollageContextMenu'
+import { MarqueeSelect } from '@/components/MarqueeSelect'
+import { useCollageSelection } from '@/hooks/useCollageSelection'
+import { 
+  collageItems,
+  getItemConfig,
+  loadArtGalleryTransforms, 
+  saveArtGalleryTransforms,
+  type ItemTransform 
+} from '@/lib/artGalleryItems'
 
-// Animation variants
+type GalleryTab = 'my room' | 'my mind'
+
+const tabColors: Record<GalleryTab, string> = {
+  'my room': '#93c5fd',
+  'my mind': '#c4b5fd',
+}
+
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
   visible: { 
@@ -21,14 +38,14 @@ const staggerContainer = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.3,
+      staggerChildren: 0.04,
+      delayChildren: 0.1,
     }
   }
 }
 
-const galleryItemVariant = {
-  hidden: { opacity: 0, scale: 0.9 },
+const videoItemVariant = {
+  hidden: { opacity: 0, scale: 0.95 },
   visible: { 
     opacity: 1, 
     scale: 1,
@@ -36,119 +53,307 @@ const galleryItemVariant = {
   }
 }
 
-// Lazy-loaded video wrapper component
-function LazyVideo({ videoUrl, aspectRatio, className }: { videoUrl: string; aspectRatio: number; className?: string }) {
-  const [isVisible, setIsVisible] = useState(false)
-  const containerRef = useRef<HTMLDivElement>(null)
+interface ContextMenuState {
+  isOpen: boolean
+  x: number
+  y: number
+}
 
-  useEffect(() => {
-    // Check if already in viewport on mount
-    if (containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect()
-      if (rect.top < window.innerHeight + 500) {
-        setIsVisible(true)
-        return
-      }
-    }
+interface InfoPopupState {
+  isOpen: boolean
+  itemId: string | null
+}
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true)
-            observer.disconnect()
-          }
-        })
-      },
-      {
-        rootMargin: '500px', // Start loading 500px before entering viewport
-        threshold: 0,
-      }
-    )
+interface VideoConfig {
+  id: string
+  aspectRatio: number
+  gridColumn?: string
+  gridRow?: string
+  videoUrl?: string
+}
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current)
-    }
+// Boundaries for draggable items: can't go over sidebar (left), video (top), or pre-footer (bottom)
+const ITEM_BOUNDARIES = {
+  minX: 0,    // Left edge of collage container (sidebar is outside)
+  minY: 0,    // Top edge of collage container (video is above)
+  maxY: 100,  // Bottom edge of collage container (pre-footer is below)
+}
 
-    return () => {
-      observer.disconnect()
-    }
-  }, [])
+const myRoomVideos: VideoConfig[] = [
+  { id: 'room-1', aspectRatio: 16/9, gridColumn: 'span 2' },
+  { id: 'room-2', aspectRatio: 9/16 },
+  { id: 'room-3', aspectRatio: 9/16 },
+  { id: 'room-4', aspectRatio: 4/3 },
+  { id: 'room-5', aspectRatio: 4/3 },
+  { id: 'room-6', aspectRatio: 32/9, gridColumn: 'span 3' },
+  { id: 'room-7', aspectRatio: 4/3 },
+  { id: 'room-8', aspectRatio: 16/9 },
+  { id: 'room-9', aspectRatio: 9/16 },
+  { id: 'room-10', aspectRatio: 16/9, gridColumn: 'span 2' },
+  { id: 'room-11', aspectRatio: 4/3 },
+]
 
+function VideoPlaceholder({ config }: { config: VideoConfig }) {
+  const { aspectRatio, gridColumn, gridRow, videoUrl } = config
+  
   return (
-    <div ref={containerRef} className={className} style={{ aspectRatio: aspectRatio, backgroundColor: '#111', minHeight: '100px' }}>
-      {isVisible ? (
-        <AutoPlayVideo
-          videoUrl={videoUrl}
-          aspectRatio={aspectRatio}
-          className={styles.distortedVideo}
-        />
-      ) : (
-        <div style={{ width: '100%', height: '100%', backgroundColor: '#111' }} />
-      )}
-    </div>
+    <motion.div
+      className={styles.videoItem}
+      style={{
+        gridColumn: gridColumn || 'span 1',
+        gridRow: gridRow || 'span 1',
+      }}
+      variants={videoItemVariant}
+    >
+      <div 
+        className={styles.videoContainer}
+        style={{ aspectRatio }}
+      >
+        {videoUrl ? (
+          <AutoPlayVideo
+            videoUrl={videoUrl}
+            aspectRatio={aspectRatio}
+            className={styles.video}
+          />
+        ) : (
+          <div className={styles.placeholder} />
+        )}
+      </div>
+    </motion.div>
   )
 }
 
-// List of all videos in public/assets/videos-short/ (2-second trimmed versions for fast loading)
-const VIDEO_BASE_PATH = '/assets/videos-short'
-
-const videoFiles = [
-  'Screen Recording 2024-06-22 at 10.53.30 AM.mp4',
-  'Screen Recording 2024-06-22 at 10.56.15 AM.mp4',
-  'Screen Recording 2024-06-22 at 10.56.26 AM.mp4',
-  'Screen Recording 2024-06-22 at 10.56.44 AM.mp4',
-  'Screen Recording 2024-06-22 at 10.57.05 AM.mp4',
-  'Screen Recording 2024-06-22 at 10.57.23 AM.mp4',
-  'Screen Recording 2024-06-22 at 10.57.52 AM.mp4',
-  'Screen Recording 2024-07-24 at 12.00.48 PM.mp4',
-  'Screen Recording 2024-07-24 at 12.03.27 PM.mp4',
-  'Screen Recording 2024-07-24 at 12.04.28 PM.mp4',
-  'Screen Recording 2025-04-23 at 9.38.28 PM.mp4',
-  'Screen Recording 2025-04-23 at 9.38.59 PM.mp4',
-  'Screen Recording 2025-04-23 at 9.39.21 PM.mp4',
-  'Screen Recording 2025-04-23 at 9.39.40 PM.mp4',
-  'Screen Recording 2025-07-22 at 8.41.58 AM.mp4',
-  'Screen Recording 2025-07-22 at 8.42.33 AM.mp4',
-  'Screen Recording 2025-07-28 at 12.19.38 PM.mp4',
-  'Screen Recording 2025-09-15 at 8.54.20 AM.mp4',
-  'Screen Recording 2025-12-25 at 8.31.06 PM.mp4',
-  'Screen Recording 2025-12-25 at 8.33.41 PM.mp4',
-  'Screen Recording 2025-12-25 at 8.34.06 PM.mp4',
-  'Screen Recording 2025-12-25 at 8.34.23 PM.mp4',
-]
-
-// Generate random distortion and grid placement for each video
-function getRandomVideoConfig(index: number) {
-  // Random distortion factors (0.3 to 2.0 for dramatic stretching/squishing)
-  const widthDistortion = 0.3 + Math.random() * 1.7
-  const heightDistortion = 0.3 + Math.random() * 1.7
-  
-  // Base aspect ratio (16:9)
-  const baseAspectRatio = 16 / 9
-  
-  // Apply distortion to aspect ratio - this will stretch/squish the video
-  const distortedAspectRatio = (baseAspectRatio * widthDistortion) / heightDistortion
-  
-  // Random grid span (some videos take more space for variety)
-  const colSpan = Math.random() > 0.75 ? 2 : 1
-  const rowSpan = Math.random() > 0.7 ? 2 : 1
-  
-  return {
-    videoUrl: `${VIDEO_BASE_PATH}/${videoFiles[index]}`,
-    aspectRatio: distortedAspectRatio,
-    widthDistortion,
-    heightDistortion,
-    colSpan,
-    rowSpan,
-  }
-}
-
 export default function ArtGalleryPage() {
-  // Generate configurations for each video (memoized for consistency)
-  const videoConfigs = useMemo(() => {
-    return videoFiles.map((_, index) => getRandomVideoConfig(index))
+  const [activeTab, setActiveTab] = useState<GalleryTab>('my mind')
+  const tabs: GalleryTab[] = ['my room', 'my mind']
+  
+  const collageRef = useRef<HTMLDivElement>(null)
+  const [transforms, setTransforms] = useState<ItemTransform[]>([])
+  const [isClient, setIsClient] = useState(false)
+  const [contextMenu, setContextMenu] = useState<ContextMenuState>({ isOpen: false, x: 0, y: 0 })
+  const [infoPopup, setInfoPopup] = useState<InfoPopupState>({ isOpen: false, itemId: null })
+  
+  const {
+    selectedIds,
+    selectedCount,
+    hasSelection,
+    select,
+    selectMultiple,
+    selectAll,
+    deselectAll,
+    isSelected,
+  } = useCollageSelection()
+
+  useEffect(() => {
+    setIsClient(true)
+    setTransforms(loadArtGalleryTransforms())
   }, [])
+
+  useEffect(() => {
+    if (isClient && transforms.length > 0) {
+      saveArtGalleryTransforms(transforms)
+    }
+  }, [transforms, isClient])
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!hasSelection) return
+      
+      const target = e.target as HTMLElement
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return
+
+      if (e.key === 'Delete' || e.key === 'Backspace') {
+        e.preventDefault()
+        handleDelete()
+      }
+      
+      if (e.key === 'Escape') {
+        deselectAll()
+        setInfoPopup({ isOpen: false, itemId: null })
+      }
+      
+      if ((e.metaKey || e.ctrlKey) && e.key === 'a') {
+        e.preventDefault()
+        selectAll(transforms.map(t => t.id))
+      }
+      
+      if ((e.metaKey || e.ctrlKey) && e.key === 'd') {
+        e.preventDefault()
+        handleDuplicate()
+      }
+      
+      if (e.key === ']') {
+        if (e.metaKey || e.ctrlKey) {
+          handleBringToFront()
+        } else {
+          handleBringForward()
+        }
+      }
+      
+      if (e.key === '[') {
+        if (e.metaKey || e.ctrlKey) {
+          handleSendToBack()
+        } else {
+          handleSendBackward()
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [hasSelection, selectedIds, transforms, deselectAll, selectAll])
+
+  const handleSelect = useCallback((id: string, addToSelection: boolean) => {
+    select(id, addToSelection)
+  }, [select])
+
+  const handleItemClick = useCallback((id: string) => {
+    setInfoPopup(prev => 
+      prev.isOpen && prev.itemId === id 
+        ? { isOpen: false, itemId: null }
+        : { isOpen: true, itemId: id }
+    )
+  }, [])
+
+  const handleCloseInfoPopup = useCallback(() => {
+    setInfoPopup({ isOpen: false, itemId: null })
+  }, [])
+
+  const handleTransformChange = useCallback((id: string, updates: Partial<ItemTransform>) => {
+    setTransforms(prev => 
+      prev.map(t => t.id === id ? { ...t, ...updates } : t)
+    )
+  }, [])
+
+  const handleContextMenu = useCallback((e: ReactMouseEvent, id: string) => {
+    if (!isSelected(id)) {
+      select(id, false)
+    }
+    setContextMenu({ isOpen: true, x: e.clientX, y: e.clientY })
+  }, [isSelected, select])
+
+  const handleCloseContextMenu = useCallback(() => {
+    setContextMenu({ isOpen: false, x: 0, y: 0 })
+  }, [])
+
+  const handleBackgroundClick = useCallback((e: ReactMouseEvent) => {
+    if ((e.target as HTMLElement).closest('[data-collage-item]')) return
+    deselectAll()
+    setInfoPopup({ isOpen: false, itemId: null })
+  }, [deselectAll])
+
+  const handleMarqueeSelect = useCallback((ids: string[], addToSelection: boolean) => {
+    selectMultiple(ids, addToSelection)
+  }, [selectMultiple])
+
+  const handleBringToFront = useCallback(() => {
+    if (!hasSelection) return
+    const maxZ = Math.max(...transforms.map(t => t.zIndex))
+    let nextZ = maxZ + 1
+    setTransforms(prev => 
+      prev.map(t => selectedIds.has(t.id) ? { ...t, zIndex: nextZ++ } : t)
+    )
+  }, [hasSelection, selectedIds, transforms])
+
+  const handleBringForward = useCallback(() => {
+    if (!hasSelection) return
+    setTransforms(prev => {
+      const sorted = [...prev].sort((a, b) => a.zIndex - b.zIndex)
+      const result = [...prev]
+      
+      for (const id of selectedIds) {
+        const currentIndex = sorted.findIndex(t => t.id === id)
+        if (currentIndex < sorted.length - 1) {
+          const current = result.find(t => t.id === id)!
+          const above = sorted[currentIndex + 1]
+          const aboveInResult = result.find(t => t.id === above.id)!
+          const tempZ = current.zIndex
+          current.zIndex = aboveInResult.zIndex
+          aboveInResult.zIndex = tempZ
+        }
+      }
+      return result
+    })
+  }, [hasSelection, selectedIds])
+
+  const handleSendBackward = useCallback(() => {
+    if (!hasSelection) return
+    setTransforms(prev => {
+      const sorted = [...prev].sort((a, b) => a.zIndex - b.zIndex)
+      const result = [...prev]
+      
+      for (const id of selectedIds) {
+        const currentIndex = sorted.findIndex(t => t.id === id)
+        if (currentIndex > 0) {
+          const current = result.find(t => t.id === id)!
+          const below = sorted[currentIndex - 1]
+          const belowInResult = result.find(t => t.id === below.id)!
+          const tempZ = current.zIndex
+          current.zIndex = belowInResult.zIndex
+          belowInResult.zIndex = tempZ
+        }
+      }
+      return result
+    })
+  }, [hasSelection, selectedIds])
+
+  const handleSendToBack = useCallback(() => {
+    if (!hasSelection) return
+    const minZ = Math.min(...transforms.map(t => t.zIndex))
+    let nextZ = minZ - selectedIds.size
+    setTransforms(prev => 
+      prev.map(t => selectedIds.has(t.id) ? { ...t, zIndex: nextZ++ } : t)
+    )
+  }, [hasSelection, selectedIds, transforms])
+
+  const handleDelete = useCallback(() => {
+    setTransforms(prev => prev.filter(t => !selectedIds.has(t.id)))
+    deselectAll()
+  }, [selectedIds, deselectAll])
+
+  const handleResetSize = useCallback(() => {
+    setTransforms(prev => 
+      prev.map(t => {
+        if (!selectedIds.has(t.id)) return t
+        const config = getItemConfig(t.id)
+        if (!config) return t
+        return { ...t, width: config.width, height: config.height }
+      })
+    )
+  }, [selectedIds])
+
+  const handleResetRotation = useCallback(() => {
+    setTransforms(prev => 
+      prev.map(t => {
+        if (!selectedIds.has(t.id)) return t
+        const config = getItemConfig(t.id)
+        if (!config) return t
+        return { ...t, rotation: config.rotation }
+      })
+    )
+  }, [selectedIds])
+
+  const handleDuplicate = useCallback(() => {
+    const newItems: ItemTransform[] = []
+    const maxZ = Math.max(...transforms.map(t => t.zIndex))
+    let nextZ = maxZ + 1
+    
+    for (const id of selectedIds) {
+      const original = transforms.find(t => t.id === id)
+      if (original) {
+        newItems.push({
+          ...original,
+          id: `${original.id}-copy-${Date.now()}`,
+          x: original.x + 2,
+          y: original.y + 2,
+          zIndex: nextZ++,
+        })
+      }
+    }
+    
+    setTransforms(prev => [...prev, ...newItems])
+    selectMultiple(newItems.map(i => i.id), false)
+  }, [selectedIds, transforms, selectMultiple])
 
   return (
     <div className={styles.container}>
@@ -161,42 +366,176 @@ export default function ArtGalleryPage() {
         <span className={styles.orangeDot} />
         art gallery
       </motion.h1>
-      <motion.p 
-        className={styles.workInProgress}
-        initial="hidden"
-        animate="visible"
-        variants={fadeInUp}
-      >
-        <ScribbleHighlight delay={0.5}>work in progress</ScribbleHighlight>;
-      </motion.p>
 
-      {/* Masonry gallery section */}
-      <motion.section 
-        className={styles.gallery}
+      <motion.div 
+        className={styles.tabs}
         initial="hidden"
         animate="visible"
         variants={staggerContainer}
       >
-        <motion.div className={styles.masonryGrid} variants={staggerContainer}>
-          {videoConfigs.map((config, index) => (
-            <motion.div
-              key={index}
-              className={`${styles.galleryItem} ${styles.artItem} ${styles.videoItem}`}
-              style={{
-                gridColumn: `span ${config.colSpan}`,
-                gridRow: `span ${config.rowSpan}`,
-              }}
-              variants={galleryItemVariant}
+        {tabs.map((tab) => {
+          const color = tabColors[tab]
+          const isActive = activeTab === tab
+          const isDisabled = tab === 'my room'
+          
+          if (isDisabled) {
+            return (
+              <motion.span
+                key={tab}
+                className={`${styles.tab} ${styles.disabledTab}`}
+                variants={fadeInUp}
+              >
+                <span className={`${styles.tabDot} ${styles.inactiveDot}`} />
+                <ScribbleHighlight delay={0.5}>{tab}</ScribbleHighlight>
+              </motion.span>
+            )
+          }
+          
+          return (
+            <motion.button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`${styles.tab} ${isActive ? styles.activeTab : ''}`}
+              style={{ 
+                '--tab-color': color 
+              } as React.CSSProperties}
+              variants={fadeInUp}
             >
-              <LazyVideo
-                videoUrl={config.videoUrl}
-                aspectRatio={config.aspectRatio}
-                className={styles.distortedVideo}
+              <span 
+                className={`${styles.tabDot} ${isActive ? '' : styles.inactiveDot}`}
+                style={isActive ? { backgroundColor: color } : undefined}
+              />
+              {tab}
+            </motion.button>
+          )
+        })}
+      </motion.div>
+
+      <AnimatePresence mode="wait">
+        {activeTab === 'my mind' ? (
+          <motion.section 
+            key="my-mind"
+            className={styles.gallery}
+            initial="hidden"
+            animate="visible"
+            exit={{ opacity: 0 }}
+            variants={staggerContainer}
+          >
+            {/* Central video - full width */}
+            <motion.div className={styles.centralVideo} variants={videoItemVariant}>
+              <AutoPlayVideo
+                videoUrl="/assets/art-gallery/central-piece.mp4"
+                aspectRatio={16/9}
+                className={styles.video}
               />
             </motion.div>
-          ))}
-        </motion.div>
-      </motion.section>
+            
+            {/* Interactive collage area */}
+            <motion.div 
+              ref={collageRef}
+              className={styles.collageContainer}
+              onClick={handleBackgroundClick}
+              variants={videoItemVariant}
+            >
+              {isClient && (
+                <MarqueeSelect
+                  containerRef={collageRef}
+                  transforms={transforms}
+                  onSelectionChange={handleMarqueeSelect}
+                />
+              )}
+              
+              {isClient && transforms.map(transform => {
+                const item = collageItems.find(i => i.id === transform.id)
+                if (!item) return null
+                
+                return (
+                  <div 
+                    key={transform.id} 
+                    data-collage-item
+                    onClick={(e) => {
+                      if (!e.shiftKey && !e.metaKey && !e.ctrlKey) {
+                        handleItemClick(transform.id)
+                      }
+                    }}
+                  >
+                    <SelectableCollageItem
+                      item={item}
+                      transform={transform}
+                      containerRef={collageRef}
+                      isSelected={isSelected(transform.id)}
+                      onSelect={handleSelect}
+                      onTransformChange={handleTransformChange}
+                      onContextMenu={handleContextMenu}
+                      boundaries={ITEM_BOUNDARIES}
+                    />
+                  </div>
+                )
+              })}
+              
+              {/* Info popups positioned using transform data */}
+              <AnimatePresence>
+                {infoPopup.isOpen && infoPopup.itemId && (() => {
+                  const transform = transforms.find(t => t.id === infoPopup.itemId)
+                  const item = collageItems.find(i => i.id === infoPopup.itemId)
+                  if (!transform || !item) return null
+                  
+                  return (
+                    <motion.div
+                      key="info-popup"
+                      className={styles.infoPopup}
+                      style={{
+                        left: `calc(${transform.x}% + ${transform.width / 2}px)`,
+                        top: `${transform.y}%`,
+                      }}
+                      initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                      transition={{ duration: 0.2 }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <button className={styles.infoPopupClose} onClick={handleCloseInfoPopup}>×</button>
+                      <p className={styles.infoPopupText}>{item.alt}</p>
+                    </motion.div>
+                  )
+                })()}
+              </AnimatePresence>
+            </motion.div>
+          </motion.section>
+        ) : (
+          <motion.section 
+            key="my-room"
+            className={styles.gallery}
+            initial="hidden"
+            animate="visible"
+            exit={{ opacity: 0 }}
+            variants={staggerContainer}
+          >
+            <motion.div className={styles.videoGrid} variants={staggerContainer}>
+              {myRoomVideos.map((config) => (
+                <VideoPlaceholder key={config.id} config={config} />
+              ))}
+            </motion.div>
+          </motion.section>
+        )}
+      </AnimatePresence>
+      
+      {contextMenu.isOpen && (
+        <CollageContextMenu
+          position={{ x: contextMenu.x, y: contextMenu.y }}
+          selectedCount={selectedCount}
+          onClose={handleCloseContextMenu}
+          onBringToFront={handleBringToFront}
+          onBringForward={handleBringForward}
+          onSendBackward={handleSendBackward}
+          onSendToBack={handleSendToBack}
+          onDelete={handleDelete}
+          onResetSize={handleResetSize}
+          onResetRotation={handleResetRotation}
+          onDuplicate={handleDuplicate}
+        />
+      )}
+      
     </div>
   )
 }

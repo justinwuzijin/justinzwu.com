@@ -14,7 +14,7 @@ export const collageItems: CollageItemConfig[] = [
   {
     id: 'basketball',
     src: '/assets/collection/basketball.png',
-    alt: 'Wilson Evolution Basketball',
+    alt: 'basketball',
     width: 180,
     height: 180,
     defaultX: -2,
@@ -25,7 +25,7 @@ export const collageItems: CollageItemConfig[] = [
   {
     id: 'ping-pong-ball',
     src: '/assets/collection/ping-pong-ball.png',
-    alt: 'Marty Supreme Ping Pong Ball',
+    alt: 'marty supreme ping pong ball',
     width: 160,
     height: 160,
     defaultX: 1,
@@ -36,7 +36,7 @@ export const collageItems: CollageItemConfig[] = [
   {
     id: 'dr-martens',
     src: '/assets/collection/dr-martens.png',
-    alt: 'Dr. Martens Oxford Shoes',
+    alt: 'dr. martens',
     width: 200,
     height: 100,
     defaultX: 18,
@@ -47,7 +47,7 @@ export const collageItems: CollageItemConfig[] = [
   {
     id: 'stay-winning',
     src: '/assets/collection/stay-winning.png',
-    alt: 'Stay Winning Sticky Note',
+    alt: 'stay winning',
     width: 240,
     height: 100,
     defaultX: 28,
@@ -58,7 +58,7 @@ export const collageItems: CollageItemConfig[] = [
   {
     id: 'fujifilm-camera',
     src: '/assets/collection/fujifilm-camera.png',
-    alt: 'Fujifilm QuickSnap Disposable Camera',
+    alt: 'my go-to film camera',
     width: 220,
     height: 140,
     defaultX: 8,
@@ -68,8 +68,8 @@ export const collageItems: CollageItemConfig[] = [
   // Photo collage - center-left, overlapping
   {
     id: 'photo-collage',
-    src: '/assets/collection/photo-collage.png',
-    alt: 'Photo memories collage',
+    src: '/assets/svg/art.jpg',
+    alt: 'my art work',
     width: 420,
     height: 360,
     defaultX: 18,
@@ -80,7 +80,7 @@ export const collageItems: CollageItemConfig[] = [
   {
     id: 'kafka-book',
     src: '/assets/collection/kafka-book.png',
-    alt: 'Kafka on the Shore by Haruki Murakami',
+    alt: 'kafka on the shore',
     width: 180,
     height: 250,
     defaultX: 38,
@@ -91,7 +91,7 @@ export const collageItems: CollageItemConfig[] = [
   {
     id: 'polar-jeans',
     src: '/assets/collection/polar-jeans.png',
-    alt: 'Polar Big Boy Jeans',
+    alt: 'polar big boy jeans',
     width: 260,
     height: 440,
     defaultX: 52,
@@ -102,7 +102,7 @@ export const collageItems: CollageItemConfig[] = [
   {
     id: 'noodle-bowl',
     src: '/assets/collection/noodle-bowl.png',
-    alt: 'Noodle Bowl',
+    alt: 'triple b',
     width: 170,
     height: 170,
     defaultX: 68,
@@ -113,7 +113,7 @@ export const collageItems: CollageItemConfig[] = [
   {
     id: 'mahjong-tiles',
     src: '/assets/collection/mahjong-tiles.png',
-    alt: 'Mahjong Dragon Tiles',
+    alt: 'mahjong',
     width: 300,
     height: 130,
     defaultX: 35,
@@ -124,7 +124,7 @@ export const collageItems: CollageItemConfig[] = [
   {
     id: 'group-photo',
     src: '/assets/collection/group-photo.png',
-    alt: 'Group Photo',
+    alt: 'syde c/o 2030',
     width: 300,
     height: 200,
     defaultX: 42,
@@ -135,7 +135,7 @@ export const collageItems: CollageItemConfig[] = [
   {
     id: 'murakami',
     src: '/assets/collection/murakami.png',
-    alt: 'Haruki Murakami',
+    alt: 'haruki murakami',
     width: 320,
     height: 420,
     defaultX: 52,
@@ -146,7 +146,7 @@ export const collageItems: CollageItemConfig[] = [
   {
     id: 'sony-camera',
     src: '/assets/collection/sony-camera.png',
-    alt: 'Sony Alpha Camera',
+    alt: 'my camera',
     width: 200,
     height: 200,
     defaultX: 62,
@@ -157,7 +157,7 @@ export const collageItems: CollageItemConfig[] = [
   {
     id: 'arcteryx-jacket',
     src: '/assets/collection/arcteryx-jacket.png',
-    alt: "Arc'teryx Beta Jacket",
+    alt: "my orange arc'teryx jacket",
     width: 240,
     height: 320,
     defaultX: 82,
@@ -168,7 +168,7 @@ export const collageItems: CollageItemConfig[] = [
   {
     id: 'noodle-restaurant',
     src: '/assets/collection/noodle-restaurant.png',
-    alt: 'Noodle Restaurant',
+    alt: 'magic noodle store',
     width: 240,
     height: 170,
     defaultX: 78,
