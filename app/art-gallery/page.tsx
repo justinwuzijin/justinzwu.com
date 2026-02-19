@@ -441,7 +441,7 @@ export default function ArtGalleryPage() {
             </motion.div>
             
             {/* Interactive collage area - hidden on mobile */}
-            {!isMobile && (
+            {isClient && !isMobile && (
               <motion.div 
                 ref={collageRef}
                 className={styles.collageContainer}
