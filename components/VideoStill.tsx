@@ -48,13 +48,13 @@ export function VideoStill({
       const id = youtubeId.includes('youtube.com') || youtubeId.includes('youtu.be')
         ? extractYouTubeId(youtubeId)
         : youtubeId
-      return `https://www.youtube.com/embed/${id}?autoplay=1&rel=0`
+      return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&rel=0`
     }
     if (vimeoId) {
       const id = vimeoId.includes('vimeo.com')
         ? extractVimeoId(vimeoId)
         : vimeoId
-      return `https://player.vimeo.com/video/${id}?autoplay=1`
+      return `https://player.vimeo.com/video/${id}?autoplay=1&muted=1`
     }
     if (videoUrl) {
       return videoUrl
