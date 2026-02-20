@@ -105,30 +105,50 @@
   justify-content: center;
   cursor: pointer;
   background-color: var(--color-background);
-  border: 2px dotted #9ca3af;
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: box-shadow 0.2s ease;
   overflow: visible;
 }
 
 .collectionItem:hover {
-  border-color: #6b7280;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-:global([data-theme="dark"]) .collectionItem {
-  border-color: #6b7280;
+.handDrawnBorder {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
 }
 
-:global([data-theme="dark"]) .collectionItem:hover {
-  border-color: #9ca3af;
+.handDrawnBorder path {
+  fill: none;
+  stroke: #d1d5db;
+  stroke-width: 1;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  stroke-dasharray: 5 4;
 }
 
-:global([data-theme="orange"]) .collectionItem {
-  border-color: rgba(255, 255, 255, 0.4);
+.collectionItem:hover .handDrawnBorder path {
+  stroke: #9ca3af;
 }
 
-:global([data-theme="orange"]) .collectionItem:hover {
-  border-color: rgba(255, 255, 255, 0.6);
+:global([data-theme="dark"]) .handDrawnBorder path {
+  stroke: #52525b;
+}
+
+:global([data-theme="dark"]) .collectionItem:hover .handDrawnBorder path {
+  stroke: #71717a;
+}
+
+:global([data-theme="orange"]) .handDrawnBorder path {
+  stroke: rgba(255, 255, 255, 0.4);
+}
+
+:global([data-theme="orange"]) .collectionItem:hover .handDrawnBorder path {
+  stroke: rgba(255, 255, 255, 0.6);
 }
 
 .collectionItemSelected {

@@ -3,10 +3,12 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useTheme } from './ThemeProvider'
+import { useSoundEffects } from '@/hooks/useSoundEffects'
 import styles from './TopRightControls.module.css'
 
 export function TopRightControls() {
   const { theme, setTheme } = useTheme()
+  const { playMenu } = useSoundEffects()
   const [isExpanded, setIsExpanded] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
@@ -71,14 +73,17 @@ export function TopRightControls() {
   ]
 
   const toggleTheme = () => {
+    playMenu()
     setTheme(theme === 'dark' ? 'light' : 'dark')
   }
 
   const toggleOrangeMode = () => {
+    playMenu()
     setTheme(theme === 'orange' ? 'light' : 'orange')
   }
 
   const toggleSocialLinks = () => {
+    playMenu()
     setIsExpanded(!isExpanded)
   }
 

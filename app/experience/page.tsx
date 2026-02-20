@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import styles from './page.module.css'
 import { ExperienceCard } from '@/components/ExperienceCard'
+import { useSoundEffects } from '@/hooks/useSoundEffects'
 
 type TabType = 'current' | 'past'
 
@@ -147,6 +148,7 @@ const highSchoolExperiences = [
 
 export default function ExperiencePage() {
   const [activeTab, setActiveTab] = useState<TabType>('current')
+  const { playClick } = useSoundEffects()
   const tabs: TabType[] = ['current', 'past']
   
   const experiences = activeTab === 'current' ? currentExperiences : highSchoolExperiences
@@ -176,7 +178,10 @@ export default function ExperiencePage() {
           return (
             <motion.button
               key={tab}
-              onClick={() => setActiveTab(tab)}
+              onClick={() => {
+                playClick()
+                setActiveTab(tab)
+              }}
               className={`${styles.tab} ${activeTab === tab ? styles.activeTab : ''}`}
               variants={fadeInUp}
             >

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { useTheme } from './ThemeProvider'
+import { useSoundEffects } from '@/hooks/useSoundEffects'
 import styles from './MobileNav.module.css'
 
 const navItems = [
@@ -20,6 +21,7 @@ export function MobileNav() {
   const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
   const { theme, setTheme } = useTheme()
+  const { playClick, playSelect, playMenu } = useSoundEffects()
 
   // Track mount state for initial animation
   useEffect(() => {
@@ -44,6 +46,7 @@ export function MobileNav() {
   }, [isOpen])
 
   const toggleTheme = () => {
+    playMenu()
     setTheme(theme === 'dark' ? 'light' : 'dark')
   }
 
@@ -57,7 +60,10 @@ export function MobileNav() {
         transition={{ duration: 0.3, delay: 0.1, ease: [0.25, 0.1, 0.25, 1] as const }}
       >
         <button
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => {
+            playMenu()
+            setIsOpen(!isOpen)
+          }}
           className={`${styles.hamburger} ${isOpen ? styles.hamburgerOpen : ''}`}
           aria-label="Toggle menu"
           aria-expanded={isOpen}
@@ -72,7 +78,10 @@ export function MobileNav() {
       {isOpen && (
         <div 
           className={styles.overlay} 
-          onClick={() => setIsOpen(false)}
+          onClick={() => {
+            playClick()
+            setIsOpen(false)
+          }}
           aria-hidden="true"
         />
       )}
@@ -88,6 +97,7 @@ export function MobileNav() {
                     href={item.href}
                     className={`${styles.navLink} ${isActive ? styles.active : ''}`}
                     aria-current={isActive ? 'page' : undefined}
+                    onClick={playSelect}
                   >
                     {item.label}
                   </Link>
@@ -143,7 +153,10 @@ export function MobileNav() {
             
             {/* Orange mode toggle */}
             <button
-              onClick={() => setTheme(theme === 'orange' ? 'light' : 'orange')}
+              onClick={() => {
+                playMenu()
+                setTheme(theme === 'orange' ? 'light' : 'orange')
+              }}
               className={styles.orangeToggle}
               aria-label={theme === 'orange' ? 'Exit orange mode' : 'Enter orange mode'}
             >

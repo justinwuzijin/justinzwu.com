@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTheme } from './ThemeProvider'
+import { useSoundEffects } from '@/hooks/useSoundEffects'
 import styles from './VinylRecordPlayer.module.css'
 
 interface Track {
@@ -18,6 +19,7 @@ interface VinylRecordPlayerProps {
 
 export function VinylRecordPlayer({ tracks, onTogglePlay }: VinylRecordPlayerProps) {
   const { theme } = useTheme()
+  const { playClick, playSelect, playDeselect } = useSoundEffects()
   const [isPlaying, setIsPlaying] = useState(false)
   const [hasUserInteracted, setHasUserInteracted] = useState(false)
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0)
@@ -118,6 +120,7 @@ export function VinylRecordPlayer({ tracks, onTogglePlay }: VinylRecordPlayerPro
     const audio = audioRef.current
     if (!audio) return
 
+    playClick()
     setHasUserInteracted(true)
 
     if (isPlaying) {
@@ -134,6 +137,7 @@ export function VinylRecordPlayer({ tracks, onTogglePlay }: VinylRecordPlayerPro
 
   const skipNext = useCallback((e?: React.MouseEvent) => {
     if (e) e.stopPropagation()
+    playSelect()
     // Preserve playing state before changing track
     wasPlayingRef.current = isPlaying
     if (currentTrackIndex < tracks.length - 1) {
@@ -141,10 +145,11 @@ export function VinylRecordPlayer({ tracks, onTogglePlay }: VinylRecordPlayerPro
     } else {
       setCurrentTrackIndex(0) // Loop to first
     }
-  }, [currentTrackIndex, tracks.length, isPlaying])
+  }, [currentTrackIndex, tracks.length, isPlaying, playSelect])
 
   const skipPrev = useCallback((e?: React.MouseEvent) => {
     if (e) e.stopPropagation()
+    playDeselect()
     // Preserve playing state before changing track
     wasPlayingRef.current = isPlaying
     if (currentTrackIndex > 0) {
@@ -152,7 +157,7 @@ export function VinylRecordPlayer({ tracks, onTogglePlay }: VinylRecordPlayerPro
     } else {
       setCurrentTrackIndex(tracks.length - 1) // Loop to last
     }
-  }, [currentTrackIndex, tracks.length, isPlaying])
+  }, [currentTrackIndex, tracks.length, isPlaying, playDeselect])
 
   return (
     <div className={styles.vinylPlayer}>

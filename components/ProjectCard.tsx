@@ -27,23 +27,32 @@ export function ProjectCard({ title, date, description, image, url, dark, zoom, 
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
   const [posterLoaded, setPosterLoaded] = useState(false)
-  const [isHovering, setIsHovering] = useState(false)
+  const [isInView, setIsInView] = useState(false)
   const [videoReady, setVideoReady] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    const container = containerRef.current
+    if (!container || !videoUrl) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsInView(entry.isIntersecting),
+      { threshold: 0.3 }
+    )
+    observer.observe(container)
+    return () => observer.disconnect()
+  }, [videoUrl])
+
+  useEffect(() => {
     const video = videoRef.current
-    if (!video || !videoUrl || !isHovering) return
+    if (!video || !videoUrl) return
 
     const handleReady = () => {
       setVideoReady(true)
       if (videoSpeed) {
         video.playbackRate = videoSpeed
       }
-      video.play().catch((error) => {
-        console.warn('Autoplay prevented:', error)
-      })
     }
 
     video.addEventListener('loadeddata', handleReady)
@@ -57,17 +66,25 @@ export function ProjectCard({ title, date, description, image, url, dark, zoom, 
       video.removeEventListener('loadeddata', handleReady)
       video.removeEventListener('canplay', handleReady)
     }
-  }, [videoUrl, videoSpeed, isHovering])
+  }, [videoUrl, videoSpeed])
 
-  const handleMouseEnter = () => {
-    setIsHovering(true)
-  }
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video || !videoReady) return
+
+    if (isInView) {
+      video.play().catch((error) => {
+        console.warn('Autoplay prevented:', error)
+      })
+    } else {
+      video.pause()
+    }
+  }, [isInView, videoReady])
 
   const imageContent = (
     <div 
       ref={containerRef} 
       className={`${styles.imageWrapper} ${dark ? styles.darkBg : ''}`}
-      onMouseEnter={handleMouseEnter}
     >
       {videoUrl ? (
         <>
@@ -76,7 +93,7 @@ export function ProjectCard({ title, date, description, image, url, dark, zoom, 
               src={videoPoster}
               alt={title}
               fill
-              className={`${styles.projectImage} ${posterLoaded ? styles.imageVisible : styles.imageHidden} ${isHovering && videoReady ? styles.imageHidden : ''}`}
+              className={`${styles.projectImage} ${posterLoaded ? styles.imageVisible : styles.imageHidden} ${videoReady ? styles.imageHidden : ''}`}
               sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, 33vw"
               style={{
                 ...(videoZoom && { transform: `scale(${videoZoom})` }),
@@ -87,26 +104,19 @@ export function ProjectCard({ title, date, description, image, url, dark, zoom, 
             />
           )}
           {!posterLoaded && <div className={styles.imagePlaceholder} />}
-          {isHovering && (
-            <video
-              ref={videoRef}
-              src={videoUrl}
-              loop
-              muted
-              playsInline
-              preload="auto"
-              className={`${styles.projectVideo} ${videoReady ? styles.imageVisible : styles.imageHidden}`}
-              style={{
-                ...(videoZoom && { transform: `scale(${videoZoom})` }),
-                ...(videoPosition && { objectPosition: videoPosition }),
-              }}
-            />
-          )}
-          <div className={`${styles.playIndicator} ${isHovering && videoReady ? styles.playIndicatorHidden : ''}`}>
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M8 5v14l11-7z"/>
-            </svg>
-          </div>
+          <video
+            ref={videoRef}
+            src={videoUrl}
+            loop
+            muted
+            playsInline
+            preload="auto"
+            className={`${styles.projectVideo} ${videoReady ? styles.imageVisible : styles.imageHidden}`}
+            style={{
+              ...(videoZoom && { transform: `scale(${videoZoom})` }),
+              ...(videoPosition && { objectPosition: videoPosition }),
+            }}
+          />
         </>
       ) : (
         <>

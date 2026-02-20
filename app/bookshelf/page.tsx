@@ -7,6 +7,7 @@ import styles from './page.module.css'
 import { BookCard } from '@/components/BookCard'
 import { BookSidePanel } from '@/components/BookSidePanel'
 import { useTheme } from '@/components/ThemeProvider'
+import { useSoundEffects } from '@/hooks/useSoundEffects'
 import { UnderlineHighlight, CircleHighlight } from '@/components/Highlights'
 
 type ShelfType = 'to read' | 'reading' | 'read'
@@ -52,6 +53,7 @@ const staggerContainer = {
 
 export default function BookshelfPage() {
   const { theme } = useTheme()
+  const { playClick, playDeselect } = useSoundEffects()
   const [activeShelf, setActiveShelf] = useState<ShelfType>('read')
   const [books, setBooks] = useState<Record<ShelfType, Book[]>>({
     'to read': [],
@@ -150,7 +152,10 @@ export default function BookshelfPage() {
           return (
             <motion.button
               key={shelf}
-              onClick={() => handleShelfClick(shelf)}
+              onClick={() => {
+                playClick()
+                handleShelfClick(shelf)
+              }}
               className={`${styles.tab} ${isActive ? styles.activeTab : ''}`}
               style={{ 
                 '--tab-color': color 
@@ -192,6 +197,7 @@ export default function BookshelfPage() {
               showRating={activeShelf === 'read'}
               expandedBookId={expandedBookId}
               onBookClick={(book) => {
+                playClick()
                 setExpandedBookId(book.id)
                 setSelectedBook(book)
               }}
@@ -207,6 +213,7 @@ export default function BookshelfPage() {
           shelf={activeShelf}
           isOpen={true}
           onClose={() => {
+            playDeselect()
             setSelectedBook(null)
             setExpandedBookId(null)
           }}

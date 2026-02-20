@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { useTheme } from './ThemeProvider'
 import { VinylRecordPlayer } from './VinylRecordPlayer'
+import { useSoundEffects } from '@/hooks/useSoundEffects'
 import styles from './SidebarNav.module.css'
 
 const navItems = [
@@ -39,6 +40,7 @@ const itemVariants = {
 export function SidebarNav() {
   const pathname = usePathname()
   const { digitalDroplets, setDigitalDroplets } = useTheme()
+  const { playSelect } = useSoundEffects()
 
   return (
     <motion.nav 
@@ -57,6 +59,7 @@ export function SidebarNav() {
                 href={item.href}
                 className={`${styles.navLink} ${isActive ? styles.active : ''}`}
                 aria-current={isActive ? 'page' : undefined}
+                onClick={playSelect}
               >
                 {item.label}
               </Link>

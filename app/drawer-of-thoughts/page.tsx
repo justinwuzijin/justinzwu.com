@@ -4,6 +4,7 @@ import { useRef } from 'react'
 import { motion } from 'framer-motion'
 import styles from './page.module.css'
 import { CircleHighlight } from '@/components/Highlights'
+import { useSoundEffects } from '@/hooks/useSoundEffects'
 
 // Animation variants
 const fadeInUp = {
@@ -133,8 +134,10 @@ const gradeDisplayText: Record<string, string> = {
 
 export default function DrawerOfThoughtsPage() {
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({})
+  const { playClick } = useSoundEffects()
 
   const scrollToGrade = (grade: string) => {
+    playClick()
     const element = sectionRefs.current[grade]
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' })

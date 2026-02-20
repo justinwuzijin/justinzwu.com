@@ -8,6 +8,7 @@ import { SelectableCollageItem } from './SelectableCollageItem'
 import { CollageContextMenu } from './CollageContextMenu'
 import { MarqueeSelect } from './MarqueeSelect'
 import { useCollageSelection } from '@/hooks/useCollageSelection'
+import { useSoundEffects } from '@/hooks/useSoundEffects'
 import { 
   collageItems,
   getItemConfig,
@@ -137,6 +138,7 @@ function Webring() {
 
 export function Footer() {
   const { theme } = useTheme()
+  const { playClick } = useSoundEffects()
   const preFooterRef = useRef<HTMLDivElement>(null)
   const [transforms, setTransforms] = useState<ItemTransform[]>([])
   const [isClient, setIsClient] = useState(false)
@@ -193,10 +195,6 @@ export function Footer() {
         selectAll(transforms.map(t => t.id))
       }
       
-      if ((e.metaKey || e.ctrlKey) && e.key === 'd') {
-        e.preventDefault()
-        handleDuplicate()
-      }
       
       if (e.key === ']') {
         if (e.metaKey || e.ctrlKey) {
@@ -242,8 +240,11 @@ export function Footer() {
 
   const handleBackgroundClick = useCallback((e: ReactMouseEvent) => {
     if ((e.target as HTMLElement).closest('[data-collage-item]')) return
+    if (hasSelection) {
+      playClick()
+    }
     deselectAll()
-  }, [deselectAll])
+  }, [deselectAll, hasSelection, playClick])
 
   const handleMarqueeSelect = useCallback((ids: string[], addToSelection: boolean) => {
     selectMultiple(ids, addToSelection)
@@ -336,28 +337,6 @@ export function Footer() {
     )
   }, [selectedIds])
 
-  const handleDuplicate = useCallback(() => {
-    const newItems: ItemTransform[] = []
-    const maxZ = Math.max(...transforms.map(t => t.zIndex))
-    let nextZ = maxZ + 1
-    
-    for (const id of selectedIds) {
-      const original = transforms.find(t => t.id === id)
-      if (original) {
-        newItems.push({
-          ...original,
-          id: `${original.id}-copy-${Date.now()}`,
-          x: original.x + 2,
-          y: original.y + 2,
-          zIndex: nextZ++,
-        })
-      }
-    }
-    
-    setTransforms(prev => [...prev, ...newItems])
-    selectMultiple(newItems.map(i => i.id), false)
-  }, [selectedIds, transforms, selectMultiple])
-
   const logoSrc = theme === 'orange' 
     ? '/assets/svg/zijin(orange).svg' 
     : theme === 'dark' 
@@ -438,7 +417,6 @@ export function Footer() {
           onDelete={handleDelete}
           onResetSize={handleResetSize}
           onResetRotation={handleResetRotation}
-          onDuplicate={handleDuplicate}
         />
       )}
           
@@ -465,7 +443,7 @@ export function Footer() {
         
         <div className={styles.attribution}>
           <p className={styles.attributionText}>
-            designed on Figma. built with Next.js. deployed on Vercel. made with help from V0 and Cursor.
+            designed on figma. built with next.js. deployed on vercel. sound from envato. help from V0 and Cursor.
           </p>
         </div>
       </div>
