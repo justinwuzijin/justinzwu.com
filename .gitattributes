@@ -1,9 +1,9 @@
-*.m4v filter=lfs diff=lfs merge=lfs -text
-*.mp3 filter=lfs diff=lfs merge=lfs -text
+# Large SVG files still use LFS
 public/assets/svg/Pre-Footer*.svg filter=lfs diff=lfs merge=lfs -text
 public/assets/svg/byjustinwu.svg filter=lfs diff=lfs merge=lfs -text
-public/assets/experience-videos/**/*.mp4 filter=lfs diff=lfs merge=lfs -text
-public/assets/art-gallery/**/*.mp4 filter=lfs diff=lfs merge=lfs -text
-*.mov filter=lfs diff=lfs merge=lfs -text
-# Exclude small videos from LFS - they should be stored directly in git
-public/assets/videos-short/** !filter !diff !merge text=auto
+
+# Music files use LFS (larger files)
+*.mp3 filter=lfs diff=lfs merge=lfs -text
+
+# Videos are now small enough to store directly in git (no LFS)
+# This ensures Vercel can serve them without LFS support
