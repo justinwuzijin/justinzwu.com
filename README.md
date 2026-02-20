@@ -3,18 +3,14 @@
 > designed on Thursday, January 15th 8:13AM until 6:56PM.
 
 > v1.0 built between January 18th 2:03PM and January 22nd 12:51PM.
-> v1.1 in progress January 26th 8:34AM and now
+> v1.1 in progress January 26th 8:34AM and February 20th 9:45AM
 
-(b) built using V0, Cursor. next.js, tailwindcss, postgreSQL, gemini, google books api, goodreads CSV file.
+(a) built using v0, cursor. next.js, tailwindcss, postgresql, gemini, google books api, goodreads csv file, envato sound effects. 
 
 next steps:
-- take snippets from youtube vids + add them to art gallery like (https://www.ryanngfilms.com/)
-- take pics of polaroids + receipts + objects in my bedroom  -> build out art gallery
-- take pics of journal pages and excerpts & make drawer of thoughts  feel like a journal -- w/ orange sticky notes, sharpie effect, cut-out scrapbook collage art cool serenali typebeat
-- pre-footer image can be edited user side (like figma UI)
+1. build out art gallery (my room page)
+    - take pics of polaroids + receipts + objects in my bedroom 
+2. make drawer of thoughts feel like a journal (w/ orange sticky notes, sharpie effect, cut-out scrapbook collage)
 
-        
-would be cool:
-- make the liquid digi art the screenshots of my youtube channel art
-- add some cool stop motion effects as user traverses site.
-- add subtle sound effects
+progress: 75% ; still want to make drawer of thoughts + art gallery(myroom) look better;; 
+
