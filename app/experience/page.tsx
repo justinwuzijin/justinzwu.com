@@ -56,6 +56,8 @@ const currentExperiences = [
     description: 'During Fall 2025 and Winter 2026, I worked with seven other UW students to build ClipABit, a semantic search DaVinci Resolve plug-in that uses natural language queries to find exact clips straight from your library.',
     secondaryLogo: 'watai',
     link: 'https://clipabit.web.app/',
+    videoUrl: '/assets/experience-videos/clipabit.mov',
+    videoZoom: 1.07,
   },
   {
     id: 'cursor',
@@ -66,6 +68,7 @@ const currentExperiences = [
     description: 'Official uWaterloo Cursor Campus Ambassador for Winter 2026 and Summer 2026 term. Running campus-wide events such as Cafe Cursor.',
     link: 'https://cursor.com/home?utm_source=google&utm_campaign=[Static]_New_Search_Brand_[B2C]_[Brand]_[Desktop]&utm_term=cursor&utm_creative=&utm_medium=cpc&utm_content=793094759454&cc_platform=google&cc_campaignid=23463995700&cc_adgroupid=190461701206&cc_adid=793094759454&cc_keyword=cursor&cc_matchtype=b&cc_device=c&cc_network=g&cc_placement=&cc_location=9000960&cc_adposition=&gad_source=1&gad_campaignid=23463995700&gbraid=0AAAABAkdGgRLBOhMPres5hNm_dUO7NAsJ&gclid=CjwKCAiAybfLBhAjEiwAI0mBBj7ruc_XixYDWlwTQNHEmPRIbquTKVCLH0KB3ydsei3N_UwNI4CsnRoCaBoQAvD_BwE',
     zoom: 1.01,
+    videoUrl: '/assets/experience-videos/youtube-filmmaker.mp4',
   },
   {
     id: 'socratica',
@@ -76,6 +79,7 @@ const currentExperiences = [
     description: 'Helped facilitate events and create promotional and recap content for Socratica during Fall 2025.',
     link: 'https://www.socratica.info/',
     zoom: 1.01,
+    videoUrl: '/assets/experience-videos/cursor-ambassador.mp4',
   },
   {
     id: 'bridging',
@@ -85,6 +89,9 @@ const currentExperiences = [
     type: 'non-profit',
     description: "Producing Bridging Generations' fourth documentary: The International Experience. Interviewed four UW international students on their experience, voices, stories, and perspectives, scheduled to come out February.",
     link: 'https://www.bridginggens.com/',
+    zoom: 1.01,
+    videoUrl: '/assets/experience-videos/bridging-generations.m4v',
+    videoZoom: 1.18,
   },
   {
     id: 'youtuber',
@@ -94,6 +101,7 @@ const currentExperiences = [
     type: 'personal',
     description: 'Sharing my coming-of-age stories, short films, video journal entries.',
     link: 'https://www.youtube.com/@byjustinwu',
+    videoUrl: '/assets/art-gallery/central-piece.mp4',
   },
 ]
 
@@ -115,6 +123,7 @@ const highSchoolExperiences = [
     type: 'high school',
     description: 'Organized 200+ attendee leadership conference for students in the GTA. Led team of 11 delegates to work with Asian Roots Collective on a 100+ attendee youth basketball and wellness event.',
     link: 'https://www.createmarkham.ca/',
+    videoUrl: '/assets/experience-videos/create-conference.mp4',
   },
   {
     id: 'anniversary',
@@ -124,6 +133,8 @@ const highSchoolExperiences = [
     type: 'high school',
     description: 'Premiering a 30-minute film to an audience of past alumni in May 2026. Directed and edited a documentary celebrating 20 years of school community history.',
     link: 'https://www.instagram.com/trudeau20thfilm/',
+    videoUrl: '/assets/experience-videos/anniversary-film.mp4',
+    videoPosition: 'center 20%',
   },
 ]
 

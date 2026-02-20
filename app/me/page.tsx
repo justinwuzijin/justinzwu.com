@@ -131,6 +131,9 @@ const projects = [
     image: '/assets/svg/camcraft.png',
     url: 'https://github.com/petersenmatthew/camcraft',
     dark: true,
+    videoUrl: '/assets/experience-videos/camcraft.mp4',
+    videoZoom: 1.22,
+    videoPosition: 'center 30%',
   },
   {
     id: 'skema',
@@ -140,6 +143,8 @@ const projects = [
     image: '/assets/svg/skeeeemaar.png',
     url: 'https://devpost.com/software/skema-wta8kn?ref_content=user-portfolio&ref_feature=in_progress',
     dark: false,
+    videoUrl: '/assets/experience-videos/schema.mp4',
+    videoZoom: 1.15,
   },
   {
     id: 'cision',
@@ -149,6 +154,7 @@ const projects = [
     image: '/assets/svg/Copy of Untitled Design.png',
     url: 'https://github.com/Lemirq/cision',
     dark: true,
+    videoUrl: '/assets/experience-videos/cision.mp4',
   },
   {
     id: 'recollect',
@@ -158,7 +164,9 @@ const projects = [
     image: '/assets/svg/recollect.svg',
     url: 'https://devpost.com/software/recollect-t5okgv?ref_content=user-portfolio&ref_feature=in_progress',
     dark: false,
-    zoom:1.01
+    zoom:1.01,
+    videoUrl: '/assets/experience-videos/recollect.mp4',
+    videoZoom: 1.15,
   },
   {
     id: 'performeter',
@@ -179,15 +187,8 @@ const projects = [
     url: 'https://github.com/justinwuzijin/eye-tester-app',
     dark: false,
     zoom: 1.045,
-  },
-  {
-    id: '3d-gallery',
-    title: '3D Interactive Stills Gallery',
-    date: "Aug '25",
-    description: 'An interactive sphere-based gallery that showcases stills from my youtube videos in a dynamic 3D environment.',
-    image: '/assets/svg/art.jpg',
-    url: 'https://github.com/justinwuzijin/spinning-3d-gallery',
-    dark: false,
+    videoUrl: '/assets/experience-videos/4sight.m4v',
+    videoZoom: 1.15,
   },
   {
     id: 'takeone',

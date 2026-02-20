@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import styles from './ExperienceCard.module.css'
@@ -16,11 +16,41 @@ interface ExperienceCardProps {
   link?: string
   zoom?: number
   highlightDelay?: number
+  videoUrl?: string
+  videoAspectRatio?: number
+  videoZoom?: number
+  videoPosition?: string
 }
 
-export function ExperienceCard({ company, logo, role, type, description, secondaryLogo, link, zoom, highlightDelay = 0 }: ExperienceCardProps) {
+export function ExperienceCard({ company, logo, role, type, description, secondaryLogo, link, zoom, highlightDelay = 0, videoUrl, videoAspectRatio, videoZoom, videoPosition }: ExperienceCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
+  const [videoLoaded, setVideoLoaded] = useState(false)
+  const videoRef = useRef<HTMLVideoElement>(null)
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video || !videoUrl) return
+
+    const handleReady = () => {
+      setVideoLoaded(true)
+      video.play().catch((error) => {
+        console.warn('Autoplay prevented:', error)
+      })
+    }
+
+    video.addEventListener('loadeddata', handleReady)
+    video.addEventListener('canplay', handleReady)
+    
+    if (video.readyState >= 2) {
+      handleReady()
+    }
+
+    return () => {
+      video.removeEventListener('loadeddata', handleReady)
+      video.removeEventListener('canplay', handleReady)
+    }
+  }, [videoUrl])
 
   const getLogoPath = () => {
     switch (logo) {
@@ -54,8 +84,30 @@ export function ExperienceCard({ company, logo, role, type, description, seconda
   const logoPath = getLogoPath()
 
   const logoArea = (
-    <div className={styles.logoArea}>
-      {isPlaceholder ? (
+    <div 
+      className={styles.logoArea}
+      style={videoAspectRatio ? { aspectRatio: videoAspectRatio } : undefined}
+    >
+      {videoUrl ? (
+        <>
+          {!videoLoaded && <div className={styles.logoPlaceholder} />}
+          <video
+            ref={videoRef}
+            src={videoUrl}
+            loop
+            muted
+            playsInline
+            autoPlay
+            preload="auto"
+            onLoadedData={() => setVideoLoaded(true)}
+            className={`${styles.logoVideo} ${videoLoaded ? styles.logoVisible : styles.logoHidden}`}
+            style={{
+              ...(videoZoom && { transform: `scale(${videoZoom})` }),
+              ...(videoPosition && { objectPosition: videoPosition }),
+            }}
+          />
+        </>
+      ) : isPlaceholder ? (
         <div className={styles.placeholderIcon}>
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="10" />

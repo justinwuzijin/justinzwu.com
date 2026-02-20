@@ -328,14 +328,14 @@ export function SelectableCollageItem({
     onContextMenu(e, item.id)
   }, [item.id, onContextMenu])
 
-  const positionStyle = containerRef.current ? {
+  const positionStyle = {
     left: `${transform.x}%`,
     top: `${transform.y}%`,
     width: transform.width,
     height: transform.height,
     zIndex: transform.zIndex + (isDragging ? 1000 : 0),
     transform: `rotate(${transform.rotation}deg)`,
-  } : {}
+  }
 
   const handles: HandlePosition[] = ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w']
 

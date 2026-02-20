@@ -1,21 +1,45 @@
 'use client'
 
-import React, { useState, useEffect, useRef, useCallback, MouseEvent as ReactMouseEvent } from 'react'
+import React, { useState, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import styles from './page.module.css'
 import { AutoPlayVideo } from '@/components/AutoPlayVideo'
 import { ScribbleHighlight } from '@/components/Highlights'
-import { SelectableCollageItem } from '@/components/SelectableCollageItem'
-import { CollageContextMenu } from '@/components/CollageContextMenu'
-import { MarqueeSelect } from '@/components/MarqueeSelect'
-import { useCollageSelection } from '@/hooks/useCollageSelection'
 import { 
   collageItems,
-  getItemConfig,
-  loadArtGalleryTransforms, 
-  saveArtGalleryTransforms,
-  type ItemTransform 
+  type CollageItemConfig,
 } from '@/lib/artGalleryItems'
+
+// Each set has paths for: top lines, right lines, bottom lines, left lines
+// Multiple strokes per side for sketchy effect
+const scribbleBoxPathSets = [
+  {
+    top: ["M 2 2 Q 30 0, 50 3 T 98 2", "M 3 4 Q 40 2, 60 5 T 97 3", "M 1 3 Q 25 1, 55 2 T 99 4"],
+    right: ["M 98 2 Q 100 30, 97 50 T 98 98", "M 97 3 Q 99 35, 98 55 T 97 97", "M 99 4 Q 101 25, 98 60 T 99 99"],
+    bottom: ["M 98 98 Q 70 100, 50 97 T 2 98", "M 97 97 Q 60 99, 40 98 T 3 97", "M 99 99 Q 75 101, 45 99 T 1 99"],
+    left: ["M 2 98 Q 0 70, 3 50 T 2 2", "M 3 97 Q 1 65, 2 45 T 3 4", "M 1 99 Q -1 75, 2 40 T 1 3"],
+  },
+  {
+    top: ["M 3 3 Q 35 1, 55 4 T 97 3", "M 2 2 Q 45 0, 65 3 T 98 2", "M 4 4 Q 30 2, 50 5 T 96 4"],
+    right: ["M 97 3 Q 99 35, 98 60 T 97 97", "M 98 2 Q 100 40, 97 55 T 98 98", "M 96 4 Q 98 30, 99 65 T 96 96"],
+    bottom: ["M 97 97 Q 65 99, 45 98 T 3 97", "M 98 98 Q 55 100, 35 97 T 2 98", "M 96 96 Q 70 98, 50 99 T 4 96"],
+    left: ["M 3 97 Q 1 65, 2 40 T 3 3", "M 2 98 Q 0 55, 3 35 T 2 2", "M 4 96 Q 2 70, 1 45 T 4 4"],
+  },
+  {
+    top: ["M 2 4 Q 25 1, 60 3 T 98 2", "M 4 2 Q 35 0, 55 4 T 96 3", "M 1 3 Q 30 -1, 65 2 T 99 4"],
+    right: ["M 98 2 Q 100 25, 99 55 T 98 98", "M 96 3 Q 98 35, 97 50 T 96 96", "M 99 4 Q 101 30, 100 60 T 99 99"],
+    bottom: ["M 98 98 Q 75 100, 40 99 T 2 98", "M 96 96 Q 65 98, 35 97 T 4 96", "M 99 99 Q 70 101, 45 100 T 1 99"],
+    left: ["M 2 98 Q 0 75, 1 45 T 2 4", "M 4 96 Q 2 65, 3 40 T 4 2", "M 1 99 Q -1 70, 0 50 T 1 3"],
+  },
+  {
+    top: ["M 4 2 Q 40 0, 70 3 T 96 4", "M 2 3 Q 30 1, 60 2 T 98 2", "M 3 4 Q 45 2, 65 4 T 97 3"],
+    right: ["M 96 4 Q 98 40, 97 70 T 96 96", "M 98 2 Q 100 35, 99 60 T 98 98", "M 97 3 Q 99 45, 98 65 T 97 97"],
+    bottom: ["M 96 96 Q 60 98, 30 97 T 4 96", "M 98 98 Q 70 100, 40 99 T 2 98", "M 97 97 Q 55 99, 35 98 T 3 97"],
+    left: ["M 4 96 Q 2 60, 3 30 T 4 2", "M 2 98 Q 0 70, 1 40 T 2 3", "M 3 97 Q 1 55, 2 35 T 3 4"],
+  },
+]
+
+let scribbleBoxIndex = 0
 
 type GalleryTab = 'my room' | 'my mind'
 
@@ -53,15 +77,13 @@ const videoItemVariant = {
   }
 }
 
-interface ContextMenuState {
-  isOpen: boolean
-  x: number
-  y: number
-}
-
-interface InfoPopupState {
-  isOpen: boolean
-  itemId: string | null
+const gridItemVariant = {
+  hidden: { opacity: 0, y: 10 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.3, ease: [0.25, 0.1, 0.25, 1] as const }
+  }
 }
 
 interface VideoConfig {
@@ -71,15 +93,6 @@ interface VideoConfig {
   gridRow?: string
   videoUrl?: string
 }
-
-// Boundaries for draggable items: can't go over sidebar (left), video (top), or pre-footer (bottom)
-const ITEM_BOUNDARIES = {
-  minX: 0,    // Left edge of collage container (sidebar is outside)
-  minY: 0,    // Top edge of collage container (video is above)
-  maxY: 100,  // Bottom edge of collage container (pre-footer is below)
-}
-
-const MOBILE_BREAKPOINT = 768
 
 const myRoomVideos: VideoConfig[] = [
   { id: 'room-1', aspectRatio: 16/9, gridColumn: 'span 2' },
@@ -125,245 +138,199 @@ function VideoPlaceholder({ config }: { config: VideoConfig }) {
   )
 }
 
+function CollectionGridItem({ 
+  item, 
+  isSelected,
+  onClick,
+  rotation,
+  scale,
+  onRotationChange,
+  onScaleChange,
+}: { 
+  item: CollageItemConfig
+  isSelected: boolean
+  onClick: () => void
+  rotation: number
+  scale: number
+  onRotationChange: (rotation: number) => void
+  onScaleChange: (scale: number) => void
+}) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [isDraggingRotate, setIsDraggingRotate] = useState(false)
+  const [isDraggingScale, setIsDraggingScale] = useState(false)
+  const pathSetIndex = scribbleBoxIndex++ % scribbleBoxPathSets.length
+  const pathSet = scribbleBoxPathSets[pathSetIndex]
+  const allPaths = [...pathSet.top, ...pathSet.right, ...pathSet.bottom, ...pathSet.left]
+
+  const handleRotateStart = (e: React.MouseEvent | React.TouchEvent) => {
+    e.stopPropagation()
+    setIsDraggingRotate(true)
+  }
+
+  const handleScaleStart = (e: React.MouseEvent | React.TouchEvent) => {
+    e.stopPropagation()
+    setIsDraggingScale(true)
+  }
+
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (!containerRef.current) return
+    const rect = containerRef.current.getBoundingClientRect()
+    const centerX = rect.left + rect.width / 2
+    const centerY = rect.top + rect.height / 2
+
+    if (isDraggingRotate) {
+      const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI)
+      onRotationChange(angle + 90)
+    }
+
+    if (isDraggingScale) {
+      const distance = Math.sqrt(
+        Math.pow(e.clientX - centerX, 2) + Math.pow(e.clientY - centerY, 2)
+      )
+      const maxDistance = Math.min(rect.width, rect.height) / 2
+      const newScale = Math.max(0.3, Math.min(1.5, distance / maxDistance))
+      onScaleChange(newScale)
+    }
+  }, [isDraggingRotate, isDraggingScale, onRotationChange, onScaleChange])
+
+  const handleMouseUp = useCallback(() => {
+    setIsDraggingRotate(false)
+    setIsDraggingScale(false)
+  }, [])
+
+  React.useEffect(() => {
+    if (isDraggingRotate || isDraggingScale) {
+      window.addEventListener('mousemove', handleMouseMove)
+      window.addEventListener('mouseup', handleMouseUp)
+      return () => {
+        window.removeEventListener('mousemove', handleMouseMove)
+        window.removeEventListener('mouseup', handleMouseUp)
+      }
+    }
+  }, [isDraggingRotate, isDraggingScale, handleMouseMove, handleMouseUp])
+
+  return (
+    <motion.div
+      ref={containerRef}
+      className={`${styles.collectionItem} ${isSelected ? styles.collectionItemSelected : ''}`}
+      variants={gridItemVariant}
+      onClick={onClick}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+    >
+      {/* Scribble border - multiple separate strokes per side for sketchy effect */}
+      <svg 
+        className={styles.scribbleBorder}
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+      >
+        {allPaths.map((path, i) => (
+          <motion.path
+            key={i}
+            d={path}
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 1 }}
+            transition={{ 
+              duration: 0.4, 
+              ease: [0.43, 0.13, 0.23, 0.96],
+              delay: i * 0.03
+            }}
+          />
+        ))}
+      </svg>
+
+      <AnimatePresence>
+        {isSelected && (
+          <motion.div 
+            className={styles.itemTag}
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 5 }}
+            transition={{ duration: 0.15 }}
+          >
+            <span>{item.alt}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className={styles.collectionImageContainer}>
+        <img
+          src={item.src}
+          alt={item.alt}
+          className={styles.collectionImage}
+          style={{
+            transform: `rotate(${rotation}deg) scale(${scale})`,
+          }}
+          draggable={false}
+        />
+      </div>
+
+      {/* Rotation and scale controls - only show when selected */}
+      {isSelected && (
+        <>
+          <div
+            className={styles.rotateHandle}
+            onMouseDown={handleRotateStart}
+            title="Drag to rotate"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 12a9 9 0 11-6.219-8.56" />
+              <polyline points="21 3 21 9 15 9" />
+            </svg>
+          </div>
+          <div
+            className={styles.scaleHandle}
+            onMouseDown={handleScaleStart}
+            title="Drag to resize"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polyline points="15 3 21 3 21 9" />
+              <polyline points="9 21 3 21 3 15" />
+              <line x1="21" y1="3" x2="14" y2="10" />
+              <line x1="3" y1="21" x2="10" y2="14" />
+            </svg>
+          </div>
+        </>
+      )}
+    </motion.div>
+  )
+}
+
+interface ItemTransform {
+  rotation: number
+  scale: number
+}
+
 export default function ArtGalleryPage() {
   const [activeTab, setActiveTab] = useState<GalleryTab>('my mind')
   const tabs: GalleryTab[] = ['my room', 'my mind']
   
-  const collageRef = useRef<HTMLDivElement>(null)
-  const [transforms, setTransforms] = useState<ItemTransform[]>([])
-  const [isClient, setIsClient] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
-  const [contextMenu, setContextMenu] = useState<ContextMenuState>({ isOpen: false, x: 0, y: 0 })
-  const [infoPopup, setInfoPopup] = useState<InfoPopupState>({ isOpen: false, itemId: null })
-  
-  const {
-    selectedIds,
-    selectedCount,
-    hasSelection,
-    select,
-    selectMultiple,
-    selectAll,
-    deselectAll,
-    isSelected,
-  } = useCollageSelection()
-
-  useEffect(() => {
-    setIsClient(true)
-    setTransforms(loadArtGalleryTransforms())
-    
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= MOBILE_BREAKPOINT)
-    }
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
-
-  useEffect(() => {
-    if (isClient && transforms.length > 0) {
-      saveArtGalleryTransforms(transforms)
-    }
-  }, [transforms, isClient])
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!hasSelection) return
-      
-      const target = e.target as HTMLElement
-      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return
-
-      if (e.key === 'Delete' || e.key === 'Backspace') {
-        e.preventDefault()
-        handleDelete()
-      }
-      
-      if (e.key === 'Escape') {
-        deselectAll()
-        setInfoPopup({ isOpen: false, itemId: null })
-      }
-      
-      if ((e.metaKey || e.ctrlKey) && e.key === 'a') {
-        e.preventDefault()
-        selectAll(transforms.map(t => t.id))
-      }
-      
-      if ((e.metaKey || e.ctrlKey) && e.key === 'd') {
-        e.preventDefault()
-        handleDuplicate()
-      }
-      
-      if (e.key === ']') {
-        if (e.metaKey || e.ctrlKey) {
-          handleBringToFront()
-        } else {
-          handleBringForward()
-        }
-      }
-      
-      if (e.key === '[') {
-        if (e.metaKey || e.ctrlKey) {
-          handleSendToBack()
-        } else {
-          handleSendBackward()
-        }
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [hasSelection, selectedIds, transforms, deselectAll, selectAll])
-
-  const handleSelect = useCallback((id: string, addToSelection: boolean) => {
-    select(id, addToSelection)
-  }, [select])
-
-  const handleItemClick = useCallback((id: string) => {
-    setInfoPopup(prev => 
-      prev.isOpen && prev.itemId === id 
-        ? { isOpen: false, itemId: null }
-        : { isOpen: true, itemId: id }
-    )
-  }, [])
-
-  const handleCloseInfoPopup = useCallback(() => {
-    setInfoPopup({ isOpen: false, itemId: null })
-  }, [])
-
-  const handleTransformChange = useCallback((id: string, updates: Partial<ItemTransform>) => {
-    setTransforms(prev => 
-      prev.map(t => t.id === id ? { ...t, ...updates } : t)
-    )
-  }, [])
-
-  const handleContextMenu = useCallback((e: ReactMouseEvent, id: string) => {
-    if (!isSelected(id)) {
-      select(id, false)
-    }
-    setContextMenu({ isOpen: true, x: e.clientX, y: e.clientY })
-  }, [isSelected, select])
-
-  const handleCloseContextMenu = useCallback(() => {
-    setContextMenu({ isOpen: false, x: 0, y: 0 })
-  }, [])
-
-  const handleBackgroundClick = useCallback((e: ReactMouseEvent) => {
-    if ((e.target as HTMLElement).closest('[data-collage-item]')) return
-    deselectAll()
-    setInfoPopup({ isOpen: false, itemId: null })
-  }, [deselectAll])
-
-  const handleMarqueeSelect = useCallback((ids: string[], addToSelection: boolean) => {
-    selectMultiple(ids, addToSelection)
-  }, [selectMultiple])
-
-  const handleBringToFront = useCallback(() => {
-    if (!hasSelection) return
-    const maxZ = Math.max(...transforms.map(t => t.zIndex))
-    let nextZ = maxZ + 1
-    setTransforms(prev => 
-      prev.map(t => selectedIds.has(t.id) ? { ...t, zIndex: nextZ++ } : t)
-    )
-  }, [hasSelection, selectedIds, transforms])
-
-  const handleBringForward = useCallback(() => {
-    if (!hasSelection) return
-    setTransforms(prev => {
-      const sorted = [...prev].sort((a, b) => a.zIndex - b.zIndex)
-      const result = [...prev]
-      
-      for (const id of selectedIds) {
-        const currentIndex = sorted.findIndex(t => t.id === id)
-        if (currentIndex < sorted.length - 1) {
-          const current = result.find(t => t.id === id)!
-          const above = sorted[currentIndex + 1]
-          const aboveInResult = result.find(t => t.id === above.id)!
-          const tempZ = current.zIndex
-          current.zIndex = aboveInResult.zIndex
-          aboveInResult.zIndex = tempZ
-        }
-      }
-      return result
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null)
+  const [itemTransforms, setItemTransforms] = useState<Record<string, ItemTransform>>(() => {
+    const initial: Record<string, ItemTransform> = {}
+    collageItems.forEach(item => {
+      initial[item.id] = { rotation: 0, scale: 1 }
     })
-  }, [hasSelection, selectedIds])
+    return initial
+  })
 
-  const handleSendBackward = useCallback(() => {
-    if (!hasSelection) return
-    setTransforms(prev => {
-      const sorted = [...prev].sort((a, b) => a.zIndex - b.zIndex)
-      const result = [...prev]
-      
-      for (const id of selectedIds) {
-        const currentIndex = sorted.findIndex(t => t.id === id)
-        if (currentIndex > 0) {
-          const current = result.find(t => t.id === id)!
-          const below = sorted[currentIndex - 1]
-          const belowInResult = result.find(t => t.id === below.id)!
-          const tempZ = current.zIndex
-          current.zIndex = belowInResult.zIndex
-          belowInResult.zIndex = tempZ
-        }
-      }
-      return result
-    })
-  }, [hasSelection, selectedIds])
+  const handleItemClick = useCallback((itemId: string) => {
+    setSelectedItemId(prev => prev === itemId ? null : itemId)
+  }, [])
 
-  const handleSendToBack = useCallback(() => {
-    if (!hasSelection) return
-    const minZ = Math.min(...transforms.map(t => t.zIndex))
-    let nextZ = minZ - selectedIds.size
-    setTransforms(prev => 
-      prev.map(t => selectedIds.has(t.id) ? { ...t, zIndex: nextZ++ } : t)
-    )
-  }, [hasSelection, selectedIds, transforms])
+  const handleRotationChange = useCallback((itemId: string, rotation: number) => {
+    setItemTransforms(prev => ({
+      ...prev,
+      [itemId]: { ...prev[itemId], rotation }
+    }))
+  }, [])
 
-  const handleDelete = useCallback(() => {
-    setTransforms(prev => prev.filter(t => !selectedIds.has(t.id)))
-    deselectAll()
-  }, [selectedIds, deselectAll])
-
-  const handleResetSize = useCallback(() => {
-    setTransforms(prev => 
-      prev.map(t => {
-        if (!selectedIds.has(t.id)) return t
-        const config = getItemConfig(t.id)
-        if (!config) return t
-        return { ...t, width: config.width, height: config.height }
-      })
-    )
-  }, [selectedIds])
-
-  const handleResetRotation = useCallback(() => {
-    setTransforms(prev => 
-      prev.map(t => {
-        if (!selectedIds.has(t.id)) return t
-        const config = getItemConfig(t.id)
-        if (!config) return t
-        return { ...t, rotation: config.rotation }
-      })
-    )
-  }, [selectedIds])
-
-  const handleDuplicate = useCallback(() => {
-    const newItems: ItemTransform[] = []
-    const maxZ = Math.max(...transforms.map(t => t.zIndex))
-    let nextZ = maxZ + 1
-    
-    for (const id of selectedIds) {
-      const original = transforms.find(t => t.id === id)
-      if (original) {
-        newItems.push({
-          ...original,
-          id: `${original.id}-copy-${Date.now()}`,
-          x: original.x + 2,
-          y: original.y + 2,
-          zIndex: nextZ++,
-        })
-      }
-    }
-    
-    setTransforms(prev => [...prev, ...newItems])
-    selectMultiple(newItems.map(i => i.id), false)
-  }, [selectedIds, transforms, selectMultiple])
+  const handleScaleChange = useCallback((itemId: string, scale: number) => {
+    setItemTransforms(prev => ({
+      ...prev,
+      [itemId]: { ...prev[itemId], scale }
+    }))
+  }, [])
 
   return (
     <div className={styles.container}>
@@ -440,79 +407,24 @@ export default function ArtGalleryPage() {
               />
             </motion.div>
             
-            {/* Interactive collage area - hidden on mobile */}
-            {isClient && !isMobile && (
-              <motion.div 
-                ref={collageRef}
-                className={styles.collageContainer}
-                onClick={handleBackgroundClick}
-                variants={videoItemVariant}
-              >
-                {isClient && (
-                  <MarqueeSelect
-                    containerRef={collageRef}
-                    transforms={transforms}
-                    onSelectionChange={handleMarqueeSelect}
-                  />
-                )}
-                
-                {isClient && transforms.map(transform => {
-                  const item = collageItems.find(i => i.id === transform.id)
-                  if (!item) return null
-                  
-                  return (
-                    <div 
-                      key={transform.id} 
-                      data-collage-item
-                      onClick={(e) => {
-                        if (!e.shiftKey && !e.metaKey && !e.ctrlKey) {
-                          handleItemClick(transform.id)
-                        }
-                      }}
-                    >
-                      <SelectableCollageItem
-                        item={item}
-                        transform={transform}
-                        containerRef={collageRef}
-                        isSelected={isSelected(transform.id)}
-                        onSelect={handleSelect}
-                        onTransformChange={handleTransformChange}
-                        onContextMenu={handleContextMenu}
-                        boundaries={ITEM_BOUNDARIES}
-                      />
-                    </div>
-                  )
-                })}
-                
-                {/* Info popups positioned using transform data */}
-                <AnimatePresence>
-                  {infoPopup.isOpen && infoPopup.itemId && (() => {
-                    const transform = transforms.find(t => t.id === infoPopup.itemId)
-                    const item = collageItems.find(i => i.id === infoPopup.itemId)
-                    if (!transform || !item) return null
-                    
-                    return (
-                      <motion.div
-                        key="info-popup"
-                        className={styles.infoPopup}
-                        style={{
-                          left: `calc(${transform.x}% + ${transform.width / 2}px)`,
-                          top: `${transform.y}%`,
-                        }}
-                        initial={{ opacity: 0, scale: 0.9, y: 10 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.9, y: 10 }}
-                        transition={{ duration: 0.2 }}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <button className={styles.infoPopupClose} onClick={handleCloseInfoPopup}>×</button>
-                        <p className={styles.infoPopupText}>{item.alt}</p>
-                      </motion.div>
-                    )
-                  })()}
-                </AnimatePresence>
-              </motion.div>
-            )}
+            {/* Collection grid */}
+            <motion.div 
+              className={styles.collectionGrid}
+              variants={staggerContainer}
+            >
+              {collageItems.map((item) => (
+                <CollectionGridItem
+                  key={item.id}
+                  item={item}
+                  isSelected={selectedItemId === item.id}
+                  onClick={() => handleItemClick(item.id)}
+                  rotation={itemTransforms[item.id]?.rotation ?? 0}
+                  scale={itemTransforms[item.id]?.scale ?? 1}
+                  onRotationChange={(r) => handleRotationChange(item.id, r)}
+                  onScaleChange={(s) => handleScaleChange(item.id, s)}
+                />
+              ))}
+            </motion.div>
           </motion.section>
         ) : (
           <motion.section 
@@ -531,23 +443,6 @@ export default function ArtGalleryPage() {
           </motion.section>
         )}
       </AnimatePresence>
-      
-      {contextMenu.isOpen && (
-        <CollageContextMenu
-          position={{ x: contextMenu.x, y: contextMenu.y }}
-          selectedCount={selectedCount}
-          onClose={handleCloseContextMenu}
-          onBringToFront={handleBringToFront}
-          onBringForward={handleBringForward}
-          onSendBackward={handleSendBackward}
-          onSendToBack={handleSendToBack}
-          onDelete={handleDelete}
-          onResetSize={handleResetSize}
-          onResetRotation={handleResetRotation}
-          onDuplicate={handleDuplicate}
-        />
-      )}
-      
     </div>
   )
 }
