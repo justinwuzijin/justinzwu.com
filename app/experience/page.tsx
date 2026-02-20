@@ -57,7 +57,7 @@ const currentExperiences = [
     secondaryLogo: 'watai',
     link: 'https://clipabit.web.app/',
     videoUrl: '/assets/experience-videos/clipabit.mov',
-    videoZoom: 1.07,
+    videoZoom: 1.06,
   },
   {
     id: 'cursor',

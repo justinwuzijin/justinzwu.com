@@ -134,6 +134,7 @@ const projects = [
     videoUrl: '/assets/experience-videos/camcraft.mp4',
     videoZoom: 1.22,
     videoPosition: 'center 30%',
+    videoSpeed: 2,
   },
   {
     id: 'skema',

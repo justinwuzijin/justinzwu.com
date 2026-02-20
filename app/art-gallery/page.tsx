@@ -10,37 +10,6 @@ import {
   type CollageItemConfig,
 } from '@/lib/artGalleryItems'
 
-// Each set has paths for: top lines, right lines, bottom lines, left lines
-// Multiple strokes per side for sketchy effect
-const scribbleBoxPathSets = [
-  {
-    top: ["M 2 2 Q 30 0, 50 3 T 98 2", "M 3 4 Q 40 2, 60 5 T 97 3", "M 1 3 Q 25 1, 55 2 T 99 4"],
-    right: ["M 98 2 Q 100 30, 97 50 T 98 98", "M 97 3 Q 99 35, 98 55 T 97 97", "M 99 4 Q 101 25, 98 60 T 99 99"],
-    bottom: ["M 98 98 Q 70 100, 50 97 T 2 98", "M 97 97 Q 60 99, 40 98 T 3 97", "M 99 99 Q 75 101, 45 99 T 1 99"],
-    left: ["M 2 98 Q 0 70, 3 50 T 2 2", "M 3 97 Q 1 65, 2 45 T 3 4", "M 1 99 Q -1 75, 2 40 T 1 3"],
-  },
-  {
-    top: ["M 3 3 Q 35 1, 55 4 T 97 3", "M 2 2 Q 45 0, 65 3 T 98 2", "M 4 4 Q 30 2, 50 5 T 96 4"],
-    right: ["M 97 3 Q 99 35, 98 60 T 97 97", "M 98 2 Q 100 40, 97 55 T 98 98", "M 96 4 Q 98 30, 99 65 T 96 96"],
-    bottom: ["M 97 97 Q 65 99, 45 98 T 3 97", "M 98 98 Q 55 100, 35 97 T 2 98", "M 96 96 Q 70 98, 50 99 T 4 96"],
-    left: ["M 3 97 Q 1 65, 2 40 T 3 3", "M 2 98 Q 0 55, 3 35 T 2 2", "M 4 96 Q 2 70, 1 45 T 4 4"],
-  },
-  {
-    top: ["M 2 4 Q 25 1, 60 3 T 98 2", "M 4 2 Q 35 0, 55 4 T 96 3", "M 1 3 Q 30 -1, 65 2 T 99 4"],
-    right: ["M 98 2 Q 100 25, 99 55 T 98 98", "M 96 3 Q 98 35, 97 50 T 96 96", "M 99 4 Q 101 30, 100 60 T 99 99"],
-    bottom: ["M 98 98 Q 75 100, 40 99 T 2 98", "M 96 96 Q 65 98, 35 97 T 4 96", "M 99 99 Q 70 101, 45 100 T 1 99"],
-    left: ["M 2 98 Q 0 75, 1 45 T 2 4", "M 4 96 Q 2 65, 3 40 T 4 2", "M 1 99 Q -1 70, 0 50 T 1 3"],
-  },
-  {
-    top: ["M 4 2 Q 40 0, 70 3 T 96 4", "M 2 3 Q 30 1, 60 2 T 98 2", "M 3 4 Q 45 2, 65 4 T 97 3"],
-    right: ["M 96 4 Q 98 40, 97 70 T 96 96", "M 98 2 Q 100 35, 99 60 T 98 98", "M 97 3 Q 99 45, 98 65 T 97 97"],
-    bottom: ["M 96 96 Q 60 98, 30 97 T 4 96", "M 98 98 Q 70 100, 40 99 T 2 98", "M 97 97 Q 55 99, 35 98 T 3 97"],
-    left: ["M 4 96 Q 2 60, 3 30 T 4 2", "M 2 98 Q 0 70, 1 40 T 2 3", "M 3 97 Q 1 55, 2 35 T 3 4"],
-  },
-]
-
-let scribbleBoxIndex = 0
-
 type GalleryTab = 'my room' | 'my mind'
 
 const tabColors: Record<GalleryTab, string> = {
@@ -158,9 +127,6 @@ function CollectionGridItem({
   const containerRef = useRef<HTMLDivElement>(null)
   const [isDraggingRotate, setIsDraggingRotate] = useState(false)
   const [isDraggingScale, setIsDraggingScale] = useState(false)
-  const pathSetIndex = scribbleBoxIndex++ % scribbleBoxPathSets.length
-  const pathSet = scribbleBoxPathSets[pathSetIndex]
-  const allPaths = [...pathSet.top, ...pathSet.right, ...pathSet.bottom, ...pathSet.left]
 
   const handleRotateStart = (e: React.MouseEvent | React.TouchEvent) => {
     e.stopPropagation()
@@ -218,27 +184,6 @@ function CollectionGridItem({
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
     >
-      {/* Scribble border - multiple separate strokes per side for sketchy effect */}
-      <svg 
-        className={styles.scribbleBorder}
-        viewBox="0 0 100 100"
-        preserveAspectRatio="none"
-      >
-        {allPaths.map((path, i) => (
-          <motion.path
-            key={i}
-            d={path}
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ pathLength: 1, opacity: 1 }}
-            transition={{ 
-              duration: 0.4, 
-              ease: [0.43, 0.13, 0.23, 0.96],
-              delay: i * 0.03
-            }}
-          />
-        ))}
-      </svg>
-
       <AnimatePresence>
         {isSelected && (
           <motion.div 

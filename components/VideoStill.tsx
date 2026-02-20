@@ -147,6 +147,7 @@ export function VideoStill({
                 src={embedUrl}
                 controls
                 autoPlay
+                muted
                 className={styles.videoPlayer}
               />
             )}

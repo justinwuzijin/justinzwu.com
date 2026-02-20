@@ -19,9 +19,10 @@ interface ProjectCardProps {
   videoUrl?: string
   videoZoom?: number
   videoPosition?: string
+  videoSpeed?: number
 }
 
-export function ProjectCard({ title, date, description, image, url, dark, zoom, highlightDelay = 0, videoUrl, videoZoom, videoPosition }: ProjectCardProps) {
+export function ProjectCard({ title, date, description, image, url, dark, zoom, highlightDelay = 0, videoUrl, videoZoom, videoPosition, videoSpeed }: ProjectCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
   const [videoLoaded, setVideoLoaded] = useState(false)
@@ -33,6 +34,9 @@ export function ProjectCard({ title, date, description, image, url, dark, zoom, 
 
     const handleReady = () => {
       setVideoLoaded(true)
+      if (videoSpeed) {
+        video.playbackRate = videoSpeed
+      }
       video.play().catch((error) => {
         console.warn('Autoplay prevented:', error)
       })
@@ -49,7 +53,7 @@ export function ProjectCard({ title, date, description, image, url, dark, zoom, 
       video.removeEventListener('loadeddata', handleReady)
       video.removeEventListener('canplay', handleReady)
     }
-  }, [videoUrl])
+  }, [videoUrl, videoSpeed])
 
   const imageContent = (
     <div className={`${styles.imageWrapper} ${dark ? styles.darkBg : ''}`}>
