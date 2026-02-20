@@ -1,4 +1,4 @@
-# justinzwu.com; a personal website
+# justinzwu.com
 
 > designed on Thursday, January 15th 8:13AM until 6:56PM.
 
