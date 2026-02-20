@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useState, useCallback, MouseEvent as ReactMouseEvent } from 'react'
 import type { CollageItemConfig, ItemTransform } from '@/lib/collageItems'
+import { useSoundEffects } from '@/hooks/useSoundEffects'
 import styles from './SelectableCollageItem.module.css'
 
 type HandlePosition = 'nw' | 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w'
@@ -35,6 +36,7 @@ export function SelectableCollageItem({
   boundaries,
 }: SelectableCollageItemProps) {
   const elementRef = useRef<HTMLDivElement>(null)
+  const { playClick } = useSoundEffects()
   const [isDragging, setIsDragging] = useState(false)
   const [isResizing, setIsResizing] = useState(false)
   const [isRotating, setIsRotating] = useState(false)
@@ -53,6 +55,10 @@ export function SelectableCollageItem({
     if (isResizing || isRotating) return
     e.stopPropagation()
     
+    if (!isSelected) {
+      playClick()
+    }
+    
     const addToSelection = e.shiftKey || e.metaKey || e.ctrlKey
     onSelect(item.id, addToSelection)
     
@@ -66,7 +72,7 @@ export function SelectableCollageItem({
       startX: (transform.x / 100) * containerRect.width,
       startY: (transform.y / 100) * containerRect.height,
     }
-  }, [item.id, transform, containerRef, onSelect, isResizing, isRotating])
+  }, [item.id, transform, containerRef, onSelect, isResizing, isRotating, isSelected, playClick])
 
   const handleResizeStart = useCallback((e: ReactMouseEvent, handle: HandlePosition) => {
     e.stopPropagation()

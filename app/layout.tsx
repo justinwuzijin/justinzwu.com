@@ -10,6 +10,7 @@ import { Footer } from '@/components/Footer'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { TopRightControls } from '@/components/TopRightControls'
 import { LazyRandomVideoPopup } from '@/components/LazyRandomVideoPopup'
+import { GlobalClickSound } from '@/components/GlobalClickSound'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -52,6 +53,9 @@ export default function RootLayout({
       </head>
       <body className={inter.variable}>
         <ThemeProvider>
+          {/* Global click sound for ambient page interactions */}
+          <GlobalClickSound />
+          
           {/* Random video popups near mouse — dynamically loaded, not needed for initial render */}
           <LazyRandomVideoPopup />
           

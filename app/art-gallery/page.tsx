@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import styles from './page.module.css'
 import { AutoPlayVideo } from '@/components/AutoPlayVideo'
 import { ScribbleHighlight } from '@/components/Highlights'
+import { useSoundEffects } from '@/hooks/useSoundEffects'
 import { 
   collageItems,
   type CollageItemConfig,
@@ -107,6 +108,35 @@ function VideoPlaceholder({ config }: { config: VideoConfig }) {
   )
 }
 
+const handDrawnBorderPaths = [
+  {
+    top: "M 0 2 L 15 3 L 30 2 L 45 3 L 60 2 L 75 3 L 90 2 L 100 3",
+    right: "M 98 0 L 97 15 L 98 30 L 97 45 L 98 60 L 97 75 L 98 90 L 97 100",
+    bottom: "M 100 98 L 85 97 L 70 98 L 55 97 L 40 98 L 25 97 L 10 98 L 0 97",
+    left: "M 2 100 L 3 85 L 2 70 L 3 55 L 2 40 L 3 25 L 2 10 L 3 0",
+  },
+  {
+    top: "M 0 3 L 12 2 L 25 3 L 38 2 L 50 3 L 62 2 L 75 3 L 88 2 L 100 3",
+    right: "M 97 0 L 98 12 L 97 25 L 98 38 L 97 50 L 98 62 L 97 75 L 98 88 L 97 100",
+    bottom: "M 100 97 L 88 98 L 75 97 L 62 98 L 50 97 L 38 98 L 25 97 L 12 98 L 0 97",
+    left: "M 3 100 L 2 88 L 3 75 L 2 62 L 3 50 L 2 38 L 3 25 L 2 12 L 3 0",
+  },
+  {
+    top: "M 0 2 L 20 3 L 35 2 L 50 3 L 65 2 L 80 3 L 100 2",
+    right: "M 98 0 L 97 20 L 98 35 L 97 50 L 98 65 L 97 80 L 98 100",
+    bottom: "M 100 98 L 80 97 L 65 98 L 50 97 L 35 98 L 20 97 L 0 98",
+    left: "M 2 100 L 3 80 L 2 65 L 3 50 L 2 35 L 3 20 L 2 0",
+  },
+  {
+    top: "M 0 3 L 18 2 L 32 3 L 48 2 L 65 3 L 82 2 L 100 3",
+    right: "M 97 0 L 98 18 L 97 32 L 98 48 L 97 65 L 98 82 L 97 100",
+    bottom: "M 100 97 L 82 98 L 65 97 L 48 98 L 32 97 L 18 98 L 0 97",
+    left: "M 3 100 L 2 82 L 3 65 L 2 48 L 3 32 L 2 18 L 3 0",
+  },
+]
+
+let borderPathIndex = 0
+
 function CollectionGridItem({ 
   item, 
   isSelected,
@@ -125,6 +155,7 @@ function CollectionGridItem({
   onScaleChange: (scale: number) => void
 }) {
   const containerRef = useRef<HTMLDivElement>(null)
+  const pathSet = handDrawnBorderPaths[borderPathIndex++ % handDrawnBorderPaths.length]
   const [isDraggingRotate, setIsDraggingRotate] = useState(false)
   const [isDraggingScale, setIsDraggingScale] = useState(false)
 
@@ -198,6 +229,13 @@ function CollectionGridItem({
         )}
       </AnimatePresence>
 
+      <svg className={styles.handDrawnBorder} viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path d={pathSet.top} />
+        <path d={pathSet.right} />
+        <path d={pathSet.bottom} />
+        <path d={pathSet.left} />
+      </svg>
+
       <div className={styles.collectionImageContainer}>
         <img
           src={item.src}
@@ -249,6 +287,7 @@ interface ItemTransform {
 export default function ArtGalleryPage() {
   const [activeTab, setActiveTab] = useState<GalleryTab>('my mind')
   const tabs: GalleryTab[] = ['my room', 'my mind']
+  const { playClick } = useSoundEffects()
   
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null)
   const [itemTransforms, setItemTransforms] = useState<Record<string, ItemTransform>>(() => {
@@ -260,8 +299,9 @@ export default function ArtGalleryPage() {
   })
 
   const handleItemClick = useCallback((itemId: string) => {
+    playClick()
     setSelectedItemId(prev => prev === itemId ? null : itemId)
-  }, [])
+  }, [playClick])
 
   const handleRotationChange = useCallback((itemId: string, rotation: number) => {
     setItemTransforms(prev => ({
@@ -316,7 +356,10 @@ export default function ArtGalleryPage() {
           return (
             <motion.button
               key={tab}
-              onClick={() => setActiveTab(tab)}
+              onClick={() => {
+                playClick()
+                setActiveTab(tab)
+              }}
               className={`${styles.tab} ${isActive ? styles.activeTab : ''}`}
               style={{ 
                 '--tab-color': color 

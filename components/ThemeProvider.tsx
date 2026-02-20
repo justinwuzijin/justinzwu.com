@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import { soundManager } from '@/hooks/useSoundEffects'
 
 type Theme = 'light' | 'dark' | 'orange'
 
@@ -68,6 +69,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       
       if (e.key.toLowerCase() === 'o' && e.shiftKey && !e.ctrlKey && !e.metaKey && !e.altKey) {
         e.preventDefault()
+        soundManager.play('menu')
         setTheme((prev) => (prev === 'orange' ? 'light' : 'orange'))
       }
     }
