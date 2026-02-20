@@ -40,3 +40,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Original video backups
+public/assets/experience-videos-original/
+public/assets/videos-short-original/
+public/assets/art-gallery/central-piece-original.mp4

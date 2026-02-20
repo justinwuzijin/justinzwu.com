@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useTheme } from './ThemeProvider'
 import styles from './RandomVideoPopup.module.css'
 
-// Using trimmed 2-second videos for faster loading (4.7MB total vs 302MB original)
+// Using compressed tiny videos for instant loading (~876KB total, ~40KB each)
 const VIDEO_BASE_PATH = '/assets/videos-short'
 
 const videoFiles = [
@@ -78,18 +78,14 @@ export function RandomVideoPopup() {
   // For rendering state (isOverInteractive affects opacity)
   const [isOverInteractive, setIsOverInteractive] = useState(false)
 
-  // Preload videos ONLY when digital droplets is enabled - saves 4.7MB on initial load
+  // Preload ALL videos immediately when digital droplets is enabled
+  // Videos are now tiny (~40KB each, 876KB total) so we can preload everything
   useEffect(() => {
     // Skip on mobile or if digital droplets is disabled
     if (window.innerWidth <= 768 || !digitalDroplets) return
 
-    // Shuffle array and preload first 5 videos when user enables the feature
-    const shuffled = [...videoFiles].sort(() => Math.random() - 0.5)
-    const priorityVideos = shuffled.slice(0, 5)
-    const remainingVideos = shuffled.slice(5)
-    
-    // Preload priority videos when feature is enabled
-    priorityVideos.forEach((videoFile) => {
+    // Preload ALL videos immediately for instant playback
+    videoFiles.forEach((videoFile) => {
       const videoUrl = `${VIDEO_BASE_PATH}/${videoFile}`
       if (preloadedVideos.current.has(videoUrl)) return
 
@@ -98,38 +94,18 @@ export function RandomVideoPopup() {
       video.preload = 'auto'
       video.muted = true
       video.playsInline = true
+      video.loop = true
       video.setAttribute('webkit-playsinline', 'true')
       video.style.cssText = 'position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;z-index:-9999;'
       
+      // Load and start playing immediately so it's ready
       video.load()
+      video.play().catch(() => {})
       preloadedVideos.current.set(videoUrl, video)
       document.body.appendChild(video)
     })
-    
-    // Preload remaining videos after mouse movement is detected
-    const timeoutId = setTimeout(() => {
-      if (!digitalDroplets) return // Double-check still enabled
-      
-      remainingVideos.forEach((videoFile) => {
-        const videoUrl = `${VIDEO_BASE_PATH}/${videoFile}`
-        if (preloadedVideos.current.has(videoUrl)) return
-
-        const video = document.createElement('video')
-        video.src = videoUrl
-        video.preload = 'auto'
-        video.muted = true
-        video.playsInline = true
-        video.setAttribute('webkit-playsinline', 'true')
-        video.style.cssText = 'position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;z-index:-9999;'
-        
-        video.load()
-        preloadedVideos.current.set(videoUrl, video)
-        document.body.appendChild(video)
-      })
-    }, 2000) // Delay until user is actually interacting
 
     return () => {
-      clearTimeout(timeoutId)
       preloadedVideos.current.forEach((video) => {
         video.pause()
         video.removeAttribute('src')
@@ -139,7 +115,7 @@ export function RandomVideoPopup() {
       })
       preloadedVideos.current.clear()
     }
-  }, [digitalDroplets]) // Run immediately on mount, no dependencies
+  }, [digitalDroplets])
 
   // Track text selection - only block when actually selecting text
   useEffect(() => {
