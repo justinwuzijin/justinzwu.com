@@ -57,6 +57,7 @@ const currentExperiences = [
     secondaryLogo: 'watai',
     link: 'https://clipabit.web.app/',
     videoUrl: '/assets/experience-videos/clipabit.mp4',
+    videoPoster: '/assets/experience-videos/posters/clipabit.jpg',
     videoZoom: 1.06,
   },
   {
@@ -69,6 +70,7 @@ const currentExperiences = [
     link: 'https://cursor.com/home?utm_source=google&utm_campaign=[Static]_New_Search_Brand_[B2C]_[Brand]_[Desktop]&utm_term=cursor&utm_creative=&utm_medium=cpc&utm_content=793094759454&cc_platform=google&cc_campaignid=23463995700&cc_adgroupid=190461701206&cc_adid=793094759454&cc_keyword=cursor&cc_matchtype=b&cc_device=c&cc_network=g&cc_placement=&cc_location=9000960&cc_adposition=&gad_source=1&gad_campaignid=23463995700&gbraid=0AAAABAkdGgRLBOhMPres5hNm_dUO7NAsJ&gclid=CjwKCAiAybfLBhAjEiwAI0mBBj7ruc_XixYDWlwTQNHEmPRIbquTKVCLH0KB3ydsei3N_UwNI4CsnRoCaBoQAvD_BwE',
     zoom: 1.01,
     videoUrl: '/assets/experience-videos/youtube-filmmaker.mp4',
+    videoPoster: '/assets/experience-videos/posters/youtube-filmmaker.jpg',
   },
   {
     id: 'socratica',
@@ -80,6 +82,7 @@ const currentExperiences = [
     link: 'https://www.socratica.info/',
     zoom: 1.01,
     videoUrl: '/assets/experience-videos/cursor-ambassador.mp4',
+    videoPoster: '/assets/experience-videos/posters/cursor-ambassador.jpg',
   },
   {
     id: 'bridging',
@@ -91,6 +94,7 @@ const currentExperiences = [
     link: 'https://www.bridginggens.com/',
     zoom: 1.01,
     videoUrl: '/assets/experience-videos/bridging-generations.mp4',
+    videoPoster: '/assets/experience-videos/posters/bridging-generations.jpg',
     videoZoom: 1.18,
   },
   {
@@ -102,6 +106,7 @@ const currentExperiences = [
     description: 'Sharing my coming-of-age stories, short films, video journal entries.',
     link: 'https://www.youtube.com/@byjustinwu',
     videoUrl: '/assets/art-gallery/central-piece.mp4',
+    videoPoster: '/assets/art-gallery/posters/central-piece.jpg',
   },
 ]
 
@@ -124,6 +129,7 @@ const highSchoolExperiences = [
     description: 'Organized 200+ attendee leadership conference for students in the GTA. Led team of 11 delegates to work with Asian Roots Collective on a 100+ attendee youth basketball and wellness event.',
     link: 'https://www.createmarkham.ca/',
     videoUrl: '/assets/experience-videos/create-conference.mp4',
+    videoPoster: '/assets/experience-videos/posters/create-conference.jpg',
   },
   {
     id: 'anniversary',
@@ -134,6 +140,7 @@ const highSchoolExperiences = [
     description: 'Premiering a 30-minute film to an audience of past alumni in May 2026. Directed and edited a documentary celebrating 20 years of school community history.',
     link: 'https://www.instagram.com/trudeau20thfilm/',
     videoUrl: '/assets/experience-videos/anniversary-film.mp4',
+    videoPoster: '/assets/experience-videos/posters/anniversary-film.jpg',
     videoPosition: 'center 20%',
   },
 ]

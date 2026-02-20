@@ -17,43 +17,27 @@ interface ProjectCardProps {
   zoom?: number
   highlightDelay?: number
   videoUrl?: string
+  videoPoster?: string
   videoZoom?: number
   videoPosition?: string
   videoSpeed?: number
 }
 
-export function ProjectCard({ title, date, description, image, url, dark, zoom, highlightDelay = 0, videoUrl, videoZoom, videoPosition, videoSpeed }: ProjectCardProps) {
+export function ProjectCard({ title, date, description, image, url, dark, zoom, highlightDelay = 0, videoUrl, videoPoster, videoZoom, videoPosition, videoSpeed }: ProjectCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
-  const [videoLoaded, setVideoLoaded] = useState(false)
-  const [isInView, setIsInView] = useState(false)
+  const [posterLoaded, setPosterLoaded] = useState(false)
+  const [isHovering, setIsHovering] = useState(false)
+  const [videoReady, setVideoReady] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Lazy load: only load video when in viewport
-  useEffect(() => {
-    if (!videoUrl || !containerRef.current) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsInView(true)
-          observer.disconnect()
-        }
-      },
-      { rootMargin: '100px' }
-    )
-
-    observer.observe(containerRef.current)
-    return () => observer.disconnect()
-  }, [videoUrl])
-
   useEffect(() => {
     const video = videoRef.current
-    if (!video || !videoUrl || !isInView) return
+    if (!video || !videoUrl || !isHovering) return
 
     const handleReady = () => {
-      setVideoLoaded(true)
+      setVideoReady(true)
       if (videoSpeed) {
         video.playbackRate = videoSpeed
       }
@@ -73,24 +57,45 @@ export function ProjectCard({ title, date, description, image, url, dark, zoom, 
       video.removeEventListener('loadeddata', handleReady)
       video.removeEventListener('canplay', handleReady)
     }
-  }, [videoUrl, videoSpeed, isInView])
+  }, [videoUrl, videoSpeed, isHovering])
+
+  const handleMouseEnter = () => {
+    setIsHovering(true)
+  }
 
   const imageContent = (
-    <div ref={containerRef} className={`${styles.imageWrapper} ${dark ? styles.darkBg : ''}`}>
+    <div 
+      ref={containerRef} 
+      className={`${styles.imageWrapper} ${dark ? styles.darkBg : ''}`}
+      onMouseEnter={handleMouseEnter}
+    >
       {videoUrl ? (
         <>
-          {!videoLoaded && <div className={styles.imagePlaceholder} />}
-          {isInView && (
+          {videoPoster && (
+            <Image
+              src={videoPoster}
+              alt={title}
+              fill
+              className={`${styles.projectImage} ${posterLoaded ? styles.imageVisible : styles.imageHidden} ${isHovering && videoReady ? styles.imageHidden : ''}`}
+              sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, 33vw"
+              style={{
+                ...(videoZoom && { transform: `scale(${videoZoom})` }),
+                ...(videoPosition && { objectPosition: videoPosition }),
+              }}
+              onLoad={() => setPosterLoaded(true)}
+              priority
+            />
+          )}
+          {!posterLoaded && <div className={styles.imagePlaceholder} />}
+          {isHovering && (
             <video
               ref={videoRef}
               src={videoUrl}
               loop
               muted
               playsInline
-              autoPlay
               preload="auto"
-              onLoadedData={() => setVideoLoaded(true)}
-              className={`${styles.projectVideo} ${videoLoaded ? styles.imageVisible : styles.imageHidden}`}
+              className={`${styles.projectVideo} ${videoReady ? styles.imageVisible : styles.imageHidden}`}
               style={{
                 ...(videoZoom && { transform: `scale(${videoZoom})` }),
                 ...(videoPosition && { objectPosition: videoPosition }),
