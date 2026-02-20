@@ -1,6 +1,6 @@
 import { collageItems, getItemConfig, type CollageItemConfig, type ItemTransform } from './collageItems'
 
-export const ART_GALLERY_STORAGE_KEY = 'art-gallery-collage-positions-v6'
+export const ART_GALLERY_STORAGE_KEY = 'art-gallery-collage-positions-v7'
 
 // Art gallery specific default positions - matching screenshot orientation with proper sizes
 // Positions are percentages from left (x) and top (y) of the container
@@ -25,6 +25,7 @@ export const artGalleryDefaults: Record<string, { x: number; y: number; width: n
   'sony-camera': { x: 50, y: 48, width: 150, height: 130, rotation: 0, zIndex: 13 },
   'noodle-restaurant': { x: 66, y: 50, width: 180, height: 130, rotation: 0, zIndex: 14 },
   'photo-collage': { x: 82, y: 45, width: 280, height: 155, rotation: 0, zIndex: 15 },
+  'running-shoes': { x: 82, y: 28, width: 180, height: 100, rotation: -5, zIndex: 16 },
 }
 
 export function getArtGalleryDefaultTransforms(): ItemTransform[] {
