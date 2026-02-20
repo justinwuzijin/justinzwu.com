@@ -27,7 +27,7 @@ export const collageItems: CollageItemConfig[] = [
   {
     id: 'ping-pong-ball',
     src: '/assets/collection/ping-pong-ball.png',
-    alt: 'marty supreme ping pong ball',
+    alt: 'marty supreme',
     brand: 'Marty Supreme',
     description: 'Premium table tennis balls for those intense matches. The perfect weight and spin response.',
     width: 152,
@@ -63,7 +63,7 @@ export const collageItems: CollageItemConfig[] = [
   {
     id: 'fujifilm-camera',
     src: '/assets/collection/fujifilm-camera.png',
-    alt: 'best disposable camera',
+    alt: 'disposable camera',
     brand: 'Fujifilm',
     description: 'There\'s something special about disposable cameras. No previews, no deletes—just pure moments.',
     width: 192,
@@ -75,7 +75,7 @@ export const collageItems: CollageItemConfig[] = [
   {
     id: 'photo-collage',
     src: '/assets/svg/art.jpg',
-    alt: 'my youtube videos',
+    alt: 'byjustinwu art',
     brand: 'Memories',
     description: 'A collection of printed photos from travels and moments with friends. Physical photos hit different.',
     width: 350,
