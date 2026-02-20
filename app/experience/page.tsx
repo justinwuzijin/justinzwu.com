@@ -56,7 +56,7 @@ const currentExperiences = [
     description: 'During Fall 2025 and Winter 2026, I worked with seven other UW students to build ClipABit, a semantic search DaVinci Resolve plug-in that uses natural language queries to find exact clips straight from your library.',
     secondaryLogo: 'watai',
     link: 'https://clipabit.web.app/',
-    videoUrl: '/assets/experience-videos/clipabit.mov',
+    videoUrl: '/assets/experience-videos/clipabit.mp4',
     videoZoom: 1.06,
   },
   {
@@ -90,7 +90,7 @@ const currentExperiences = [
     description: "Producing Bridging Generations' fourth documentary: The International Experience. Interviewed four UW international students on their experience, voices, stories, and perspectives, scheduled to come out February.",
     link: 'https://www.bridginggens.com/',
     zoom: 1.01,
-    videoUrl: '/assets/experience-videos/bridging-generations.m4v',
+    videoUrl: '/assets/experience-videos/bridging-generations.mp4',
     videoZoom: 1.18,
   },
   {

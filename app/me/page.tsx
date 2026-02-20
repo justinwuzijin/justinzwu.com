@@ -188,7 +188,7 @@ const projects = [
     url: 'https://github.com/justinwuzijin/eye-tester-app',
     dark: false,
     zoom: 1.045,
-    videoUrl: '/assets/experience-videos/4sight.m4v',
+    videoUrl: '/assets/experience-videos/4sight.mp4',
     videoZoom: 1.15,
   },
   {
