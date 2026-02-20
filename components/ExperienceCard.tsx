@@ -26,11 +26,31 @@ export function ExperienceCard({ company, logo, role, type, description, seconda
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
   const [videoLoaded, setVideoLoaded] = useState(false)
+  const [isInView, setIsInView] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  // Lazy load: only load video when in viewport
+  useEffect(() => {
+    if (!videoUrl || !containerRef.current) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: '100px' }
+    )
+
+    observer.observe(containerRef.current)
+    return () => observer.disconnect()
+  }, [videoUrl])
 
   useEffect(() => {
     const video = videoRef.current
-    if (!video || !videoUrl) return
+    if (!video || !videoUrl || !isInView) return
 
     const handleReady = () => {
       setVideoLoaded(true)
@@ -50,7 +70,7 @@ export function ExperienceCard({ company, logo, role, type, description, seconda
       video.removeEventListener('loadeddata', handleReady)
       video.removeEventListener('canplay', handleReady)
     }
-  }, [videoUrl])
+  }, [videoUrl, isInView])
 
   const getLogoPath = () => {
     switch (logo) {
@@ -85,27 +105,30 @@ export function ExperienceCard({ company, logo, role, type, description, seconda
 
   const logoArea = (
     <div 
+      ref={containerRef}
       className={styles.logoArea}
       style={videoAspectRatio ? { aspectRatio: videoAspectRatio } : undefined}
     >
       {videoUrl ? (
         <>
           {!videoLoaded && <div className={styles.logoPlaceholder} />}
-          <video
-            ref={videoRef}
-            src={videoUrl}
-            loop
-            muted
-            playsInline
-            autoPlay
-            preload="auto"
-            onLoadedData={() => setVideoLoaded(true)}
-            className={`${styles.logoVideo} ${videoLoaded ? styles.logoVisible : styles.logoHidden}`}
-            style={{
-              ...(videoZoom && { transform: `scale(${videoZoom})` }),
-              ...(videoPosition && { objectPosition: videoPosition }),
-            }}
-          />
+          {isInView && (
+            <video
+              ref={videoRef}
+              src={videoUrl}
+              loop
+              muted
+              playsInline
+              autoPlay
+              preload="metadata"
+              onLoadedData={() => setVideoLoaded(true)}
+              className={`${styles.logoVideo} ${videoLoaded ? styles.logoVisible : styles.logoHidden}`}
+              style={{
+                ...(videoZoom && { transform: `scale(${videoZoom})` }),
+                ...(videoPosition && { objectPosition: videoPosition }),
+              }}
+            />
+          )}
         </>
       ) : isPlaceholder ? (
         <div className={styles.placeholderIcon}>

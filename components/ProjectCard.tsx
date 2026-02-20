@@ -26,11 +26,31 @@ export function ProjectCard({ title, date, description, image, url, dark, zoom, 
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
   const [videoLoaded, setVideoLoaded] = useState(false)
+  const [isInView, setIsInView] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  // Lazy load: only load video when in viewport
+  useEffect(() => {
+    if (!videoUrl || !containerRef.current) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: '100px' }
+    )
+
+    observer.observe(containerRef.current)
+    return () => observer.disconnect()
+  }, [videoUrl])
 
   useEffect(() => {
     const video = videoRef.current
-    if (!video || !videoUrl) return
+    if (!video || !videoUrl || !isInView) return
 
     const handleReady = () => {
       setVideoLoaded(true)
@@ -53,28 +73,30 @@ export function ProjectCard({ title, date, description, image, url, dark, zoom, 
       video.removeEventListener('loadeddata', handleReady)
       video.removeEventListener('canplay', handleReady)
     }
-  }, [videoUrl, videoSpeed])
+  }, [videoUrl, videoSpeed, isInView])
 
   const imageContent = (
-    <div className={`${styles.imageWrapper} ${dark ? styles.darkBg : ''}`}>
+    <div ref={containerRef} className={`${styles.imageWrapper} ${dark ? styles.darkBg : ''}`}>
       {videoUrl ? (
         <>
           {!videoLoaded && <div className={styles.imagePlaceholder} />}
-          <video
-            ref={videoRef}
-            src={videoUrl}
-            loop
-            muted
-            playsInline
-            autoPlay
-            preload="auto"
-            onLoadedData={() => setVideoLoaded(true)}
-            className={`${styles.projectVideo} ${videoLoaded ? styles.imageVisible : styles.imageHidden}`}
-            style={{
-              ...(videoZoom && { transform: `scale(${videoZoom})` }),
-              ...(videoPosition && { objectPosition: videoPosition }),
-            }}
-          />
+          {isInView && (
+            <video
+              ref={videoRef}
+              src={videoUrl}
+              loop
+              muted
+              playsInline
+              autoPlay
+              preload="metadata"
+              onLoadedData={() => setVideoLoaded(true)}
+              className={`${styles.projectVideo} ${videoLoaded ? styles.imageVisible : styles.imageHidden}`}
+              style={{
+                ...(videoZoom && { transform: `scale(${videoZoom})` }),
+                ...(videoPosition && { objectPosition: videoPosition }),
+              }}
+            />
+          )}
         </>
       ) : (
         <>

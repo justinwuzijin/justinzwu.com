@@ -47,11 +47,31 @@ export function AutoPlayVideo({
 }: AutoPlayVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const iframeRef = useRef<HTMLIFrameElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const [isLoaded, setIsLoaded] = useState(false)
+  const [isInView, setIsInView] = useState(false)
+
+  // Lazy load: only load video when in viewport
+  useEffect(() => {
+    if (!containerRef.current) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: '100px' }
+    )
+
+    observer.observe(containerRef.current)
+    return () => observer.disconnect()
+  }, [])
 
   useEffect(() => {
     const video = videoRef.current
-    if (!video || !videoUrl) return
+    if (!video || !videoUrl || !isInView) return
 
     const handleReady = () => {
       setIsLoaded(true)
@@ -73,7 +93,7 @@ export function AutoPlayVideo({
       video.removeEventListener('loadeddata', handleReady)
       video.removeEventListener('canplay', handleReady)
     }
-  }, [videoUrl])
+  }, [videoUrl, isInView])
 
   // Get embed URL for YouTube/Vimeo
   const getEmbedUrl = (): string | null => {
@@ -96,35 +116,44 @@ export function AutoPlayVideo({
 
   return (
     <div
+      ref={containerRef}
       className={`${styles.videoContainer} ${className || ''}`}
       style={{ aspectRatio: aspectRatio }}
     >
       {videoUrl ? (
         // Self-hosted video
-        <video
-          ref={videoRef}
-          src={videoUrl}
-          poster={poster}
-          loop={loop}
-          muted={muted}
-          controls={controls}
-          playsInline
-          autoPlay
-          preload="auto"
-          onLoadedData={() => setIsLoaded(true)}
-          className={`${styles.video} ${isLoaded ? styles.loaded : ''}`}
-          aria-label={alt || title}
-        />
+        isInView ? (
+          <video
+            ref={videoRef}
+            src={videoUrl}
+            poster={poster}
+            loop={loop}
+            muted={muted}
+            controls={controls}
+            playsInline
+            autoPlay
+            preload="metadata"
+            onLoadedData={() => setIsLoaded(true)}
+            className={`${styles.video} ${isLoaded ? styles.loaded : ''}`}
+            aria-label={alt || title}
+          />
+        ) : (
+          <div className={styles.placeholder} />
+        )
       ) : embedUrl ? (
-        // YouTube or Vimeo embed
-        <iframe
-          ref={iframeRef}
-          src={embedUrl}
-          className={styles.iframe}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          title={title || alt || 'Video player'}
-        />
+        // YouTube or Vimeo embed - also lazy load
+        isInView ? (
+          <iframe
+            ref={iframeRef}
+            src={embedUrl}
+            className={styles.iframe}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            title={title || alt || 'Video player'}
+          />
+        ) : (
+          <div className={styles.placeholder} />
+        )
       ) : (
         <div className={styles.error}>No valid video source provided</div>
       )}
