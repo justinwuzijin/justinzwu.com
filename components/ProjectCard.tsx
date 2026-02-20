@@ -88,7 +88,7 @@ export function ProjectCard({ title, date, description, image, url, dark, zoom, 
               muted
               playsInline
               autoPlay
-              preload="metadata"
+              preload="auto"
               onLoadedData={() => setVideoLoaded(true)}
               className={`${styles.projectVideo} ${videoLoaded ? styles.imageVisible : styles.imageHidden}`}
               style={{

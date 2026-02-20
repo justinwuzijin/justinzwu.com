@@ -120,7 +120,7 @@ export function ExperienceCard({ company, logo, role, type, description, seconda
               muted
               playsInline
               autoPlay
-              preload="metadata"
+              preload="auto"
               onLoadedData={() => setVideoLoaded(true)}
               className={`${styles.logoVideo} ${videoLoaded ? styles.logoVisible : styles.logoHidden}`}
               style={{
