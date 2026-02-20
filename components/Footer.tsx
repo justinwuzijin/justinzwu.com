@@ -193,10 +193,6 @@ export function Footer() {
         selectAll(transforms.map(t => t.id))
       }
       
-      if ((e.metaKey || e.ctrlKey) && e.key === 'd') {
-        e.preventDefault()
-        handleDuplicate()
-      }
       
       if (e.key === ']') {
         if (e.metaKey || e.ctrlKey) {
@@ -336,28 +332,6 @@ export function Footer() {
     )
   }, [selectedIds])
 
-  const handleDuplicate = useCallback(() => {
-    const newItems: ItemTransform[] = []
-    const maxZ = Math.max(...transforms.map(t => t.zIndex))
-    let nextZ = maxZ + 1
-    
-    for (const id of selectedIds) {
-      const original = transforms.find(t => t.id === id)
-      if (original) {
-        newItems.push({
-          ...original,
-          id: `${original.id}-copy-${Date.now()}`,
-          x: original.x + 2,
-          y: original.y + 2,
-          zIndex: nextZ++,
-        })
-      }
-    }
-    
-    setTransforms(prev => [...prev, ...newItems])
-    selectMultiple(newItems.map(i => i.id), false)
-  }, [selectedIds, transforms, selectMultiple])
-
   const logoSrc = theme === 'orange' 
     ? '/assets/svg/zijin(orange).svg' 
     : theme === 'dark' 
@@ -438,7 +412,6 @@ export function Footer() {
           onDelete={handleDelete}
           onResetSize={handleResetSize}
           onResetRotation={handleResetRotation}
-          onDuplicate={handleDuplicate}
         />
       )}
           

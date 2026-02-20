@@ -47,34 +47,6 @@
   opacity: 0;
 }
 
-.playIndicator {
-  position: absolute;
-  bottom: 12px;
-  right: 12px;
-  width: 32px;
-  height: 32px;
-  background: rgba(0, 0, 0, 0.6);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  opacity: 0.85;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-  z-index: 2;
-}
-
-.playIndicator svg {
-  width: 14px;
-  height: 14px;
-  margin-left: 2px;
-}
-
-.playIndicatorHidden {
-  opacity: 0;
-}
-
 .logoPlaceholder {
   position: absolute;
   inset: 0;

@@ -27,20 +27,29 @@ export function ExperienceCard({ company, logo, role, type, description, seconda
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
   const [posterLoaded, setPosterLoaded] = useState(false)
-  const [isHovering, setIsHovering] = useState(false)
+  const [isInView, setIsInView] = useState(false)
   const [videoReady, setVideoReady] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    const container = containerRef.current
+    if (!container || !videoUrl) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsInView(entry.isIntersecting),
+      { threshold: 0.3 }
+    )
+    observer.observe(container)
+    return () => observer.disconnect()
+  }, [videoUrl])
+
+  useEffect(() => {
     const video = videoRef.current
-    if (!video || !videoUrl || !isHovering) return
+    if (!video || !videoUrl) return
 
     const handleReady = () => {
       setVideoReady(true)
-      video.play().catch((error) => {
-        console.warn('Autoplay prevented:', error)
-      })
     }
 
     video.addEventListener('loadeddata', handleReady)
@@ -54,11 +63,20 @@ export function ExperienceCard({ company, logo, role, type, description, seconda
       video.removeEventListener('loadeddata', handleReady)
       video.removeEventListener('canplay', handleReady)
     }
-  }, [videoUrl, isHovering])
+  }, [videoUrl])
 
-  const handleMouseEnter = () => {
-    setIsHovering(true)
-  }
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video || !videoReady) return
+
+    if (isInView) {
+      video.play().catch((error) => {
+        console.warn('Autoplay prevented:', error)
+      })
+    } else {
+      video.pause()
+    }
+  }, [isInView, videoReady])
 
   const getLogoPath = () => {
     switch (logo) {
@@ -96,7 +114,6 @@ export function ExperienceCard({ company, logo, role, type, description, seconda
       ref={containerRef}
       className={styles.logoArea}
       style={videoAspectRatio ? { aspectRatio: videoAspectRatio } : undefined}
-      onMouseEnter={handleMouseEnter}
     >
       {videoUrl ? (
         <>
@@ -105,7 +122,7 @@ export function ExperienceCard({ company, logo, role, type, description, seconda
               src={videoPoster}
               alt={`${company} preview`}
               fill
-              className={`${styles.logoImage} ${posterLoaded ? styles.logoVisible : styles.logoHidden} ${isHovering && videoReady ? styles.logoHidden : ''}`}
+              className={`${styles.logoImage} ${posterLoaded ? styles.logoVisible : styles.logoHidden} ${videoReady ? styles.logoHidden : ''}`}
               sizes="(max-width: 768px) 100vw, 50vw"
               style={{
                 ...(videoZoom && { transform: `scale(${videoZoom})` }),
@@ -116,26 +133,19 @@ export function ExperienceCard({ company, logo, role, type, description, seconda
             />
           )}
           {!posterLoaded && <div className={styles.logoPlaceholder} />}
-          {isHovering && (
-            <video
-              ref={videoRef}
-              src={videoUrl}
-              loop
-              muted
-              playsInline
-              preload="auto"
-              className={`${styles.logoVideo} ${videoReady ? styles.logoVisible : styles.logoHidden}`}
-              style={{
-                ...(videoZoom && { transform: `scale(${videoZoom})` }),
-                ...(videoPosition && { objectPosition: videoPosition }),
-              }}
-            />
-          )}
-          <div className={`${styles.playIndicator} ${isHovering && videoReady ? styles.playIndicatorHidden : ''}`}>
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M8 5v14l11-7z"/>
-            </svg>
-          </div>
+          <video
+            ref={videoRef}
+            src={videoUrl}
+            loop
+            muted
+            playsInline
+            preload="auto"
+            className={`${styles.logoVideo} ${videoReady ? styles.logoVisible : styles.logoHidden}`}
+            style={{
+              ...(videoZoom && { transform: `scale(${videoZoom})` }),
+              ...(videoPosition && { objectPosition: videoPosition }),
+            }}
+          />
         </>
       ) : isPlaceholder ? (
         <div className={styles.placeholderIcon}>

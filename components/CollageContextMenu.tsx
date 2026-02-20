@@ -19,7 +19,6 @@ interface CollageContextMenuProps {
   onDelete: () => void
   onResetSize: () => void
   onResetRotation: () => void
-  onDuplicate: () => void
 }
 
 export function CollageContextMenu({
@@ -33,7 +32,6 @@ export function CollageContextMenu({
   onDelete,
   onResetSize,
   onResetRotation,
-  onDuplicate,
 }: CollageContextMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null)
 
@@ -88,15 +86,6 @@ export function CollageContextMenu({
         <button className={styles.item} onClick={() => handleAction(onSendToBack)}>
           <span className={styles.label}>Send to Back</span>
           <span className={styles.shortcut}>⌘[</span>
-        </button>
-      </div>
-      
-      <div className={styles.divider} />
-      
-      <div className={styles.section}>
-        <button className={styles.item} onClick={() => handleAction(onDuplicate)}>
-          <span className={styles.label}>Duplicate</span>
-          <span className={styles.shortcut}>⌘D</span>
         </button>
       </div>
       
