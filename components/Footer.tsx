@@ -443,7 +443,7 @@ export function Footer() {
         
         <div className={styles.attribution}>
           <p className={styles.attributionText}>
-            designed on figma. built with next.js. deployed on vercel. sound from envato. help from V0 and Cursor.
+            designed on figma. built with next.js. deployed on vercel. sound from envato. help from v0 and cursor.
           </p>
         </div>
       </div>
