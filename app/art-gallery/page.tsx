@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useCallback, useRef } from 'react'
+import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import styles from './page.module.css'
 import { AutoPlayVideo } from '@/components/AutoPlayVideo'
@@ -317,6 +317,89 @@ export default function ArtGalleryPage() {
     }))
   }, [])
 
+  const gridRef = useRef<HTMLDivElement>(null)
+
+  const getGridColumns = useCallback(() => {
+    if (!gridRef.current) return 4
+    const gridStyle = window.getComputedStyle(gridRef.current)
+    const columns = gridStyle.gridTemplateColumns.split(' ').length
+    return columns
+  }, [])
+
+  const navigateGrid = useCallback((direction: 'up' | 'down' | 'left' | 'right') => {
+    if (!selectedItemId) return
+    
+    const currentIndex = collageItems.findIndex(item => item.id === selectedItemId)
+    if (currentIndex === -1) return
+    
+    const columns = getGridColumns()
+    const totalItems = collageItems.length
+    const currentRow = Math.floor(currentIndex / columns)
+    const currentCol = currentIndex % columns
+    const totalRows = Math.ceil(totalItems / columns)
+    
+    let newIndex: number | null = null
+    
+    switch (direction) {
+      case 'left':
+        if (currentCol > 0) {
+          newIndex = currentIndex - 1
+        }
+        break
+      case 'right':
+        if (currentCol < columns - 1 && currentIndex + 1 < totalItems) {
+          newIndex = currentIndex + 1
+        }
+        break
+      case 'up':
+        if (currentRow > 0) {
+          newIndex = currentIndex - columns
+        }
+        break
+      case 'down':
+        if (currentRow < totalRows - 1) {
+          const targetIndex = currentIndex + columns
+          if (targetIndex < totalItems) {
+            newIndex = targetIndex
+          }
+        }
+        break
+    }
+    
+    if (newIndex !== null && newIndex >= 0 && newIndex < totalItems) {
+      playClick()
+      setSelectedItemId(collageItems[newIndex].id)
+    }
+  }, [selectedItemId, playClick, getGridColumns])
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!selectedItemId || activeTab !== 'my mind') return
+      
+      const key = e.key.toLowerCase()
+      
+      if (key === 'arrowleft' || key === 'a') {
+        e.preventDefault()
+        navigateGrid('left')
+      } else if (key === 'arrowright' || key === 'd') {
+        e.preventDefault()
+        navigateGrid('right')
+      } else if (key === 'arrowup' || key === 'w') {
+        e.preventDefault()
+        navigateGrid('up')
+      } else if (key === 'arrowdown' || key === 's') {
+        e.preventDefault()
+        navigateGrid('down')
+      } else if (key === 'escape') {
+        e.preventDefault()
+        setSelectedItemId(null)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [selectedItemId, activeTab, navigateGrid])
+
   return (
     <div className={styles.container}>
       <motion.h1 
@@ -397,6 +480,7 @@ export default function ArtGalleryPage() {
             
             {/* Collection grid */}
             <motion.div 
+              ref={gridRef}
               className={styles.collectionGrid}
               variants={staggerContainer}
             >
