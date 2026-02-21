@@ -14,3 +14,5 @@ next steps:
 
 progress: 75% ; still want to make drawer of thoughts + art gallery(myroom) look better;; 
 
+inspo sites: https://www.shayaanazeem.com/, https://www.serenali.ca/, https://www.ryanngfilms.com/youtube, https://nickcheo.me/, https://www.braydenpetersen.com/, 
+(huge respect to these ppl -- actual goats)
