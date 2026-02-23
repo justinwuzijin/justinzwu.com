@@ -34,6 +34,11 @@
   pointer-events: none;
 }
 
+/* Hide sidebar background during theme transition so main background shows through uniformly */
+:global([data-theme-transition]) .sidebar::before {
+  opacity: 0;
+}
+
 /* Sidebar content - appears ABOVE droplets (z-index: 15) */
 .sidebar > * {
   position: relative;

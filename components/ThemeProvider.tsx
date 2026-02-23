@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useState, useRef, type ReactNode } from 'react'
 import { soundManager } from '@/hooks/useSoundEffects'
 
 type Theme = 'light' | 'dark' | 'orange'
@@ -40,6 +40,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     return true
   })
   const [mounted, setMounted] = useState(false)
+  const isFirstRender = useRef(true)
 
   useEffect(() => {
     setMounted(true)
@@ -47,8 +48,25 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (mounted) {
+      // Skip transition on first render to avoid flash
+      if (isFirstRender.current) {
+        isFirstRender.current = false
+        document.documentElement.setAttribute('data-theme', theme)
+        localStorage.setItem('theme', theme)
+        return
+      }
+      
+      // Enable smooth transition for subsequent theme changes
+      document.documentElement.setAttribute('data-theme-transition', '')
       document.documentElement.setAttribute('data-theme', theme)
       localStorage.setItem('theme', theme)
+      
+      // Remove transition attribute after animation completes
+      const timeout = setTimeout(() => {
+        document.documentElement.removeAttribute('data-theme-transition')
+      }, 300)
+      
+      return () => clearTimeout(timeout)
     }
   }, [theme, mounted])
 
