@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useRef, useCallback } from 'react'
+import { usePathname } from 'next/navigation'
 import { useTheme } from './ThemeProvider'
 import styles from './RandomVideoPopup.module.css'
 
@@ -44,6 +45,7 @@ interface VideoPopup {
 
 export function RandomVideoPopup() {
   const { digitalDroplets } = useTheme()
+  const pathname = usePathname()
   const [popups, setPopups] = useState<VideoPopup[]>([])
   const [isMobile, setIsMobile] = useState(false)
   
@@ -165,7 +167,14 @@ export function RandomVideoPopup() {
       const isClickableImage = target.closest('a img, a [class*="image"], a [class*="Image"], a [class*="cover"], a [class*="Cover"]')
       const isImageLink = target.tagName === 'IMG' && target.closest('a')
       
-      const overInteractive = !!(linkWithImage || isLinkPreview || isClickableImage || isImageLink)
+      // Check if over prefooter area (draggable collage zone)
+      const isOverPrefooter = !!target.closest('[class*="preFooter"], [class*="prefooter"]')
+      
+      // Check if on art gallery page and over a collection item
+      const isOnArtGallery = pathname === '/art-gallery'
+      const isOverCollectionItem = isOnArtGallery && !!target.closest('[class*="collectionItem"], [class*="collectionGrid"]')
+      
+      const overInteractive = !!(linkWithImage || isLinkPreview || isClickableImage || isImageLink || isOverPrefooter || isOverCollectionItem)
       isOverInteractiveRef.current = overInteractive
       setIsOverInteractive(overInteractive) // For rendering opacity
     }
@@ -188,7 +197,7 @@ export function RandomVideoPopup() {
       document.removeEventListener('mouseleave', handleMouseLeave)
       if (mouseStopTimer.current) clearTimeout(mouseStopTimer.current)
     }
-  }, [])
+  }, [pathname])
 
   // Spawn video at current mouse position with overlap effect
   // Using refs for conditions so this callback stays stable

@@ -9,18 +9,38 @@ import styles from './TopRightControls.module.css'
 export function TopRightControls() {
   const { theme, setTheme } = useTheme()
   const { playMenu } = useSoundEffects()
-  const [isExpanded, setIsExpanded] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false) // Start collapsed
 
   // Track mount state for initial animation and detect mobile
   useEffect(() => {
     setMounted(true)
-    setIsMobile(window.innerWidth <= 480)
+    const mobile = window.innerWidth <= 768
+    setIsMobile(mobile)
     
-    const handleResize = () => setIsMobile(window.innerWidth <= 480)
+    // On desktop, expand after 1.5 second delay
+    let expandTimer: NodeJS.Timeout | null = null
+    if (!mobile) {
+      expandTimer = setTimeout(() => {
+        setIsExpanded(true)
+      }, 1500)
+    }
+    
+    const handleResize = () => {
+      const nowMobile = window.innerWidth <= 768
+      setIsMobile(nowMobile)
+      // When switching to mobile, collapse
+      if (nowMobile) {
+        setIsExpanded(false)
+      }
+    }
     window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      if (expandTimer) clearTimeout(expandTimer)
+    }
   }, [])
 
   const socialLinks = [
@@ -118,24 +138,29 @@ export function TopRightControls() {
             </button>
             
             {socialLinks.map((link, index) => (
-              <a
+              <motion.a
                 key={link.name}
                 href={link.url}
                 target={link.name === 'Email' ? '_self' : '_blank'}
                 rel={link.name === 'Email' ? undefined : 'noopener noreferrer'}
                 className={styles.socialIcon}
                 aria-label={link.name}
-                style={{
-                  transform: `translateX(${isExpanded ? -(index + 1) * (isMobile ? 32 : 36) : 0}px)`,
+                initial={false}
+                animate={{
+                  x: isExpanded ? -(index + 1) * (isMobile ? 32 : 36) : 0,
                   opacity: isExpanded ? 1 : 0,
+                }}
+                transition={{
+                  type: 'spring',
+                  stiffness: 400,
+                  damping: 30,
+                  delay: isExpanded ? index * 0.03 : (socialLinks.length - index - 1) * 0.02,
+                }}
+                style={{
                   zIndex: 40 - index,
                   clipPath: index === socialLinks.length - 1 
                     ? 'circle(50% at 50% 50%)' 
                     : 'circle(50% at 55% 50%)',
-                  transition: `transform ${isExpanded ? '300ms' : '300ms'} cubic-bezier(0.4, 0, 0.2, 1),
-                             opacity ${isExpanded ? '300ms' : '350ms'}`,
-                  backfaceVisibility: 'hidden',
-                  WebkitFontSmoothing: 'antialiased',
                   pointerEvents: isExpanded ? 'auto' : 'none',
                 }}
               >
@@ -154,7 +179,7 @@ export function TopRightControls() {
                 <span className={styles.iconWrapper}>
                   {link.icon}
                 </span>
-              </a>
+              </motion.a>
             ))}
           </div>
         </div>

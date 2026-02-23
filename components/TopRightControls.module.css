@@ -1,7 +1,7 @@
 .topRightControls {
   position: absolute !important;
   top: 1.75rem !important;
-  right: 1.5rem !important;
+  right: 8rem !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-end !important;
@@ -190,6 +190,7 @@ body[data-side-panel-open="true"] .topRightControls {
   border-radius: 4px;
   background-color: transparent;
   font-size: 0.7rem;
+  margin-left: 18rem;
 }
 
 .shiftOButton:hover {
@@ -227,8 +228,9 @@ body[data-side-panel-open="true"] .topRightControls {
 /* Tablet responsive */
 @media (max-width: 1024px) {
   .topRightControls {
-    top: var(--spacing-md);
-    right: var(--spacing-lg);
+    top: var(--spacing-md) !important;
+    /* Tablet: sidebar 140px + margins + content width + padding */
+    left: calc(200px + var(--spacing-md) + var(--spacing-md) + var(--content-max-width) + var(--spacing-lg)) !important;
     gap: var(--spacing-sm);
   }
 }
@@ -238,8 +240,10 @@ body[data-side-panel-open="true"] .topRightControls {
   .topRightControls {
     display: flex !important;
     top: calc(var(--spacing-lg) + 2px) !important;
-    /* Position to the left of MobileNav hamburger (which is at right: var(--spacing-lg)) */
+    /* Reset to right-aligned positioning on mobile */
+    left: auto !important;
     right: calc(var(--spacing-lg) + 40px) !important;
+    transform: none;
   }
   
   /* Remove margin-right on mobile */
@@ -258,6 +262,8 @@ body[data-side-panel-open="true"] .topRightControls {
 @media (max-width: 480px) {
   .topRightControls {
     top: calc(var(--spacing-md) - 2px) !important;
+    left: auto !important;
     right: calc(var(--spacing-sm) + 36px) !important;
+    transform: none;
   }
 }
