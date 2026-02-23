@@ -174,7 +174,10 @@ export function RandomVideoPopup() {
       const isOnArtGallery = pathname === '/art-gallery'
       const isOverCollectionItem = isOnArtGallery && !!target.closest('[class*="collectionItem"], [class*="collectionGrid"]')
       
-      const overInteractive = !!(linkWithImage || isLinkPreview || isClickableImage || isImageLink || isOverPrefooter || isOverCollectionItem)
+      // Check if over vinyl/music player
+      const isOverMusicPlayer = !!target.closest('[class*="vinylPlayer"], [class*="playerRow"], [class*="controlButton"], [class*="playButton"]')
+      
+      const overInteractive = !!(linkWithImage || isLinkPreview || isClickableImage || isImageLink || isOverPrefooter || isOverCollectionItem || isOverMusicPlayer)
       isOverInteractiveRef.current = overInteractive
       setIsOverInteractive(overInteractive) // For rendering opacity
     }
