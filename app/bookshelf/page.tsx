@@ -231,58 +231,98 @@ interface AnimatedBookGridProps {
 }
 
 function AnimatedBookGrid({ books, showRating, expandedBookId, onBookClick }: AnimatedBookGridProps) {
-  const containerVariants = {
-    hidden: {
-      opacity: 1,
-    },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.03,
-        delayChildren: 0.05,
-      },
-    },
+  // Generate stable random values for pile effect (seeded by book id)
+  const pileVariations = React.useMemo(() => {
+    return books.map((book, index) => {
+      const seed = book.id
+      const pseudoRandom = (n: number) => {
+        const x = Math.sin(seed * 9999 + n * 1234) * 10000
+        return x - Math.floor(x)
+      }
+      
+      const col = index % 3
+      
+      return {
+        rotation: (pseudoRandom(1) - 0.5) * 2, // -1 to +1 degrees (nearly flat)
+        jitterX: 0,  // no x jitter - stack precisely
+        jitterY: 0,  // no y jitter - stack precisely
+        zIndex: col + 1, // col 0=1, col 1=2, col 2=3 - third book on top
+      }
+    })
+  }, [books])
+
+  // Calculate horizontal offset to collapse each row into ONE tight pile on the LEFT
+  const getRowPileOffset = (index: number) => {
+    const col = index % 3 // 0, 1, or 2
+    
+    // Move ALL books to column 0 position (left side)
+    // col 0 stays, col 1 moves left by 1 cell, col 2 moves left by 2 cells
+    // Using larger cellWidth to ensure complete overlap
+    const cellWidth = 230 // increased significantly to fully hide books underneath
+    
+    return {
+      x: -col * cellWidth,
+      y: 0,
+    }
   }
 
-  const bookVariants = {
-    hidden: {
-      opacity: 0,
-      scale: 0.8,
-      y: 20,
-    },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      y: 0,
-      transition: {
-        type: 'spring' as const,
-        stiffness: 400,
-        damping: 25,
-      },
-    },
+  // Staggered timing: rows animate one after another, books within row expand sequentially
+  const getRowDelay = (index: number) => {
+    const row = Math.floor(index / 3)
+    const col = index % 3
+    // Longer delays for slower, more visible animation
+    // Row delay + within-row stagger (rightmost books expand last)
+    return 0.3 + row * 0.35 + col * 0.12
   }
 
   return (
     <motion.div
       className={styles.booksGrid}
-      variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      {books.map((book) => (
-        <motion.div
-          key={book.id}
-          variants={bookVariants}
-          style={{ position: 'relative' }}
-        >
-          <BookCard 
-            {...book} 
-            showRating={showRating}
-            onClick={() => onBookClick(book)}
-            isExpanded={expandedBookId === book.id}
-          />
-        </motion.div>
-      ))}
+      {books.map((book, index) => {
+        const pileOffset = getRowPileOffset(index)
+        const variation = pileVariations[index]
+        const delay = getRowDelay(index)
+        
+        return (
+          <motion.div
+            key={book.id}
+            initial={{
+              opacity: 1,
+              scale: 0.95,
+              x: pileOffset.x,
+              y: pileOffset.y,
+              rotate: variation.rotation,
+              zIndex: variation.zIndex,
+            }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+              x: 0,
+              y: 0,
+              rotate: 0,
+              zIndex: 1,
+            }}
+            transition={{
+              type: 'spring',
+              stiffness: 60,
+              damping: 12,
+              mass: 0.8,
+              delay: delay,
+            }}
+            style={{ position: 'relative' }}
+          >
+            <BookCard 
+              {...book} 
+              showRating={showRating}
+              onClick={() => onBookClick(book)}
+              isExpanded={expandedBookId === book.id}
+            />
+          </motion.div>
+        )
+      })}
     </motion.div>
   )
 }
