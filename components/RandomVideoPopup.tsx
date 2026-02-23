@@ -178,12 +178,12 @@ export function RandomVideoPopup() {
       // Check if over vinyl/music player
       const isOverMusicPlayer = !!target.closest('[class*="vinylPlayer"], [class*="playerRow"], [class*="controlButton"], [class*="playButton"]')
       
-      // Check if over text elements (for reduced spawn rate)
-      const textTags = ['P', 'SPAN', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'LI', 'LABEL', 'BLOCKQUOTE', 'EM', 'STRONG', 'B', 'I', 'U']
-      const isOverText = textTags.includes(target.tagName) || !!target.closest('p, span, h1, h2, h3, h4, h5, h6, li, label, blockquote')
+      // Check if over text elements - disable droplets entirely over text content
+      const textTags = ['P', 'SPAN', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'LI', 'LABEL', 'BLOCKQUOTE', 'EM', 'STRONG', 'B', 'I', 'U', 'BUTTON']
+      const isOverText = textTags.includes(target.tagName) || !!target.closest('p, span, h1, h2, h3, h4, h5, h6, li, label, blockquote, button, [class*="about"], [class*="bulletList"], [class*="subtitle"], [class*="sectionTitle"], [class*="tabs"], [class*="tab"], [class*="Tab"]')
       isOverTextRef.current = isOverText
       
-      const overInteractive = !!(linkWithImage || isLinkPreview || isClickableImage || isImageLink || isOverPrefooter || isOverCollectionItem || isOverMusicPlayer)
+      const overInteractive = !!(linkWithImage || isLinkPreview || isClickableImage || isImageLink || isOverPrefooter || isOverCollectionItem || isOverMusicPlayer || isOverText)
       isOverInteractiveRef.current = overInteractive
       setIsOverInteractive(overInteractive) // For rendering opacity
     }
