@@ -51,6 +51,7 @@ export function RandomVideoPopup() {
   
   // Use refs for rapidly-changing values to avoid re-renders
   const isOverInteractiveRef = useRef(false)
+  const isOverTextRef = useRef(false)
   const isMouseOnScreenRef = useRef(true)
   const isMouseMovingRef = useRef(false)
   const isSelectingTextRef = useRef(false)
@@ -177,6 +178,11 @@ export function RandomVideoPopup() {
       // Check if over vinyl/music player
       const isOverMusicPlayer = !!target.closest('[class*="vinylPlayer"], [class*="playerRow"], [class*="controlButton"], [class*="playButton"]')
       
+      // Check if over text elements (for reduced spawn rate)
+      const textTags = ['P', 'SPAN', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'LI', 'LABEL', 'BLOCKQUOTE', 'EM', 'STRONG', 'B', 'I', 'U']
+      const isOverText = textTags.includes(target.tagName) || !!target.closest('p, span, h1, h2, h3, h4, h5, h6, li, label, blockquote')
+      isOverTextRef.current = isOverText
+      
       const overInteractive = !!(linkWithImage || isLinkPreview || isClickableImage || isImageLink || isOverPrefooter || isOverCollectionItem || isOverMusicPlayer)
       isOverInteractiveRef.current = overInteractive
       setIsOverInteractive(overInteractive) // For rendering opacity
@@ -284,12 +290,26 @@ export function RandomVideoPopup() {
     })
   }, [digitalDroplets, isMobile]) // Only re-create when these change (rarely)
 
-  // Spawn videos more frequently for trail effect
+  // Spawn videos with dynamic interval (slower over text)
   useEffect(() => {
     if (isMobile) return
     
-    const interval = setInterval(spawnVideo, 150)
-    return () => clearInterval(interval)
+    const NORMAL_INTERVAL = 100
+    const TEXT_INTERVAL = 800
+    
+    let timeoutId: NodeJS.Timeout
+    
+    const scheduleNext = () => {
+      const interval = isOverTextRef.current ? TEXT_INTERVAL : NORMAL_INTERVAL
+      timeoutId = setTimeout(() => {
+        spawnVideo()
+        scheduleNext()
+      }, interval)
+    }
+    
+    scheduleNext()
+    
+    return () => clearTimeout(timeoutId)
   }, [spawnVideo, isMobile])
 
   // Don't render on mobile or when disabled
