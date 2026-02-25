@@ -196,7 +196,7 @@ const projects = [
     dark: false,
     zoom: 1.01,
   },
-  {
+  /**{
     id: 'takeone',
     title: 'TakeOne',
     date: 'Ongoing',
@@ -204,7 +204,7 @@ const projects = [
     image: '/assets/svg/takeonenoee.png',
     url: 'https://www.figma.com/design/VPNthnTDvDgzUz8DNFteew/takeone-beta?node-id=0-1&t=pSdgZlzq8D3XCA8F-1',
     dark: false,
-  },
+  }, */
 ]
 
 export default function MePage() {
