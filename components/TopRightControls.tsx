@@ -19,27 +19,20 @@ export function TopRightControls() {
     const mobile = window.innerWidth <= 768
     setIsMobile(mobile)
     
-    // On desktop, expand after 1.5 second delay
-    let expandTimer: NodeJS.Timeout | null = null
-    if (!mobile) {
-      expandTimer = setTimeout(() => {
-        setIsExpanded(true)
-      }, 1500)
-    }
+    // Auto-expand after delay (1.5s desktop, 1s mobile)
+    const expandTimer = setTimeout(() => {
+      setIsExpanded(true)
+    }, mobile ? 1500 : 1500)
     
     const handleResize = () => {
       const nowMobile = window.innerWidth <= 768
       setIsMobile(nowMobile)
-      // When switching to mobile, collapse
-      if (nowMobile) {
-        setIsExpanded(false)
-      }
     }
     window.addEventListener('resize', handleResize)
     
     return () => {
       window.removeEventListener('resize', handleResize)
-      if (expandTimer) clearTimeout(expandTimer)
+      clearTimeout(expandTimer)
     }
   }, [])
 
