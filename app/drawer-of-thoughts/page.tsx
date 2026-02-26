@@ -3,7 +3,7 @@
 import { useRef } from 'react'
 import { motion } from 'framer-motion'
 import styles from './page.module.css'
-import { CircleHighlight } from '@/components/Highlights'
+import { CircleHighlight, UnderlineHighlight } from '@/components/Highlights'
 import { useSoundEffects } from '@/hooks/useSoundEffects'
 
 // Animation variants
@@ -156,12 +156,12 @@ export default function DrawerOfThoughtsPage() {
         drawer of thoughts
       </motion.h1>
       <motion.p 
-        className={styles.description}
+        className={styles.quote}
         initial="hidden"
         animate="visible"
         variants={fadeInUp}
       >
-        an assortment of ideas documented since grade 9.
+        <UnderlineHighlight delay={0.5}>an assortment of ideas</UnderlineHighlight> curated from my journal entries.
       </motion.p>
 
       {/* Grade filter tabs */}

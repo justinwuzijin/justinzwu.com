@@ -4,7 +4,7 @@ import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import styles from './page.module.css'
 import { AutoPlayVideo } from '@/components/AutoPlayVideo'
-import { ScribbleHighlight } from '@/components/Highlights'
+import { ScribbleHighlight, UnderlineHighlight } from '@/components/Highlights'
 import { useSoundEffects } from '@/hooks/useSoundEffects'
 import { 
   collageItems,
@@ -411,6 +411,15 @@ export default function ArtGalleryPage() {
         <span className={styles.orangeDot} />
         art gallery
       </motion.h1>
+
+      <motion.p
+        className={styles.quote}
+        initial="hidden"
+        animate="visible"
+        variants={fadeInUp}
+      >
+        im inspired by <UnderlineHighlight delay={0.5}>everything around me.</UnderlineHighlight>
+      </motion.p>
 
       <motion.div 
         className={styles.tabs}

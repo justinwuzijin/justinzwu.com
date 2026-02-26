@@ -24,10 +24,20 @@
   background-color: #ffffff;
 }
 
+.quote {
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--color-muted);
+  margin: 0;
+  margin-top: calc(-1 * var(--spacing-sm));
+  margin-bottom: var(--spacing-xs);
+}
+
 /* Tabs */
 .tabs {
   display: flex;
   gap: var(--spacing-lg);
+  margin-top: calc(-1 * var(--spacing-sm));
 }
 
 .tab {

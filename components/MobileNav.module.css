@@ -209,53 +209,6 @@
   opacity: 0.7;
 }
 
-/* Social Links - stacked with expand animation */
-.socialLinksContainer {
-  margin-top: var(--spacing-lg);
-  padding-top: var(--spacing-md);
-  border-top: 1px solid var(--color-muted-20, rgba(128, 128, 128, 0.2));
-}
-
-.socialLinksStack {
-  position: relative;
-  height: 36px;
-  display: flex;
-  align-items: center;
-}
-
-.socialLink {
-  position: absolute;
-  left: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--color-foreground);
-  color: var(--color-background);
-  transition: transform 0.2s ease, background 0.2s ease;
-}
-
-.socialLink:hover {
-  transform: scale(1.1);
-  background: var(--color-accent, var(--color-foreground));
-}
-
-.socialLink svg {
-  width: 18px;
-  height: 18px;
-}
-
-[data-theme="orange"] .socialLink {
-  background: var(--color-background);
-  color: var(--color-foreground);
-}
-
-[data-theme="orange"] .socialLink:hover {
-  background: rgba(255, 255, 255, 0.9);
-}
-
 /* Show only on mobile */
 @media (max-width: 768px) {
   .mobileHeader {
@@ -311,20 +264,6 @@
   .themeToggle svg {
     width: 18px;
     height: 18px;
-  }
-  
-  .socialLink {
-    width: 32px;
-    height: 32px;
-  }
-  
-  .socialLink svg {
-    width: 16px;
-    height: 16px;
-  }
-  
-  .socialLinksStack {
-    height: 32px;
   }
 }
 

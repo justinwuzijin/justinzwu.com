@@ -1,7 +1,12 @@
 .topRightControls {
   position: absolute !important;
   top: 1.75rem !important;
-  right: 8rem !important;
+  /* Position from left: sidebar + margins + content width, but don't go past right edge */
+  left: min(
+    calc(var(--sidebar-width) + var(--spacing-xl) + var(--spacing-lg) + var(--content-max-width) + var(--spacing-xl)),
+    calc(100vw - 12rem)
+  ) !important;
+  right: auto !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-end !important;
@@ -190,7 +195,7 @@ body[data-side-panel-open="true"] .topRightControls {
   border-radius: 4px;
   background-color: transparent;
   font-size: 0.7rem;
-  margin-left: 18rem;
+  margin-left: 1rem;
 }
 
 .shiftOButton:hover {
@@ -229,8 +234,12 @@ body[data-side-panel-open="true"] .topRightControls {
 @media (max-width: 1024px) {
   .topRightControls {
     top: var(--spacing-md) !important;
-    /* Tablet: sidebar 140px + margins + content width + padding */
-    left: calc(200px + var(--spacing-md) + var(--spacing-md) + var(--content-max-width) + var(--spacing-lg)) !important;
+    /* Tablet: sidebar 140px + margins + content, capped at viewport edge */
+    left: min(
+      calc(140px + var(--spacing-md) + var(--spacing-md) + var(--content-max-width) + var(--spacing-md)),
+      calc(100vw - 10rem)
+    ) !important;
+    right: auto !important;
     gap: var(--spacing-sm);
   }
 }

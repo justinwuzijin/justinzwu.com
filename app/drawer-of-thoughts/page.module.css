@@ -1,7 +1,7 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-3xl);
+  gap: var(--spacing-xl);
   max-width: 600px;
 }
 
@@ -35,10 +35,20 @@
   line-height: 1.6;
 }
 
+.quote {
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--color-muted);
+  margin: 0;
+  margin-top: calc(-1 * var(--spacing-sm));
+  margin-bottom: var(--spacing-xs);
+}
+
 .tabs {
   display: flex;
   gap: var(--spacing-lg);
   flex-wrap: wrap;
+  margin-top: calc(-1 * var(--spacing-sm));
 }
 
 .tab {
