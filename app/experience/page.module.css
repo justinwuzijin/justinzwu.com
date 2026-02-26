@@ -97,7 +97,7 @@
 }
 
 :global([data-theme="orange"]) .activeTab .dotHighSchool {
-  background-color: #d4d4d4;  /* neutral-300 */
+  background-color: #525252;  /* neutral-600 - matches current */
 }
 
 .experienceGrid {
