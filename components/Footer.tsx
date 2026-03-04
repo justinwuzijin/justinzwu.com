@@ -219,7 +219,16 @@ export function Footer() {
 
   const handleSelect = useCallback((id: string, addToSelection: boolean) => {
     select(id, addToSelection)
-  }, [select])
+    
+    // Bring clicked item to front by updating its z-index
+    const maxZ = Math.max(...transforms.map(t => t.zIndex))
+    const currentTransform = transforms.find(t => t.id === id)
+    if (currentTransform && currentTransform.zIndex < maxZ) {
+      setTransforms(prev => 
+        prev.map(t => t.id === id ? { ...t, zIndex: maxZ + 1 } : t)
+      )
+    }
+  }, [select, transforms])
 
   const handleTransformChange = useCallback((id: string, updates: Partial<ItemTransform>) => {
     setTransforms(prev => 
