@@ -133,9 +133,9 @@ const projects = [
     dark: true,
     videoUrl: '/assets/experience-videos/camcraft.mp4',
     videoPoster: '/assets/experience-videos/posters/camcraft.jpg',
-    videoZoom: 1.22,
+    videoZoom: 1.08,
     videoPosition: 'center 30%',
-    videoSpeed: 2,
+    videoSpeed: 1,
   },
   {
     id: 'skema',
@@ -159,6 +159,8 @@ const projects = [
     dark: true,
     videoUrl: '/assets/experience-videos/cision.mp4',
     videoPoster: '/assets/experience-videos/posters/cision.jpg',
+    videoSpeed: 1.3,
+    videoZoom: 1.08,
   },
   {
     id: 'recollect',
