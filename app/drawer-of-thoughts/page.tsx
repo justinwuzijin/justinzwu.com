@@ -112,6 +112,11 @@ const thoughts = [
       'how do i stay humble but not be humbled by other ppl ',
       'follow your gut.',
       'i was in the car today on the way to work and i was thinking to myself what a privelege it is to have the ambitions i have and the ability to make them come true. yesterday i noticed just how true the 9-5 archetype was in the work environment -- where people just log in their 9-5 and once its over they go home and repeat w/ no other thoughts or goals',
+      'surround yourself with people more passionate than yourself about things you are passionate about and build and create cool things together.',
+      'smell being a HUGE reminder of past memories — familiar scent in a public setting -> flurry of thoughts and emotions comes back to u at once (for better or worse)',
+      'alysa liu and marty supreme are watering the seeds of a new counter culture movement. being nonchalant isn\'t cool anymore. passion in the pursuit of greatness while having fun and expressing/being yourself is the new cool. we r entering a cultural shift that i think will impact conversations, youth-mentality, fashion, media, tech, and everything in between.',
+      'some of my gr12 friends just got their waterloo engineering offers today. insane how fast time is flying. thinking back on the day i got my offer; one of the best days of my life.',
+      'imagine the tech world if it were made up of the greatest rappers or figure skaters or film directors or chefs or writers or thinkers of our generation. what if they all knew how to use cursor or claude code or work with git? what if Tyler The Creator was your founding product designer working with figma MCP and running several work trees in parallel? if i run a startup i wont be afraid to take a chance on a chinese breakdancer or french fashion designer or singaporean street-food chef to be my founding software engineers.'
     ],
   },
 ]
