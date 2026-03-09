@@ -34,7 +34,7 @@
 
 .video {
   object-fit: fill;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4, 5. 3 );
   background-color: transparent;
   display: block;
 }

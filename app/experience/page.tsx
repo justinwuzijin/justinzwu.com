@@ -74,16 +74,16 @@ const currentExperiences = [
     videoPoster: '/assets/experience-videos/posters/youtube-filmmaker.jpg',
   },
   {
-    id: 'socratica',
-    company: 'Socratica',
-    logo: 'socratica',
-    role: 'Socratica Member',
-    type: 'community',
-    description: 'Helped facilitate events and create promotional and recap content for Socratica during Fall 2025.',
-    link: 'https://www.socratica.info/',
-    zoom: 1.01,
-    videoUrl: '/assets/experience-videos/cursor-ambassador.mp4',
-    videoPoster: '/assets/experience-videos/posters/cursor-ambassador.jpg',
+    id: 'summerhacks',
+    company: 'SummerHacks',
+    logo: 'placeholder',
+    role: 'SummerHacks Executive',
+    type: 'hackathon',
+    description: 'Build under open skies. Hosting a hackathon in June 2026.',
+    link: 'https://x.com/byjustinwu/status/2030797414181880084?s=20',
+    videoUrl: '/assets/experience-videos/summerhacks.mp4',
+    videoPoster: '/assets/experience-videos/posters/summerhacks.jpg',
+    videoStartTime: 5,
   },
   {
     id: 'bridging',
@@ -112,6 +112,18 @@ const currentExperiences = [
 ]
 
 const highSchoolExperiences = [
+  {
+    id: 'socratica',
+    company: 'Socratica',
+    logo: 'socratica',
+    role: 'Socratica Member',
+    type: 'community',
+    description: 'Helped facilitate events and create promotional and recap content for Socratica during Fall 2025.',
+    link: 'https://www.socratica.info/',
+    zoom: 1.01,
+    videoUrl: '/assets/experience-videos/cursor-ambassador.mp4',
+    videoPoster: '/assets/experience-videos/posters/cursor-ambassador.jpg',
+  },
   {
     id: 'president',
     company: 'Student Council',

@@ -21,9 +21,10 @@ interface ExperienceCardProps {
   videoAspectRatio?: number
   videoZoom?: number
   videoPosition?: string
+  videoStartTime?: number
 }
 
-export function ExperienceCard({ company, logo, role, type, description, secondaryLogo, link, zoom, highlightDelay = 0, videoUrl, videoPoster, videoAspectRatio, videoZoom, videoPosition }: ExperienceCardProps) {
+export function ExperienceCard({ company, logo, role, type, description, secondaryLogo, link, zoom, highlightDelay = 0, videoUrl, videoPoster, videoAspectRatio, videoZoom, videoPosition, videoStartTime }: ExperienceCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
   const [posterLoaded, setPosterLoaded] = useState(false)
@@ -48,22 +49,34 @@ export function ExperienceCard({ company, logo, role, type, description, seconda
     const video = videoRef.current
     if (!video || !videoUrl) return
 
+    let onSeekedRef: (() => void) | null = null
+
     const handleReady = () => {
-      setVideoReady(true)
+      if (videoStartTime != null && videoStartTime > 0) {
+        video.currentTime = videoStartTime
+        onSeekedRef = () => {
+          setVideoReady(true)
+          video.removeEventListener('seeked', onSeekedRef!)
+        }
+        video.addEventListener('seeked', onSeekedRef)
+      } else {
+        setVideoReady(true)
+      }
     }
 
     video.addEventListener('loadeddata', handleReady)
-    video.addEventListener('canplay', handleReady)
-    
+
     if (video.readyState >= 2) {
       handleReady()
     }
 
     return () => {
       video.removeEventListener('loadeddata', handleReady)
-      video.removeEventListener('canplay', handleReady)
+      if (onSeekedRef) {
+        video.removeEventListener('seeked', onSeekedRef)
+      }
     }
-  }, [videoUrl])
+  }, [videoUrl, videoStartTime])
 
   useEffect(() => {
     const video = videoRef.current
