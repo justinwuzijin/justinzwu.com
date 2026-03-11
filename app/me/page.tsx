@@ -188,16 +188,6 @@ const projects = [
     videoPoster: '/assets/experience-videos/posters/4sight.jpg',
     videoZoom: 1.15,
   },
-  {
-    id: 'performeter',
-    title: 'Performeter',
-    date: "Oct '25",
-    description: 'A Chrome extension for Tinder.com. It scrapes bio text and calls an LLM with a structured prompt to output a score of how "performative" someones profile is. (Toronto Stupid Hackathon project)',
-    image: '/assets/svg/performeter.png',
-    url: 'https://github.com/justinwuzijin/performeter67',
-    dark: false,
-    zoom: 1.01,
-  },
   /**{
     id: 'takeone',
     title: 'TakeOne',
