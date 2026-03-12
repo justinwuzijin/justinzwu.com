@@ -253,6 +253,10 @@
 }
 
 @media (max-width: 768px) {
+  .underlineHighlight {
+    white-space: nowrap;
+  }
+
   .projectsGrid {
     grid-template-columns: repeat(2, 1fr);
     gap: var(--spacing-md);
