@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import styles from './page.module.css'
 import { ExperienceCard } from '@/components/ExperienceCard'
 import { useSoundEffects } from '@/hooks/useSoundEffects'
@@ -68,7 +68,7 @@ const currentExperiences = [
     role: 'Cursor Campus Lead',
     type: 'community',
     description: 'Official uWaterloo Cursor Campus Lead for Winter 2026 and Summer 2026 term. Running campus-wide events such as Cafe Cursor.',
-    link: 'https://cursor.com/home?utm_source=google&utm_campaign=[Static]_New_Search_Brand_[B2C]_[Brand]_[Desktop]&utm_term=cursor&utm_creative=&utm_medium=cpc&utm_content=793094759454&cc_platform=google&cc_campaignid=23463995700&cc_adgroupid=190461701206&cc_adid=793094759454&cc_keyword=cursor&cc_matchtype=b&cc_device=c&cc_network=g&cc_placement=&cc_location=9000960&cc_adposition=&gad_source=1&gad_campaignid=23463995700&gbraid=0AAAABAkdGgRLBOhMPres5hNm_dUO7NAsJ&gclid=CjwKCAiAybfLBhAjEiwAI0mBBj7ruc_XixYDWlwTQNHEmPRIbquTKVCLH0KB3ydsei3N_UwNI4CsnRoCaBoQAvD_BwE',
+    link: 'https://cursor-waterloo.vercel.app/',
     zoom: 1.01,
     vimeoId: '1172727625',
     videoPoster: '/assets/experience-videos/posters/youtube-filmmaker.jpg',
@@ -81,7 +81,7 @@ const currentExperiences = [
     role: 'SummerHacks Executive',
     type: 'hackathon',
     description: 'Build under open skies. Hosting a hackathon in June 2026.',
-    link: 'https://x.com/byjustinwu/status/2030797414181880084?s=20',
+    link: 'https://summerhacks.ca/',
     vimeoId: '1172727462',
     videoPoster: '/assets/experience-videos/posters/summerhacks.jpg',
     videoZoom: 1.15,
@@ -106,7 +106,7 @@ const currentExperiences = [
     role: 'Youtube Filmmaker',
     type: 'personal',
     description: 'Sharing my coming-of-age stories, short films, video journal entries.',
-    link: 'https://www.youtube.com/@byjustinwu',
+    link: 'https://www.youtube.com/@byjustinwu/featured',
     vimeoId: '1172726594',
     videoPoster: '/assets/art-gallery/posters/central-piece.jpg',
     videoZoom: 1.12,
@@ -143,7 +143,7 @@ const highSchoolExperiences = [
     role: 'CREATE Markham Executive', 
     type: 'high school',
     description: 'Organized 200+ attendee leadership conference for students in the GTA. Led team of 11 delegates to work with Asian Roots Collective on a 100+ attendee youth basketball and wellness event.',
-    link: 'https://www.createmarkham.ca/',
+    link: 'https://www.instagram.com/createmarkham/',
     vimeoId: '1172750796',
     videoPoster: '/assets/experience-videos/posters/create-conference.jpg',
     videoZoom: 1.12,
@@ -155,7 +155,7 @@ const highSchoolExperiences = [
     role: '20th Anniversary Film Director',
     type: 'high school',
     description: 'Premiering a 30-minute film to an audience of past alumni in May 2026. Directed and edited a documentary celebrating 20 years of school community history.',
-    link: 'https://www.instagram.com/trudeau20thfilm/',
+    link: 'https://drive.google.com/file/d/1T9E8hcpMLcUBIqRNCxzvCWNxfFiP7HjG/view',
     vimeoId: '1172727503',
     videoPoster: '/assets/experience-videos/posters/anniversary-film.jpg',
     videoPosition: '5%',
@@ -168,7 +168,6 @@ export default function ExperiencePage() {
   const { playClick } = useSoundEffects()
   const tabs: TabType[] = ['current', 'past']
   
-  const experiences = activeTab === 'current' ? currentExperiences : highSchoolExperiences
 
   return (
     <div className={styles.container}>
@@ -209,26 +208,30 @@ export default function ExperiencePage() {
         })}
       </motion.div>
 
-      {/* Experience grid with animation */}
-      <AnimatePresence mode="wait">
-        <motion.div 
-          key={activeTab}
-          className={styles.experienceGrid}
-          initial="hidden"
-          animate="visible"
-          exit={{ opacity: 0 }}
-          variants={staggerContainer}
-        >
-          {experiences.map((exp, index) => {
-            const delays = [0.3, 0.3, 0.9, 0.9, 1.5, 1.5]
-            return (
-              <motion.div key={exp.id} variants={cardVariant}>
-                <ExperienceCard {...exp} highlightDelay={delays[index] || 0.3} />
-              </motion.div>
-            )
-          })}
-        </motion.div>
-      </AnimatePresence>
+      {/* Experience grids - both rendered, inactive hidden to preserve iframe state */}
+      {(['current', 'past'] as const).map((tab) => {
+        const items = tab === 'current' ? currentExperiences : highSchoolExperiences
+        const isActive = activeTab === tab
+        return (
+          <motion.div
+            key={tab}
+            className={styles.experienceGrid}
+            initial="hidden"
+            animate={isActive ? 'visible' : 'hidden'}
+            variants={staggerContainer}
+            style={{ display: isActive ? undefined : 'none' }}
+          >
+            {items.map((exp, index) => {
+              const delays = [0.3, 0.3, 0.9, 0.9, 1.5, 1.5]
+              return (
+                <motion.div key={exp.id} variants={cardVariant}>
+                  <ExperienceCard {...exp} highlightDelay={delays[index] || 0.3} />
+                </motion.div>
+              )
+            })}
+          </motion.div>
+        )
+      })}
     </div>
   )
 }

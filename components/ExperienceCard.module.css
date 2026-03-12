@@ -37,6 +37,7 @@
   object-fit: cover;
   display: block;
   transform-origin: center;
+  pointer-events: none;
 }
 
 .logoVideo[src*="vimeo"] {

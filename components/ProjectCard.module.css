@@ -41,6 +41,7 @@
   object-fit: cover;
   display: block;
   transform-origin: center;
+  pointer-events: none;
 }
 
 .projectVideo[src*="vimeo"] {
