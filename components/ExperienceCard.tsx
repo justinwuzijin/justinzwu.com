@@ -17,6 +17,7 @@ interface ExperienceCardProps {
   zoom?: number
   highlightDelay?: number
   videoUrl?: string
+  vimeoId?: string
   videoPoster?: string
   videoAspectRatio?: number
   videoZoom?: number
@@ -24,26 +25,35 @@ interface ExperienceCardProps {
   videoStartTime?: number
 }
 
-export function ExperienceCard({ company, logo, role, type, description, secondaryLogo, link, zoom, highlightDelay = 0, videoUrl, videoPoster, videoAspectRatio, videoZoom, videoPosition, videoStartTime }: ExperienceCardProps) {
+export function ExperienceCard({ company, logo, role, type, description, secondaryLogo, link, zoom, highlightDelay = 0, videoUrl, vimeoId, videoPoster, videoAspectRatio, videoZoom, videoPosition, videoStartTime }: ExperienceCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
   const [posterLoaded, setPosterLoaded] = useState(false)
   const [isInView, setIsInView] = useState(false)
+  const [hasBeenInView, setHasBeenInView] = useState(false)
   const [videoReady, setVideoReady] = useState(false)
+  const [iframeLoaded, setIframeLoaded] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
+  const hasVideo = videoUrl || vimeoId
+
   useEffect(() => {
     const container = containerRef.current
-    if (!container || !videoUrl) return
+    if (!container || !hasVideo) return
 
     const observer = new IntersectionObserver(
-      ([entry]) => setIsInView(entry.isIntersecting),
+      ([entry]) => {
+        setIsInView(entry.isIntersecting)
+        if (entry.isIntersecting) {
+          setHasBeenInView(true)
+        }
+      },
       { threshold: 0.3 }
     )
     observer.observe(container)
     return () => observer.disconnect()
-  }, [videoUrl])
+  }, [hasVideo])
 
   useEffect(() => {
     const video = videoRef.current
@@ -128,7 +138,41 @@ export function ExperienceCard({ company, logo, role, type, description, seconda
       className={styles.logoArea}
       style={videoAspectRatio ? { aspectRatio: videoAspectRatio } : undefined}
     >
-      {videoUrl ? (
+      {vimeoId ? (
+        <>
+          {videoPoster && (
+            <Image
+              src={videoPoster}
+              alt={`${company} preview`}
+              fill
+              className={`${styles.logoImage} ${posterLoaded ? styles.logoVisible : styles.logoHidden} ${iframeLoaded ? styles.logoHidden : ''}`}
+              sizes="(max-width: 768px) 100vw, 50vw"
+              style={{
+                ...(videoZoom && { transform: `scale(${videoZoom})` }),
+                ...(videoPosition && { objectPosition: videoPosition }),
+              }}
+              onLoad={() => setPosterLoaded(true)}
+              priority
+            />
+          )}
+          {!posterLoaded && !iframeLoaded && <div className={styles.logoPlaceholder} />}
+          {hasBeenInView && (
+            <iframe
+              src={`https://player.vimeo.com/video/${vimeoId}?autoplay=1&loop=1&muted=1&background=1&quality=auto`}
+              className={`${styles.logoVideo} ${iframeLoaded ? styles.logoVisible : styles.logoHidden}`}
+              style={{
+                transform: [
+                  videoZoom ? `scale(${videoZoom})` : '',
+                  videoPosition ? `translateY(${videoPosition})` : '',
+                ].filter(Boolean).join(' ') || undefined,
+              }}
+              allow="autoplay; fullscreen"
+              frameBorder="0"
+              onLoad={() => setIframeLoaded(true)}
+            />
+          )}
+        </>
+      ) : videoUrl ? (
         <>
           {videoPoster && (
             <Image

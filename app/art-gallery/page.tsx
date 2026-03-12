@@ -481,7 +481,7 @@ export default function ArtGalleryPage() {
             {/* Central video - full width */}
             <motion.div className={styles.centralVideo} variants={videoItemVariant}>
               <AutoPlayVideo
-                videoUrl="/assets/art-gallery/central-piece.mp4"
+                vimeoId="1172726594"
                 aspectRatio={16/9}
                 className={styles.video}
               />

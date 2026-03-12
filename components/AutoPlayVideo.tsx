@@ -132,7 +132,7 @@ export function AutoPlayVideo({
             controls={controls}
             playsInline
             autoPlay
-            preload="metadata"
+            preload="auto"
             onLoadedData={() => setIsLoaded(true)}
             className={`${styles.video} ${isLoaded ? styles.loaded : ''}`}
             aria-label={alt || title}

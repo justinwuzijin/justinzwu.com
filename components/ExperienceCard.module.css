@@ -36,6 +36,11 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  transform-origin: center;
+}
+
+.logoVideo[src*="vimeo"] {
+  border: none;
 }
 
 .logoVisible {
@@ -57,8 +62,13 @@
 
 :global([data-theme="dark"]) .logoPlaceholder,
 :global([data-theme="orange"]) .logoPlaceholder {
-  background: linear-gradient(90deg, #2a2a2a 25%, #333 50%, #2a2a2a 75%);
+  background: linear-gradient(90deg, #1a1a1a 25%, #252525 50%, #1a1a1a 75%);
   background-size: 200% 100%;
+}
+
+:global([data-theme="dark"]) .logoArea,
+:global([data-theme="orange"]) .logoArea {
+  background-color: #000;
 }
 
 @keyframes shimmer {

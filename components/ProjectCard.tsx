@@ -17,32 +17,42 @@ interface ProjectCardProps {
   zoom?: number
   highlightDelay?: number
   videoUrl?: string
+  vimeoId?: string
   videoPoster?: string
   videoZoom?: number
   videoPosition?: string
   videoSpeed?: number
 }
 
-export function ProjectCard({ title, date, description, image, url, dark, zoom, highlightDelay = 0, videoUrl, videoPoster, videoZoom, videoPosition, videoSpeed }: ProjectCardProps) {
+export function ProjectCard({ title, date, description, image, url, dark, zoom, highlightDelay = 0, videoUrl, vimeoId, videoPoster, videoZoom, videoPosition, videoSpeed }: ProjectCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
   const [posterLoaded, setPosterLoaded] = useState(false)
   const [isInView, setIsInView] = useState(false)
+  const [hasBeenInView, setHasBeenInView] = useState(false)
   const [videoReady, setVideoReady] = useState(false)
+  const [iframeLoaded, setIframeLoaded] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
+  const hasVideo = videoUrl || vimeoId
+
   useEffect(() => {
     const container = containerRef.current
-    if (!container || !videoUrl) return
+    if (!container || !hasVideo) return
 
     const observer = new IntersectionObserver(
-      ([entry]) => setIsInView(entry.isIntersecting),
+      ([entry]) => {
+        setIsInView(entry.isIntersecting)
+        if (entry.isIntersecting) {
+          setHasBeenInView(true)
+        }
+      },
       { threshold: 0.3 }
     )
     observer.observe(container)
     return () => observer.disconnect()
-  }, [videoUrl])
+  }, [hasVideo])
 
   useEffect(() => {
     const video = videoRef.current
@@ -86,7 +96,38 @@ export function ProjectCard({ title, date, description, image, url, dark, zoom, 
       ref={containerRef} 
       className={`${styles.imageWrapper} ${dark ? styles.darkBg : ''}`}
     >
-      {videoUrl ? (
+      {vimeoId ? (
+        <>
+          {videoPoster && (
+            <Image
+              src={videoPoster}
+              alt={title}
+              fill
+              className={`${styles.projectImage} ${posterLoaded ? styles.imageVisible : styles.imageHidden} ${iframeLoaded ? styles.imageHidden : ''}`}
+              sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, 33vw"
+              style={{
+                ...(videoZoom && { transform: `scale(${videoZoom})` }),
+                ...(videoPosition && { objectPosition: videoPosition }),
+              }}
+              onLoad={() => setPosterLoaded(true)}
+              priority
+            />
+          )}
+          {!posterLoaded && !iframeLoaded && <div className={styles.imagePlaceholder} />}
+          {hasBeenInView && (
+            <iframe
+              src={`https://player.vimeo.com/video/${vimeoId}?autoplay=1&loop=1&muted=1&background=1&quality=auto`}
+              className={`${styles.projectVideo} ${iframeLoaded ? styles.imageVisible : styles.imageHidden}`}
+              style={{
+                ...(videoZoom && { transform: `scale(${videoZoom})` }),
+              }}
+              allow="autoplay; fullscreen"
+              frameBorder="0"
+              onLoad={() => setIframeLoaded(true)}
+            />
+          )}
+        </>
+      ) : videoUrl ? (
         <>
           {videoPoster && (
             <Image

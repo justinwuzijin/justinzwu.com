@@ -3,6 +3,11 @@
   width: 100%;
   overflow: hidden;
   border-radius: 0;
+  background-color: #ffffff;
+}
+
+:global([data-theme="dark"]) .videoContainer,
+:global([data-theme="orange"]) .videoContainer {
   background-color: #000;
 }
 
@@ -27,6 +32,11 @@
 .placeholder {
   width: 100%;
   height: 100%;
+  background-color: #ffffff;
+}
+
+:global([data-theme="dark"]) .placeholder,
+:global([data-theme="orange"]) .placeholder {
   background-color: #1a1a1a;
 }
 
