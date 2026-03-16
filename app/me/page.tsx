@@ -124,6 +124,18 @@ function UnderlineHighlight({ children, delay = 0 }: { children: React.ReactNode
 
 const projects = [
   {
+    id: 'vit',
+    title: 'Vit',
+    date: "Mar '16",
+    description: 'Vit is a version control system for DaVinci Resolve, built on Git. It lets video teams collaborate in parallel the same way developers do with code.',
+    image: '/assets/svg/vit.png',
+    url: 'https://vit-editor.vercel.app/',
+    dark: true,
+    vimeoId: '1174001681',
+    videoPoster: '/assets/experience-videos/posters/vit.png',
+    videoZoom: 1.20,
+  },
+  {
     id: 'camcraft',
     title: 'CamCraft',
     date: "Feb '26",
