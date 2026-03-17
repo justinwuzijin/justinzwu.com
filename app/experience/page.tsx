@@ -80,7 +80,7 @@ const currentExperiences = [
     logo: 'placeholder',
     role: 'SummerHacks Executive',
     type: 'hackathon',
-    description: 'Build under open skies. Hosting a hackathon in June 2026.',
+    description: 'Build under open skies. Hosting a hackathon in August 2026.',
     link: 'https://summerhacks.ca/',
     vimeoId: '1172727462',
     videoPoster: '/assets/experience-videos/posters/summerhacks.jpg',
