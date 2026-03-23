@@ -107,16 +107,34 @@ export function SidebarNav() {
               cover: '/music/estate-sale-cover.png',
             },
             {
+              title: '夢中人',
+              artist: '王菲',
+              src: `/music/${encodeURIComponent('夢中人 (電影《重慶森林》歌曲) 4.mp3')}`,
+              cover: '/music/af953adbf312fd1c13ea1b14e4e73b4b.1000x1000x1.jpg',
+            },
+            {
+              title: 'mucho, poquito, nada',
+              artist: 'Margarita',
+              src: `/music/${encodeURIComponent('mucho, poquito, nada.mp3')}`,
+              cover: '/music/mucho.jpg',
+            },
+            {
               title: 'Enjoy Right Now, Today',
               artist: 'Tyler, The Creator',
               src: 'https://personal-site-music.s3.us-east-1.amazonaws.com/enjoy-right-now.mp3',
               cover: '/music/flower-boy-cover.png',
             },
             {
-              title: 'Stop Playing With Me',
+              title: 'Dramatic Girl',
+              artist: 'Various Artists',
+              src: `/music/${encodeURIComponent('Dramatic Girl.mp3')}`,
+              cover: `/music/${encodeURIComponent('dramatic girl.png')}`,
+            },
+            {
+              title: 'RUNITUP',
               artist: 'Tyler, The Creator',
-              src: 'https://personal-site-music.s3.us-east-1.amazonaws.com/stop-playing-with-me.mp3',
-              cover: '/music/chromakopia-cover.webp',
+              src: `/music/${encodeURIComponent('RUNITUP 4.mp3')}`,
+              cover: '/music/runitup.jpg',
             },
             {
               title: 'Baby Blues',
@@ -129,6 +147,18 @@ export function SidebarNav() {
               artist: 'Little Simz',
               src: 'https://personal-site-music.s3.us-east-1.amazonaws.com/no-merci.mp3',
               cover: '/music/little-simz-cover.jpg',
+            },
+            {
+              title: 'Stop Playing With Me',
+              artist: 'Tyler, The Creator',
+              src: 'https://personal-site-music.s3.us-east-1.amazonaws.com/stop-playing-with-me.mp3',
+              cover: '/music/chromakopia-cover.webp',
+            },
+            {
+              title: 'Warmpop',
+              artist: 'ESPRIT 空想',
+              src: `/music/${encodeURIComponent('Warmpop.mp3')}`,
+              cover: '/music/warmpop.jpg',
             },
             {
               title: '關於小熊',
