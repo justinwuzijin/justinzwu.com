@@ -33,6 +33,7 @@ export function ProjectCard({ title, date, description, image, url, dark, zoom, 
   const [videoReady, setVideoReady] = useState(false)
   const [iframeLoaded, setIframeLoaded] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
+  const iframeRef = useRef<HTMLIFrameElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
   const hasVideo = videoUrl || vimeoId
@@ -79,6 +80,23 @@ export function ProjectCard({ title, date, description, image, url, dark, zoom, 
   }, [videoUrl, videoSpeed])
 
   useEffect(() => {
+    if (!vimeoId || !videoSpeed || !iframeLoaded) return
+    const iframe = iframeRef.current
+    if (!iframe?.contentWindow) return
+
+    const setSpeed = () => {
+      iframe.contentWindow!.postMessage(
+        JSON.stringify({ method: 'setPlaybackRate', value: videoSpeed }),
+        'https://player.vimeo.com'
+      )
+    }
+    // Set speed immediately and also after a short delay to ensure player is ready
+    setSpeed()
+    const timeout = setTimeout(setSpeed, 1000)
+    return () => clearTimeout(timeout)
+  }, [vimeoId, videoSpeed, iframeLoaded])
+
+  useEffect(() => {
     const video = videoRef.current
     if (!video || !videoReady) return
 
@@ -116,6 +134,7 @@ export function ProjectCard({ title, date, description, image, url, dark, zoom, 
           {!posterLoaded && !iframeLoaded && <div className={styles.imagePlaceholder} />}
           {hasBeenInView && (
             <iframe
+              ref={iframeRef}
               src={`https://player.vimeo.com/video/${vimeoId}?autoplay=1&loop=1&muted=1&background=1&quality=auto`}
               className={`${styles.projectVideo} ${iframeLoaded ? styles.imageVisible : styles.imageHidden}`}
               style={{

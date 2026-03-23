@@ -136,6 +136,18 @@ const projects = [
     videoZoom: 1.20,
   },
   {
+    id: 'syde-webring',
+    title: 'Class Webring',
+    date: "Mar '26",
+    description: 'A polaroid-style webring for the Systems Design Engineering class of 2030.',
+    image: '/assets/svg/vit.png',
+    url: 'https://syde-30-webring-eta.vercel.app/',
+    dark: true,
+    vimeoId: '1176035484',
+    videoZoom: 1.28,
+    videoSpeed: 1.2,
+  },
+  {
     id: 'camcraft',
     title: 'CamCraft',
     date: "Feb '26",
@@ -171,6 +183,7 @@ const projects = [
     videoPoster: '/assets/experience-videos/posters/cision.jpg',
     videoZoom: 1.50,
   },
+  /**
   {
     id: 'recollect',
     title: 'Recollect',
@@ -197,6 +210,7 @@ const projects = [
     videoPoster: '/assets/experience-videos/posters/4sight.jpg',
     videoZoom: 1.30,
   },
+  */
   /**{
     id: 'takeone',
     title: 'TakeOne',
