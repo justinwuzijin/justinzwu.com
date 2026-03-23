@@ -101,10 +101,16 @@ export function SidebarNav() {
         <VinylRecordPlayer 
           tracks={[
             {
-              title: 'WILSHIRE',
-              artist: 'Tyler, The Creator',
-              src: 'https://personal-site-music.s3.us-east-1.amazonaws.com/wilshire.mp3',
-              cover: '/music/estate-sale-cover.png',
+              title: 'Warmpop',
+              artist: 'ESPRIT 空想',
+              src: `/music/${encodeURIComponent('Warmpop.mp3')}`,
+              cover: '/music/warmpop.jpg',
+            },
+            {
+              title: 'mucho, poquito, nada',
+              artist: 'Margarita',
+              src: `/music/${encodeURIComponent('mucho, poquito, nada.mp3')}`,
+              cover: '/music/mucho.jpg',
             },
             {
               title: '夢中人',
@@ -113,10 +119,16 @@ export function SidebarNav() {
               cover: '/music/af953adbf312fd1c13ea1b14e4e73b4b.1000x1000x1.jpg',
             },
             {
-              title: 'mucho, poquito, nada',
-              artist: 'Margarita',
-              src: `/music/${encodeURIComponent('mucho, poquito, nada.mp3')}`,
-              cover: '/music/mucho.jpg',
+              title: 'WILSHIRE',
+              artist: 'Tyler, The Creator',
+              src: 'https://personal-site-music.s3.us-east-1.amazonaws.com/wilshire.mp3',
+              cover: '/music/estate-sale-cover.png',
+            },
+            {
+              title: '姐姐',
+              artist: '夏之禹',
+              src: 'https://personal-site-music.s3.us-east-1.amazonaws.com/jiejie.mp3',
+              cover: '/music/xiazhiyu-cover.jpg',
             },
             {
               title: 'Enjoy Right Now, Today',
@@ -129,6 +141,12 @@ export function SidebarNav() {
               artist: 'Various Artists',
               src: `/music/${encodeURIComponent('Dramatic Girl.mp3')}`,
               cover: `/music/${encodeURIComponent('dramatic girl.png')}`,
+            },
+            {
+              title: '關於小熊',
+              artist: 'Soft Lipa',
+              src: 'https://personal-site-music.s3.us-east-1.amazonaws.com/guan-yu-xiao-xiong.mp3',
+              cover: '/music/soft-lipa-cover.jpg',
             },
             {
               title: 'RUNITUP',
@@ -153,24 +171,6 @@ export function SidebarNav() {
               artist: 'Tyler, The Creator',
               src: 'https://personal-site-music.s3.us-east-1.amazonaws.com/stop-playing-with-me.mp3',
               cover: '/music/chromakopia-cover.webp',
-            },
-            {
-              title: 'Warmpop',
-              artist: 'ESPRIT 空想',
-              src: `/music/${encodeURIComponent('Warmpop.mp3')}`,
-              cover: '/music/warmpop.jpg',
-            },
-            {
-              title: '關於小熊',
-              artist: 'Soft Lipa',
-              src: 'https://personal-site-music.s3.us-east-1.amazonaws.com/guan-yu-xiao-xiong.mp3',
-              cover: '/music/soft-lipa-cover.jpg',
-            },
-            {
-              title: '姐姐',
-              artist: '夏之禹',
-              src: 'https://personal-site-music.s3.us-east-1.amazonaws.com/jiejie.mp3',
-              cover: '/music/xiazhiyu-cover.jpg',
             },
             {
               title: 'Stateside',
