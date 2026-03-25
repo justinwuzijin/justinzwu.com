@@ -101,10 +101,10 @@ export function SidebarNav() {
         <VinylRecordPlayer 
           tracks={[
             {
-              title: 'Warmpop',
-              artist: 'ESPRIT 空想',
-              src: `/music/${encodeURIComponent('Warmpop.mp3')}`,
-              cover: '/music/warmpop.jpg',
+              title: 'RUNITUP',
+              artist: 'Tyler, The Creator',
+              src: `/music/${encodeURIComponent('RUNITUP 4.mp3')}`,
+              cover: '/music/runitup.jpg',
             },
             {
               title: 'mucho, poquito, nada',
@@ -137,6 +137,12 @@ export function SidebarNav() {
               cover: '/music/flower-boy-cover.png',
             },
             {
+              title: 'Warmpop',
+              artist: 'ESPRIT 空想',
+              src: `/music/${encodeURIComponent('Warmpop.mp3')}`,
+              cover: '/music/warmpop.jpg',
+            },
+            {
               title: 'Dramatic Girl',
               artist: 'Various Artists',
               src: `/music/${encodeURIComponent('Dramatic Girl.mp3')}`,
@@ -147,12 +153,6 @@ export function SidebarNav() {
               artist: 'Soft Lipa',
               src: 'https://personal-site-music.s3.us-east-1.amazonaws.com/guan-yu-xiao-xiong.mp3',
               cover: '/music/soft-lipa-cover.jpg',
-            },
-            {
-              title: 'RUNITUP',
-              artist: 'Tyler, The Creator',
-              src: `/music/${encodeURIComponent('RUNITUP 4.mp3')}`,
-              cover: '/music/runitup.jpg',
             },
             {
               title: 'Baby Blues',

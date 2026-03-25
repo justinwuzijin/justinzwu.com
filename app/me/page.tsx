@@ -127,7 +127,7 @@ const projects = [
     id: 'vit',
     title: 'Vit',
     date: "Mar '26",
-    description: 'Vit is a version control system for DaVinci Resolve, built on Git. It lets video teams collaborate in parallel the same way developers do with code.',
+    description: 'Vit is a version control system for DaVinci Resolve. It allows video teams collaborate in parallel the same way developers do with code.',
     image: '/assets/svg/vit.png',
     url: 'https://vit-editor.vercel.app/',
     dark: true,
