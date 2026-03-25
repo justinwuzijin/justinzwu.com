@@ -9,7 +9,6 @@
 
 next steps:
 1. build out art gallery (my room page)
-    - take pics of polaroids + receipts + objects in my bedroom 
+    - take pics of polaroids + receipts + objects
 2. make drawer of thoughts feel like a journal (w/ orange sticky notes, sharpie effect, cut-out scrapbook collage of my actual journal entries ;; lwky too personal wth)
-
-progress: 75% ; still want to make drawer of thoughts + art gallery(myroom) look better;; 
+3. incorporate webgl into my bookshelf page somehow... make some cool animation stuf
