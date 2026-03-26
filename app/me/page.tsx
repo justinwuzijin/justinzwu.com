@@ -260,6 +260,8 @@ export default function MePage() {
             <LinkPreview 
               url="https://www.ontario.ca/page/ministry-public-and-business-service-delivery-and-procurement" 
               className={styles.highlightGreen}
+              isStatic
+              imageSrc="/assets/previews/ongov.png"
             >
               @ONgov
             </LinkPreview>
@@ -269,6 +271,8 @@ export default function MePage() {
             <LinkPreview 
               url="https://clipabit.web.app/" 
               className={styles.highlightYellow}
+              isStatic
+              imageSrc="/assets/previews/wat-ai.png"
             >
               @WAT.ai
             </LinkPreview>
@@ -276,7 +280,7 @@ export default function MePage() {
           <motion.li variants={fadeInUp}>
             {'>'} growing a{' '}
             <LinkPreview 
-              url="https://cursor.com/home?from=agents" 
+              url="https://www.cursorwaterloo.com/" 
               className={styles.highlightGrey}
             >
               Cursor
@@ -287,8 +291,10 @@ export default function MePage() {
           <motion.li variants={fadeInUp}>
             {'>'} produced videos for{' '}
             <LinkPreview 
-              url="https://www.bridginggens.com/" 
+              url="https://www.instagram.com/p/DOka4RYDbe5//" 
               className={styles.highlightBlue}
+              isStatic
+              imageSrc="/assets/previews/bridging-gens.png"
             >
               Bridging Gens
             </LinkPreview>
@@ -296,20 +302,26 @@ export default function MePage() {
             <LinkPreview 
               url="https://www.socratica.info/" 
               className={styles.highlightBlue}
+              isStatic
+              imageSrc="/assets/previews/socratica.png"
             >
               Socratica
             </LinkPreview>
             ,{' '}
             <LinkPreview 
-              url="https://www.figma.com/" 
+              url="https://www.instagram.com/p/DQIJVimEhUf/" 
               className={styles.highlightBlue}
+              isStatic
+              imageSrc="/assets/previews/figma-waterloo.png"
             >
               Figma Waterloo
             </LinkPreview>
             ,{' '}
             <LinkPreview 
-              url="https://cursor.com/home?from=agents" 
+              url="https://x.com/byjustinwu/status/1994919272112394702?s=20" 
               className={styles.highlightGrey}
+              isStatic
+              imageSrc="/assets/previews/cursor-cafe.png"
             >
               Cursor
             </LinkPreview>{' '}

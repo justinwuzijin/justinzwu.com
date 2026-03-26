@@ -107,6 +107,12 @@ export function SidebarNav() {
               cover: '/music/runitup.jpg',
             },
             {
+              title: 'WILSHIRE',
+              artist: 'Tyler, The Creator',
+              src: 'https://personal-site-music.s3.us-east-1.amazonaws.com/wilshire.mp3',
+              cover: '/music/estate-sale-cover.png',
+            },
+            {
               title: 'mucho, poquito, nada',
               artist: 'Margarita',
               src: `/music/${encodeURIComponent('mucho, poquito, nada.mp3')}`,
@@ -117,12 +123,6 @@ export function SidebarNav() {
               artist: '王菲',
               src: `/music/${encodeURIComponent('夢中人 (電影《重慶森林》歌曲) 4.mp3')}`,
               cover: '/music/af953adbf312fd1c13ea1b14e4e73b4b.1000x1000x1.jpg',
-            },
-            {
-              title: 'WILSHIRE',
-              artist: 'Tyler, The Creator',
-              src: 'https://personal-site-music.s3.us-east-1.amazonaws.com/wilshire.mp3',
-              cover: '/music/estate-sale-cover.png',
             },
             {
               title: '姐姐',
