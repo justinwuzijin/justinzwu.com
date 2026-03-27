@@ -143,7 +143,7 @@ const projects = [
     image: '/assets/svg/vit.png',
     url: 'https://syde-30-webring-eta.vercel.app/',
     dark: true,
-    vimeoId: '1176035484',
+    vimeoId: '1177537178',
     videoZoom: 1.28,
     videoSpeed: 1.2,
   },
