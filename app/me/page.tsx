@@ -300,7 +300,7 @@ export default function MePage() {
             </LinkPreview>
             ,{' '}
             <LinkPreview 
-              url="https://www.socratica.info/" 
+              url="https://www.instagram.com/p/DRu8q9ZEq7S/" 
               className={styles.highlightBlue}
               isStatic
               imageSrc="/assets/previews/socratica.png"
